@@ -18,5 +18,8 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+
+        //Recuperación de la Tabla Posts
+        $this->call(PostsTableSeeder::class);
     }
 }

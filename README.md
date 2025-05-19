@@ -100,6 +100,23 @@ Quita la ultima migracion la de categorias
 	$ php artisan migrate:refresh		//Refrescar todo, para evitar volver a hacer todo, es decir hacer rollback y las ha vuelto a migrar, es decir todas vacias
 
 
+## Seeders
+Al refrescar la Base de datos se evitara perder la información cargada en la Base de datos, la intención es guardar los datos persistidos
+Crear un seeder para la tabla post
+	$ php artisan make:seeder PostsTableSeeder
+
+Para recrear la Bd
+1. Se Refresca la Base de datos
+	$ php artisan migrate:refresh
+
+2. Se ejecutan los seeder
+	$ php artisan db:seed
+	
+	 
+se puede hacer todo en un solo caomando
+	$ php artisan migrate:refresh --seed	 	//De esta forma refresca la _Bd y ejecuta los seeders
+
+
 
 
 ## License
