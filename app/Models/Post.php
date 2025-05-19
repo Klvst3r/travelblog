@@ -19,4 +19,10 @@ class Post extends Model
         return $this->belongsTo(Category::class);       //Retorna el objeto (post actual)
     }
 
+    public function tags(){     //Etiquetas
+
+        return $this->belongsToMany(Tag::class);       //Retorna this belonstomany pertenece a muchos, la relacion es con la clase Tag
+
+    }
+
 }
