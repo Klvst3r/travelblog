@@ -224,6 +224,161 @@ En la vista Welcome:
 						@endforeach
 
 
+## Dashboard
+
+URL de los dashboard
+
+AdminLTE 2.3.11
+	https://github.com/ColorlibHQ/AdminLTE/releases/tag/v2.3.11
+
+
+# Laravel BoilerPlate
+
+Panel de Administración integrado en el proyecto base de Laravel con:
+	- PHP 7.4
+	- PHP Extensions: BCMath, Ctype, Fileinfo, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML, cURL, Mcrypt, GD
+    - Node.js >= 8.x
+    - Composer >= 1.9.x
+	- Bootstrap 3
+	- Font Awesome
+
+# Gentelella
+
+Gentelella Admin is a free to use Bootstrap admin template. This template uses the default Bootstrap 4 styles along with a variety of powerful jQuery plugins and tools to create a powerful framework for creating admin panels or back-end dashboards.
+
+Theme uses several libraries for charts, calendar, form validation, wizard style interface, off-canvas navigation menu, text forms, date range, upload area, form autocomplete, range slider, progress bars, notifications and much more.
+
+
+
+
+# Install with Laravel Proyect
+
+Install Composer using detailed installation instructions here
+
+wget https://getcomposer.org/composer.phar
+
+chmod +x composer.phar
+
+mv composer.phar /usr/local/bin/composer
+
+Install Node.js using detailed installation instructions here
+
+yum install npm
+
+Clone repository
+
+git clone https://github.com/Labs64/laravel-boilerplate.git
+
+Change into the working directory
+
+cd laravel-boilerplate
+
+Copy .env.example to .env and modify according to your environment
+
+cp .env.example .env
+
+Install composer dependencies
+
+composer install --prefer-dist
+
+An application key can be generated with the command
+
+php artisan key:generate
+
+Execute following commands to install other dependencies
+
+npm install
+
+npm run dev
+
+Run these commands to create the tables within the defined database and populate seed data
+
+php artisan migrate --seed
+
+Troubleshooting
+
+If you get an error like a PDOException try editing your .env file and change DB_HOST=127.0.0.1 to DB_HOST=localhost or DB_HOST=mysql (for docker-compose environment).
+
+If you get a password error try this command:
+
+	# ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'root';
+
+Run
+
+To start the PHP built-in server
+
+php artisan serve --port=8080
+
+or
+
+php -S localhost:8080 -t public/
+
+Now you can browse the site at http://localhost:8080 🙌
+
+
+# Install Gentelellar
+
+Documentation
+	https://colorlibhq.github.io/gentelella/
+
+
+Installation via Package Manager
+
+Our goal is to make it installable on different Package Manager! Do you want to use it on your favorite Package Manager and you know how? Pull request all the way!
+
+As of now, this is some installation available:
+
+Bower
+
+	$ bower install gentelella --save
+
+npm
+
+	$ npm install gentelella --save
+
+yarn
+
+	$ yarn add gentelella
+
+
+# Other templates and useful resources
+
+    Free Bootstrap Admin Templates - List of the best Free Bootstrap admin dashboard templates that are available for free for personal and commercial use.
+		https://colorlib.com/wp/free-bootstrap-admin-dashboard-templates/
+
+    Free Admin Templates - Long list of the best free HTML5 powered admin dashboard templates. Available for personal and commercial use.
+		https://colorlib.com/wp/free-html5-admin-dashboard-templates/
+
+    Angular Templates - List of the most popular admin templates based on AngularJS.
+		https://colorlib.com/wp/angularjs-admin-templates/
+
+    WordPress Admin Templates - List of the best WordPress admin dashboard templates and plugins that will add a personal touch to your WordPress dashboard.
+		https://colorlib.com/wp/wordpress-admin-dashboard-themes-plugins/
+
+    WordPress Themes - A huge selection of the best free WordPress themes that are all licensed under GPL and are available for personal and commercial use without restrictions.
+		https://colorlib.com/wp/free-wordpress-themes/
+
+
+# Integración del Dashboard al proyecto
+
+Teniendo como consideración La integración del dashboard Gentelella al Proyecto Laravel, en la carpeta del Template copiar los archivos de las carpetas, dentro de la carpeta, elementos necesarios para la administración:
+	/public/dashboard/
+		- css
+		- js
+		- images
+		- bootstrap
+
+El HTML:
+
+Popiamos el inde.html dentro de la carpeta:
+/resources/views/admin/
+	- layout.blade.html
+
+
+
+
+
+
 
 
 ## License

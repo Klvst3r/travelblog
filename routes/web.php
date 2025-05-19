@@ -24,6 +24,10 @@ Route::get('/', function () {
     return view('welcome', compact('posts')); //Envia un array ['posts' => $posts]
 });
 
+Route::get('admin', function(){
+    return view('admin.dashboard');
+});
+
 Route::get('posts', function(){
     return Post::all();
 });
