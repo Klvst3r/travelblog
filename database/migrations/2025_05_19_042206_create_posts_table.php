@@ -17,6 +17,7 @@ return new class extends Migration
             $table->mediumText('excerpt');                      //Contenido
             $table->text('body');                               //Cuerpo del Post
             $table->timestamp('published_at')->nullable();      //Fecha publicació
+            $table->unsignedInteger('category_id');             // En cada post vamos a almacenar el id de la categoria para hacer referencia a el
             $table->timestamps();
         });
     }

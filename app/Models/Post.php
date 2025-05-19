@@ -12,4 +12,11 @@ class Post extends Model
     protected $casts = [
         'published_at' => 'datetime',
     ];
+
+    //Relacion de uno a muchos
+    public function category(){        //$post->category->name;  -> El post pertenece a la categoria
+
+        return $this->belongsTo(Category::class);       //Retorna el objeto (post actual)
+    }
+
 }

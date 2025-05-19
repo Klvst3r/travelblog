@@ -15,7 +15,8 @@
 						<span class="c-gris">{{ $post->published_at->diffForHumans() }}</span>
 					</div>
 					<div class="post-category">
-						<span class="category text-capitalize">i do travel</span>
+						{{-- <span class="category text-capitalize">{{ var_dump()$post->category->name) }}</span> --}}
+						<span class="category text-capitalize">{{ $post->category->name }}</span>
 					</div>
 				</header>
 				<h1> {{ $post->title }} </h1>

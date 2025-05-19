@@ -64,6 +64,10 @@ Al crear el modelo podemos crear automaticamente la migración  (-m)
 
 	$ php artisan make:model Post -m
 
+Categorias de los post y sus etiquetas
+
+	$php artisan make:model Category -m
+
 
 
 ## Conatroladores
@@ -76,6 +80,26 @@ Segunda migración Migración
 
 Post Migration
 	$ php artisan migrate
+
+Categories migration
+	$ php artisan migrate
+
+
+## Relations	
+
+Para relacionar un Post a ua categoria
+Uno a muchos: Una categoria puede tener varias Posts, pero un post no puede tener varias categorias - Relacion de uno a muchos
+
+Se define en el modelo post la funcion Category y en la migración se establece un campo para relacionar 
+
+	$table->unsignedInteger('category_id');             // En cada post vamos a almacenar el id de la categoria para hacer referencia a el
+
+Posterior a ello se debe volvera ejecutar las migraciones
+Quita la ultima migracion la de categorias
+	$ php artisan migrate:rollback
+	$ php artisan migrate:refresh		//Refrescar todo, para evitar volver a hacer todo, es decir hacer rollback y las ha vuelto a migrar, es decir todas vacias
+
+
 
 
 ## License
