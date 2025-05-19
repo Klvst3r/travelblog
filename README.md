@@ -21,6 +21,62 @@ Este proyecto estara dispoible para su construcción desde diferentes sedes y en
 Laravel es una herramienta poderosa, accesible robusta y provee herramientas para aplicaciones robustas y complejas.
 
 
+## Instancia del Proyecto del proyecto
+
+Al crear una instancia del proyecto debemos inicializar tambien las configuraciones iniciales, para poder trabajar en la instancia debemos tener en cuneta
+
+- Verificar la instalación de composer
+	$ composer install	
+
+- Crear nuestro archivo de variables de entorno
+	$ cp .env.example	.env
+
+- Clave de encriptacion del proyecto
+	$ php artisan key:generate
+
+- Configurar la conexión a la base de datos.	
+
+En el archivo de configuración para conectar la Bd debemos considerar los siguientes valores o en su defecto los de la BD
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=
+DB_USERNAME=
+DB_PASSWORD=
+
+
+
+## DB
+
+Para iniciar el trabajo con la Base de datos debemos arrancar con las migraciones iniciales
+
+    $ php artisan migrate
+
+Para deshacer las migraciones
+	$ php artisan migrate:rollback
+
+
+
+## Modelos
+
+Al crear el modelo podemos crear automaticamente la migración  (-m)
+
+	$ php artisan make:model Post -m
+
+
+
+## Conatroladores
+
+
+
+## Migraciones
+
+Segunda migración Migración
+
+Post Migration
+	$ php artisan migrate
+
 
 ## License
 

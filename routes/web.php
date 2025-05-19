@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Models\Post;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,5 +16,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    // $posts = Post::all();     //Anteriormente debvolvia todos los post
+
+    $posts = Post::latest('published_at')->get();                    // Los ordena por fecha de creación
+    //return view('welcome')->with('posts', $posts);  //Devolvemos los valores de la consylta a la vista
+
+    return view('welcome', compact('posts')); //Envia un array ['posts' => $posts]
+});
+
+Route::get('posts', function(){
+    return Post::all();
 });
