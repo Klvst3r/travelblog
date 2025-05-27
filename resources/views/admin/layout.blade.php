@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" href="/dashboard/images/favicon.ico" type="image/ico" />
 
-    <title>Gentelella Alela!</title>
+    <title>Travel Blog!</title>
 
     <!-- Bootstrap -->
     <link href="../dashboard/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -24,7 +24,7 @@
     <!-- JQVMap -->
     <link href="../dashboard/vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
     <!-- bootstrap-daterangepicker -->
-    <link href="../dashboard/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+    <link href="../dashboard/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
     <link href="../dashboard/build/css/custom.css" rel="stylesheet">
@@ -40,7 +40,7 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
+              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Travel Blog!</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -52,7 +52,7 @@
               </div>
               <div class="profile_info">
                 <span>Welcome,</span>
-                <h2>John Doe</h2>
+                <h2>Klvst3r</h2>
               </div>
             </div>
             <!-- /menu profile quick info -->
@@ -194,7 +194,7 @@
               <ul class=" navbar-right">
                 <li class="nav-item dropdown open" style="padding-left: 15px;">
                   <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-                    <img src="../dashboard/images/img.jpg" alt="">John Doe
+                    <img src="../dashboard/images/img.jpg" alt="">Klvst3r
                   </a>
                   <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item"  href="javascript:;"> Profile</a>
