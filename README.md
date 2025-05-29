@@ -395,7 +395,9 @@ Ejecutamos
 
 	$ php artisan make:auth --views
 
-
+https://aprendible.com/lecciones/extraccion-del-frontend
+https://www.youtube.com/watch?v=pEnO6ch-U4A
+https://aprendible.com/lecciones/integrando-el-login-parte-i
 
 ## License
 
