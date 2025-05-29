@@ -295,13 +295,18 @@
                   <div class="x_content">
                     <div class="row">
                       <div class="col-sm-12">
-                        <div class="temperature"><b>Contenido Marcado: </b>Texto Contenido
+                        {{-- <div class="temperature"><b>Contenido Marcado: </b>Texto Contenido --}}
 
-                          <!-- Content -->
+                         
+                          
+                        {{-- </div> --}}
+
+
+                         <!-- Content -->
                           @yield('content')
                           <!-- /Content -->
-                          
-                        </div>
+
+
                       </div>
                     </div>
                     <div class="clearfix"></div>

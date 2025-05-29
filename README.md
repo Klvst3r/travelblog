@@ -377,7 +377,23 @@ Popiamos el inde.html dentro de la carpeta:
 
 
 
+## Comandos
 
+# Login
+//Genera las vistas y las rutas para un login y registro basico, necesario ejecutar al principio del desarrollo, ya que genera algunos archivos que pueden interferir con el desarrollo.
+
+		php artisan make:auth  
+
+Si necesitamos revisar las opciones 
+	php artisan -h make:auth
+
+Tiene las siguientes opciones:
+
+-- views para generar las vistas de autenticación
+
+Ejecutamos
+
+	$ php artisan make:auth --views
 
 
 
