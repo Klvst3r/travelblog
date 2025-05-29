@@ -40,7 +40,7 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Travel Blog!</span></a>
+              <a href="index.html" class="site_title"><i class="fa fa-globe"></i> <span>Travel Blog!</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -48,7 +48,7 @@
             <!-- menu profile quick info -->
             <div class="profile clearfix">
               <div class="profile_pic">
-                <img src="../dashboard/images/img.jpg" alt="..." class="img-circle profile_img">
+                <img src="../dashboard/images/Ironman.jpg" alt="..." class="img-circle profile_img">
               </div>
               <div class="profile_info">
                 <span>Welcome,</span>
@@ -194,7 +194,7 @@
               <ul class=" navbar-right">
                 <li class="nav-item dropdown open" style="padding-left: 15px;">
                   <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-                    <img src="../dashboard/images/img.jpg" alt="">Klvst3r
+                    <img src="../dashboard/images/Ironman.jpg" alt="">Klvst3r
                   </a>
                   <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item"  href="javascript:;"> Profile</a>
