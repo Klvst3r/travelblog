@@ -521,7 +521,26 @@ debajo de
 
 Esto se ejecutara solo si exste un usuario, con esto ya no generarra erro
 
-# 07:34
+# Link -> Login
+
+Abrir vista
+
+	nav.blade.php
+	Agragr otro link
+
+	<li><a href="{{ route('login') }}>Login</a></li>
+
+
+# Redirección postautenticacion
+
+Abrir
+	Http/Middleware/redirectAuthenticated.php
+
+Modificando
+	if(Auth::guard($guard)->check()){
+		return redirect('/');
+	}
+
 
 
 
