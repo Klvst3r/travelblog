@@ -321,10 +321,10 @@
         <!-- footer content -->
         <footer class="d-flex justify-content-between">
           <div class="text-end">
-            Tribunal Superior de Justicia del Estado de Tlaxcala
+            Travel Blog
           </div>
           <div class="text-end">
-            Bienes - {{ date('Y') }}
+            Klvst3r - {{ date('Y') }}
           </div>
         </footer>
         <!-- /footer content -->
