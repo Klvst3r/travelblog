@@ -387,6 +387,7 @@ Popiamos el inde.html dentro de la carpeta:
 Si necesitamos revisar las opciones 
 	php artisan -h make:auth
 
+
 Tiene las siguientes opciones:
 
 -- views para generar las vistas de autenticación
@@ -395,9 +396,6 @@ Ejecutamos
 
 	$ php artisan make:auth --views
 
-https://aprendible.com/lecciones/extraccion-del-frontend
-https://www.youtube.com/watch?v=pEnO6ch-U4A
-https://aprendible.com/lecciones/integrando-el-login-parte-i
 
 
 ## Actualización
@@ -455,6 +453,7 @@ Crea la carpeta
 	layouts/
 		app.bladephp			=> Contiene la estructura HTML con un diseño presstablecido con Bootstrap 4/5 (HTML + Bootstrap)
 
+
 Para proteger partes de la aplicación con usuario y contraseña se crea la vista
 	Vista:
 		resources/views/home.blade.php
@@ -465,10 +464,12 @@ Para proteger partes de la aplicación con usuario y contraseña se crea la vist
 	Ruta: (De tipo GET)
 		/home		(A esta ruta solo pueden acceder usuarios que hayan hecho login)
 
+
 Para la ejecución de este stack de seguridad debemos ejecutar
 
 	$ php artisan make:auth 
 	Nos indicara que ya existe una vista hme.blade.php se puede reemplazar.
+	
 	La vista home la estamos utilizando como index en
 		resources/views/home.blade.php ( Se puede renombrar el archivo) Podemos sustituir para generar los archivos de autenticación.
 
@@ -540,6 +541,8 @@ Modificando
 	if(Auth::guard($guard)->check()){
 		return redirect('/');
 	}
+
+
 
 
 

@@ -1,0 +1,48 @@
+
+# Login
+//Genera las vistas y las rutas para un login y registro basico, necesario ejecutar al principio del desarrollo, ya que genera algunos archivos que pueden interferir con el desarrollo.
+
+		php artisan make:auth  
+
+Si necesitamos revisar las opciones 
+	php artisan -h make:auth
+
+Para laravel 9, y 10' queremso aplicar nuestros login personalizado y aplicar las directivas de seguridad y autentificacion de usuarios.
+
+Pära ellos debemos cambiar el comando anterio que fue considerado obsoleto por el siguiente.
+
+   $php artisan ui bootstrap --auth
+   
+
+Esto generara una carpeta 
+
+resources/views/auth/
+	/passwords				Recuperqcion de contraseña
+	login.blade.php			login de acceso
+	register.blade.php		recuperación de contraseña
+
+
+
+En el archivo de rutas web.php
+Si agregamos la ruta auth
+
+    Route::auth();  Metodo especial para crear las tutas para registro, login y recuperacion de contraseña
+
+
+En el navegador podemos ahora tener el formulario de loin desde
+
+    localhost/login
+
+
+
+Tiene las siguientes opciones:
+
+-- views para generar las vistas de autenticación
+
+Ejecutamos
+
+	$ php artisan make:auth --views
+
+https://aprendible.com/lecciones/extraccion-del-frontend
+https://www.youtube.com/watch?v=pEnO6ch-U4A
+https://aprendible.com/lecciones/integrando-el-login-parte-i
