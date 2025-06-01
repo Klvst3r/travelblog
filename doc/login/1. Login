@@ -9,17 +9,114 @@ Si necesitamos revisar las opciones
 
 Para laravel 9, y 10' queremso aplicar nuestros login personalizado y aplicar las directivas de seguridad y autentificacion de usuarios.
 
-Pära ellos debemos cambiar el comando anterio que fue considerado obsoleto por el siguiente.
 
-   $php artisan ui bootstrap --auth
-   
+En Laravel 12, el comando php artisan make:auth ya no existe y fue eliminado desde Laravel 6 en adelante. En versiones modernas como Laravel 12, la autenticación se maneja utilizando Laravel Breeze, Laravel Jetstream, Laravel Fortify, o Laravel UI, según tus necesidades.
 
-Esto generara una carpeta 
+
+
+Solución recomendada: Instalar Laravel Breeze
+--------------------------------------------
+
+Laravel Breeze es una implementación mínima y moderna de autenticación que es ideal para comenzar.
+1. Instalar Breeze
+
+composer require laravel/breeze --dev
+
+2. Generar los archivos de autenticación
+
+php artisan breeze:install
+
+3. Ejecutar migraciones
+
+php artisan migrate
+
+4. Instalar y compilar los assets (requiere Node.js y npm)
+
+npm install && npm run dev
+
+5. Levantar el servidor de desarrollo
+
+php artisan serve
+
+Ahora ya tendrás un sistema de autenticación básico con vistas Blade en tu proyecto Laravel 12.
+
+
+
+Alternativas a Breeze -> Laravel UI
+-----------------------------------
+
+Laravel Jetstream es más robusto, incluye gestión de sesiones, autenticación de dos factores, entre otras caracteristicas
+
+En nuestro caso vamos a implementar Laravel Laravel UI para seguir usando Bootstrap/jQuery y el sistema de vistas Blade clásico.
+
+Para usar laravel/ui, ejecutamos los siguientes comandos:
+
+    $ composer require laravel/ui
+
+Esto modificara el composer.json, composer.lock para agregar los nuevos paquetes a nuestra aplicación en nuestro caso sera la version 4.6 de Larvel/UI
+
+Instalamos el paquete con:
+
+    $ php artisan ui bootstrap --auth
+
+Esto nos sustituira el controlador Controller.php, como nuestra aplicación es recien creada no existe mayor probvlema, pero si ya tenemos modificadas las clases y metodos en este controlador, debemos respaldar por que sera sustituido.
+
+app/Http/Auth/Conntroller.php
+
+Yaque se la autentificacion escalfoldingy boostrap,
+
+
+
+Con el comando anterior y la creación del scaffolding tenemos los siguientes archivos
+
+  resources/js/bootstrap.js
+  routes/web.php
+  vite.config.js
+
+Y los archivos para trabajar:
+
+    app/Http/Controllers/Auth/                                                  => Controlador de autenticación
+    app/Http/Controllers/HomeController.php                                     => Controlador de inicio
+    database/migrations/2014_10_12_100000_create_password_resets_table.php      => Migracion para la autenticacion
+    resources/sass/                                                             => Recursos SASS
+    resources/views/auth/                                                       => Vistas de autenticacion
+    resources/views/home.blade.php                                              => Plantilla de inicio
+    resources/views/layouts/                                                    => Vistas del layout
+
+    
+
+ahora debemos ejecutar el siguiente comando para compilar el scaffolding
+    $ npm install && npm run dev
+
+Scaffold es una herramienta que nos ofrece Laravel para poder generar una estructura básica del CRUD de un modelo en nuestros proyectos.
+
+CRUD
+
+El término CRUD representa las cuatro operaciones básicas de una aplicación web:
+
+Crear (Create), Leer (Read), Actualizar (Update) y Eliminar (Delete)
+
+Tradicionalmente lo que hariamos sería escribir manualmente cada uno de los componentes necesarios para crear el CRUD, esto significa definir el controlador, el modelo, las vistas y las rutas uno por uno.  
+
+Con solo una simple línea de comando, generamos automáticamente el conjunto de controladores, modelos, vistas y rutas necesarios para administrar ese modelo en la base de datos.
+
+
+Como se creao una nueva mocgración para los usuarios debemos ejecutar nuevamente las igraciones pendientes.
+    $ php artisan migrate
+
+
+
+El comando 
+
+   $php artisan ui bootstrap --auth genera un scaffolgind para trabajar con autenticación, para ello 
+
+Dentro de las vistas generara los siguiente;
 
 resources/views/auth/
 	/passwords				Recuperqcion de contraseña
 	login.blade.php			login de acceso
 	register.blade.php		recuperación de contraseña
+    verify.blade.php        Verificacion de autenticación
 
 
 
@@ -33,6 +130,16 @@ En el navegador podemos ahora tener el formulario de loin desde
 
     localhost/login
 
+Ahora tenemos un avista de Login con Laravel UI, tenemos tambien register
+
+    localhost/register
+
+Cuando ejecutamos el comando inicial para la creación de nuestro login, estas vistas aparecen con bootstrap CSS.
+
+Vamos a deshabilitar el registro de usuarios
+
+
+
 
 
 Tiene las siguientes opciones:
@@ -43,6 +150,62 @@ Ejecutamos
 
 	$ php artisan make:auth --views
 
-https://aprendible.com/lecciones/extraccion-del-frontend
-https://www.youtube.com/watch?v=pEnO6ch-U4A
-https://aprendible.com/lecciones/integrando-el-login-parte-i
+Si despues de haber cipiado las rutas de login
+
+//Rutas de autenticacion
+Route::get('login','Auth\LoginController@showLoginForm')->name('login');
+Route::post('login','Auth\LoginController@login');
+Route::post('logout','Auth\LoginController@logout')->name('logout');
+
+Y vamos a localhost:login, nos generara un erro, no indicara que no existe y esto es por que en la vista login, estamos estendiendo 
+layout.app y si abrirmos
+    app.blade.php buscando register, es donde se hace referencia a la ruta que no existe de register
+
+    /home/klvst3r/dev/laravel/travelblog/resources/views/layouts/app.blade.php
+
+
+No indica un error
+
+    Target class [Auth\LoginController] does not exist
+
+significa que Laravel no puede encontrar la clase Auth\LoginController porque la notación de la ruta es antigua o incorrecta para Laravel 8 en adelante, donde se usa PHP 8 con auto-importación de clases (resolución por namespaces).
+
+
+Agrega use al principio del archivo routes/web.php
+
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+
+Y luego en tus rutas:
+
+// Rutas de autenticación modernas
+Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('login', [LoginController::class, 'login']);
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
+Opción 2: Usar el namespace completo directamente estas estaran comentadas momentaneamante
+
+// Route::get('login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
+// Route::post('login', [App\Http\Controllers\Auth\LoginController::class, 'login']);
+// Route::post('logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name
+
+
+Si también necesitas registro, agrega:
+
+//use App\Http\Controllers\Auth\RegisterController;
+
+//Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+//Route::post('register', [RegisterController::class, 'register']);
+
+Ahora vamos a login:8000/login y el problema se habra solucionado.
+
+no se va a utilizar el archivo
+
+layout/app.blade.php
+
+Por que tenemos la plantilla de administración admin.layout
+
+cambiamos por
+    @extends('admin.layout')
+
+Ahora nuestro login tiene nuestro layout de administración    
