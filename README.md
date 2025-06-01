@@ -451,7 +451,7 @@ Crea la carpeta
 		register.blade.oho		=> Contiene el formuario de registro 
 
 	layouts/
-		app.bladephp			=> Contiene la estructura HTML con un diseño presstablecido con Bootstrap 4/5 (HTML + Bootstrap)
+		app.blade.php			=> Contiene la estructura HTML con un diseño presstablecido con Bootstrap 4/5 (HTML + Bootstrap)
 
 
 Para proteger partes de la aplicación con usuario y contraseña se crea la vista

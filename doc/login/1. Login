@@ -209,3 +209,9 @@ cambiamos por
     @extends('admin.layout')
 
 Ahora nuestro login tiene nuestro layout de administración    
+
+Modificación del Template 
+    login.blade.php
+
+Adecuación de estilos, y contenidos del formulario, token y metodos del formualario.
+
