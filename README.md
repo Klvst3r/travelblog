@@ -377,6 +377,172 @@ Popiamos el inde.html dentro de la carpeta:
 
 
 
+## Comandos
+
+# Login
+//Genera las vistas y las rutas para un login y registro basico, necesario ejecutar al principio del desarrollo, ya que genera algunos archivos que pueden interferir con el desarrollo.
+
+		php artisan make:auth  
+
+Si necesitamos revisar las opciones 
+	php artisan -h make:auth
+
+
+Tiene las siguientes opciones:
+
+-- views para generar las vistas de autenticación
+
+Ejecutamos
+
+	$ php artisan make:auth --views
+
+
+
+## Actualización
+
+El comando make:auth fue extraido a otro paquete y ya no existe.
+Para obtener el mismo resultado debemos ejecutar los siguientes comandos:
+
+	1. $ composer require laravel/ui
+	2. $ php artisan ui vue --auth en nuestro caso puede ser con composer 
+		$ php artisan ui bootstrap --auth
+	3. npm install
+	4. npm run dev
+
+	Novedaves de laravel 6.0
+
+Importante respaldar el archivo routes/web.php ya que lo modificar registrandol las siguientes rutas	 
+
+LoginController
+----------------------------------------------------------------
+GET 	/login		=> Para mostrar el formulario de login
+POST 	/login		=> Donde se envía el formulario del login (Donde se procesa)
+POST	/logout		=> Para crerrar la sesión actual del usuario
+
+
+RegisterController
+----------------------------------------------------------------
+GET		/register	=> Para mostrar el formulario de registro
+POST	/register	=> Donde se envía el formulario de registro
+
+
+
+Estas rutas ejecutan controladores previstos cuando se instala Laravel 
+
+LoginController se encarga de mostrar el formulario de mostrar, procesar el login y de procesar el cierre de session
+
+El RegisterController se encarga de mostrar el formulario de registro y procesarlo tambien.
+
+Estos controladores estan dentro del namespace App\HTTP\Controllers\Auth;
+
+Es decir dentro de la carpeta
+	app/Http/Controllers\Auth
+
+		LoginController
+		RegisterController
+
+Adicional a esto crea varias vistas dentro de la carpeta 
+
+	Vistas: 	resources/views/
+
+Crea la carpeta
+	auth/
+		login.blade.php 		=> Contiene el formulario del login		(Ambos archivos utilizan el layut auth)
+		register.blade.oho		=> Contiene el formuario de registro 
+
+	layouts/
+		app.blade.php			=> Contiene la estructura HTML con un diseño presstablecido con Bootstrap 4/5 (HTML + Bootstrap)
+
+
+Para proteger partes de la aplicación con usuario y contraseña se crea la vista
+	Vista:
+		resources/views/home.blade.php
+
+	Controlador:
+		app/Http/Controlles/HomeController.php
+
+	Ruta: (De tipo GET)
+		/home		(A esta ruta solo pueden acceder usuarios que hayan hecho login)
+
+
+Para la ejecución de este stack de seguridad debemos ejecutar
+
+	$ php artisan make:auth 
+	Nos indicara que ya existe una vista hme.blade.php se puede reemplazar.
+	
+	La vista home la estamos utilizando como index en
+		resources/views/home.blade.php ( Se puede renombrar el archivo) Podemos sustituir para generar los archivos de autenticación.
+
+En home tendreemos el login y los links para registrar e ingresar.
+
+El archivo de rutas web.php	 
+Se agrega la ruta
+Route::get('/home', 'HomeController@index')->name('home')
+
+Revisando el controlador
+	HomeController.php
+
+devuelve la vista home, que ya se habia creado anteriormente, por ello en al archiov de rutas se elimina la ruta hacia home y eliminar el controlador tambien
+
+
+# Modificando el comportamiento del registro.
+
+Abrir
+Http/Controllers/Auth/RegisterController.php
+
+Solo interesa la prpiedad 
+
+	protected $redirectTo = '/home';	=> Se utiliza para redireccionarnos luego de hacer el registro, Modificamos a raiz
+
+	protected $redirectTo = '/';
+
+
+Lo mismo ocure en el LoginController.php, que es el encargado de gestioar el login, se abre haciendo lo mismo
+
+	protected $redirectTo = '/home';  => protected $redirectTo = '/';
+
+si queremos saber si estamos autenticados en home.blade.hp
+
+debajo de 
+	<h1>@lang('Home')</h1>
+	{{ auth()->user()->name }}	//Devuelve el objeto usuario, podemos acceder a cualquier propiedad 
+
+
+ Si no tenemos forma de vaciar sesiones lo podemos hacer manualmente
+
+ storage/framework/sessions/borrar el archivo de session creado.
+
+ No mostrara un error que estamos accediendo a la propiedad name a traves d eun no objeto, ya que no tenemos un usuario autenticado devolvera un NULL
+
+ Podemos utuizar la directiva de blade
+
+	@auth
+		{{ auth()->user()->name }}
+	@endauth
+
+Esto se ejecutara solo si exste un usuario, con esto ya no generarra erro
+
+# Link -> Login
+
+Abrir vista
+
+	nav.blade.php
+	Agragr otro link
+
+	<li><a href="{{ route('login') }}>Login</a></li>
+
+
+# Redirección postautenticacion
+
+Abrir
+	Http/Middleware/redirectAuthenticated.php
+
+Modificando
+	if(Auth::guard($guard)->check()){
+		return redirect('/');
+	}
+
+
 
 
 

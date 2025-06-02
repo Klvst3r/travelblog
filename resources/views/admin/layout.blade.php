@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="icon" href="/dashboard/images/favicon.ico" type="image/ico" />
+	<link rel="icon" href="/dashboard/images/logo-TSJ.png" type="image/ico" />
 
     <title>Travel Blog!</title>
 
@@ -295,13 +295,18 @@
                   <div class="x_content">
                     <div class="row">
                       <div class="col-sm-12">
-                        <div class="temperature"><b>Contenido Marcado: </b>Texto Contenido
+                        {{-- <div class="temperature"><b>Contenido Marcado: </b>Texto Contenido --}}
 
-                          <!-- Content -->
+                         
+                          
+                        {{-- </div> --}}
+
+
+                         <!-- Content -->
                           @yield('content')
                           <!-- /Content -->
-                          
-                        </div>
+
+
                       </div>
                     </div>
                     <div class="clearfix"></div>

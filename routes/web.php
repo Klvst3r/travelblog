@@ -4,6 +4,10 @@ use Illuminate\Support\Facades\Route;
 
 use App\Models\Post;
 
+
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -31,3 +35,35 @@ Route::get('admin', function(){
 Route::get('posts', function(){
     return Post::all();
 });
+
+//Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//Rutas con autenticacion
+//Route::auth();
+
+//Rutas de autenticacion
+// Route::get('login','Auth\LoginController@showLoginForm')->name('login');
+// Route::post('login','Auth\LoginController@login');
+// Route::post('logout','Auth\LoginController@logout')->name('logout');
+
+// Rutas de autenticación modernas
+Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('login', [LoginController::class, 'login']);
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
+
+//Rutas de registro
+//Route::get('register','Auth\RegisterController@showRegistrationForm')->name('register');
+// Route::post('register','Auth\RegisterController@register');
+
+//Rutas de registro odernas
+// Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+// Route::post('register', [RegisterController::class, 'register']);
+
+//Rutas para reseteo de password
+Route::get('password/retes', 'AuthForgotPasswordCcontroller@showLinkRequestForm')->name('password.request');
+Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+Route::get('password/reset/{token}','Auth\ResetPässwordController@showResetForm')->name('password.reset');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset');
