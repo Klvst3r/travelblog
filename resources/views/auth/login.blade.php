@@ -61,7 +61,7 @@
                   <div class="item form-group">
                     <label for="email" class="col-form-label col-md-5 col-sm-5 ">{{ __('Usuario') }}</label>
 
-                    <div class="">
+                    <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }} has-feedback">
                         <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Correo electronico">
 
                         @error('email')
@@ -73,7 +73,7 @@
                 </div>
 
 
-                <div class="item form-group">
+                <div class="item form-group {{ $errors->has('password') ? 'has-error' : '' }} has-feedback">
                     <label for="password" class="col-form-label col-md-5 col-sm-5 ">{{ __('Contraseña') }}</label>
 
                     <div class="">

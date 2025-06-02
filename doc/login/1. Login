@@ -215,3 +215,204 @@ Modificación del Template
 
 Adecuación de estilos, y contenidos del formulario, token y metodos del formualario.
 
+
+
+Clonar del proyecto despues del login
+-----------------------
+
+Nuestro proyecto se ha actualizado en un equipo diferente del que se creo, 
+
+ git pull origin login
+From github.com:Klvst3r/travelblog
+ * branch            login      -> FETCH_HEAD
+Updating d958c0a..4fba705
+Fast-forward
+ README.md                                                             |   11 +-
+ app/Http/Controllers/Auth/ConfirmPasswordController.php               |   39 +
+ app/Http/Controllers/Auth/ForgotPasswordController.php                |   22 +
+ app/Http/Controllers/Auth/LoginController.php                         |   40 +
+ app/Http/Controllers/Auth/RegisterController.php                      |   72 +
+ app/Http/Controllers/Auth/ResetPasswordController.php                 |   29 +
+ app/Http/Controllers/Auth/VerificationController.php                  |   41 +
+ app/Http/Controllers/HomeController.php                               |   28 +
+ composer.json                                                         |    3 +-
+ composer.lock                                                         |   65 +-
+ .../migrations/2014_10_12_100000_create_password_resets_table.php     |   32 +
+ doc/login/1. Login                                                    |  217 +
+ package-lock.json                                                     | 1666 +++++
+ package.json                                                          |    3 +
+ public/dashboard/bootstrap/css/bootstrap.css                          |    2 +-
+ public/dashboard/build/css/bootstrap.css                              | 9727 ++++++++++++++++++++++++++++++
+ public/dashboard/build/css/bootstrap.min.css                          |    7 +
+ public/dashboard/build/css/custom.css                                 |  225 +-
+ public/dashboard/build/css/style.css                                  | 4921 +++++++++++++++
+ public/dashboard/build/css/style_002.css                              |  208 +
+ public/img/escudo-gris.png                                            |  Bin 0 -> 78014 bytes
+ resources/js/bootstrap.js                                             |    4 +-
+ resources/sass/_variables.scss                                        |    7 +
+ resources/sass/app.scss                                               |    8 +
+ resources/views/admin/layout.blade.php                                |    2 +-
+ resources/views/auth/login.blade.php                                  |  128 +
+ resources/views/auth/login_backup.blade.php                           |   74 +
+ resources/views/auth/passwords/confirm.blade.php                      |   49 +
+ resources/views/auth/passwords/email.blade.php                        |   47 +
+ resources/views/auth/passwords/reset.blade.php                        |   65 +
+ resources/views/auth/register.blade.php                               |   77 +
+ resources/views/auth/verify.blade.php                                 |   28 +
+ resources/views/home.blade.php                                        |   23 +
+ resources/views/layouts_backup/app.blade.php                          |   80 +
+ routes/web.php                                                        |   36 +
+ vite.config.js                                                        |    5 +-
+ 36 files changed, 17968 insertions(+), 23 deletions(-)
+ create mode 100644 app/Http/Controllers/Auth/ConfirmPasswordController.php
+ create mode 100644 app/Http/Controllers/Auth/ForgotPasswordController.php
+ create mode 100644 app/Http/Controllers/Auth/LoginController.php
+ create mode 100644 app/Http/Controllers/Auth/RegisterController.php
+ create mode 100644 app/Http/Controllers/Auth/ResetPasswordController.php
+ create mode 100644 app/Http/Controllers/Auth/VerificationController.php
+ create mode 100644 app/Http/Controllers/HomeController.php
+ create mode 100644 database/migrations/2014_10_12_100000_create_password_resets_table.php
+ create mode 100644 doc/login/1. Login
+ create mode 100644 package-lock.json
+ create mode 100644 public/dashboard/build/css/bootstrap.css
+ create mode 100644 public/dashboard/build/css/bootstrap.min.css
+ create mode 100644 public/dashboard/build/css/style.css
+ create mode 100644 public/dashboard/build/css/style_002.css
+ create mode 100644 public/img/escudo-gris.png
+ create mode 100644 resources/sass/_variables.scss
+ create mode 100644 resources/sass/app.scss
+ create mode 100644 resources/views/auth/login.blade.php
+ create mode 100644 resources/views/auth/login_backup.blade.php
+ create mode 100644 resources/views/auth/passwords/confirm.blade.php
+ create mode 100644 resources/views/auth/passwords/email.blade.php
+ create mode 100644 resources/views/auth/passwords/reset.blade.php
+ create mode 100644 resources/views/auth/register.blade.php
+ create mode 100644 resources/views/auth/verify.blade.php
+ create mode 100644 resources/views/home.blade.php
+ create mode 100644 resources/views/layouts_backup/app.blade.php
+
+enciendo el servidor con
+php artisan serve --port=8000 y ahora intento visualizar mis cambios del login en la ruta:
+http://localhost:8000/login
+
+Marcandome el siguiente error:
+Symfony \ Component \ ErrorHandler \ Error \ FatalError
+PHP 8.2.28
+10.48.29
+Trait "Illuminate\Foundation\Auth\AuthenticatesUsers" not found
+
+
+El error:
+
+    Trait "Illuminate\Foundation\Auth\AuthenticatesUsers" not found
+
+significa que Laravel no encuentra el trait AuthenticatesUsers, el cual es esencial para el funcionamiento del LoginController.
+
+Causa más común
+
+Esto normalmente ocurre cuando:
+
+    Faltan dependencias necesarias, particularmente si no se ha ejecutado composer install después de clonar o actualizar el repositorio.
+
+    El archivo del trait no existe (lo cual es raro si estás usando Laravel UI).
+
+    El autoload de Composer está desactualizado.
+
+Para dar solución ejecutamos:
+
+
+    $ composer install
+
+Esto descargará todas las dependencias necesarias, incluidas las del sistema de autenticación (como el trait AuthenticatesUsers).
+
+2. (Opcional pero recomendable): Limpia y regenera el autoload
+
+    $ composer dump-autoload
+
+3. Verifica el Trait
+
+Abrimos el archivo app/Http/Controllers/Auth/LoginController.php y asegúrate de que tengas esta línea:
+
+    use Illuminate\Foundation\Auth\AuthenticatesUsers;
+
+Y que esté siendo usado:
+
+    class LoginController extends Controller
+    {
+        use AuthenticatesUsers;
+    }
+
+4. Reinicia el servidor
+
+Después de estos pasos, vuelve a correr:
+
+php artisan serve --port=8000
+
+Y prueba de nuevo la ruta:
+
+http://localhost:8000/login
+
+
+Conesto debera solucionar el problema.
+
+
+Si no se tiene Laravel UI instalado aún en el equipo nuevo, debemos asegúrarnos de instalarlo (solo una vez):
+
+    $ composer require laravel/ui
+
+
+Ahora en RegisterController debemos dirigi a rai en lugar de home
+
+    protected $redirectTo = '/home';
+
+
+Lo mismo en LoginController que es el encargado de gestionarl el login, 
+
+    protected $redirectTo = '/';
+
+Ahora ya si actualizamos el home, este ya no existira mas, volvemos a inicio y aunque estemos autenticados no habra forma de saberlo.
+
+
+
+En login.blade.php
+
+queda nuestros cuadros de texto de la siguiente manera:
+
+<div class="form-group {{ $errors->has('email') ? 'has-error' : '' }} has-feedback">
+    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Correo electronico">
+
+
+Es necesari darle el nombre email y el valor old lo que hara es que al valor que ingresemos persista en caso de que haya un error de validación.
+
+Par ano tener que volver a escribirlo,
+
+Reuired es para que no nos permita enviar el campo vacio.
+Autofocus para que el cursor se hubique en este campo y podemas comenzar a escribir inmediatamente  despues de cargar la pagina, copiamos ey en el input pegamos, 
+en la siguiente sección 
+
+     @error('email')
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $message }}</strong>
+        </span>
+    @enderror
+
+Es donde se muestran los errores de vaicación, copiamos y pegamos debajo del input
+
+Ahora con el Password, dejando el name y el required
+
+Tambenel campo password lleva si contexto para el manejo de errores.
+
+ @error('password')
+    <span class="invalid-feedback" role="alert">
+        <strong>{{ $message }}</strong>
+    </span>
+@enderror
+
+
+No incluiremos recordar pass
+
+
+
+
+
+
