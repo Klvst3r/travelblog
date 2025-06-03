@@ -86,6 +86,15 @@
                         @enderror
                     </div>
                 </div>
+
+                <div class="item form-group  has-feedback offset-2">
+                  <div class="">
+                  <label class="col-form-label "><span class="caption">Recordarme</span>
+                    <input type="checkbox" checked="checked">
+                    
+                  </label>
+                </div>
+                </div>
               
 
                 <div class="item form-group">
