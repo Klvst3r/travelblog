@@ -1,0 +1,97 @@
+En ciertas circunstancias vamos a requerir que nuestra aplicación envia mensajes al usuario en el fornt-end.
+
+Laravel por defecto utiliza el idioma ingles para todos sus mensajes hacia el usuario, es por ello que sera necesario agregar un local en espaol para una salida mas amigable hacia el usuario.
+
+Por ello utilizaremos Laravel Lang para configurar nuestros locales en español.
+
+Laravel Lang (https://laravel-lang.com/) es un paquete comunitario avanzado de traducciones para Laravel que provee más de 80 idiomas, incluyendo español (España, México, etc.), y reemplaza los archivos de idioma predeterminados de Laravel con versiones ya traducidas y mantenidas por la comunidad.
+
+¿Qué te permite hacer Laravel Lang?
+
+    Usar traducciones oficiales de Laravel en múltiples idiomas.
+
+    Establecer fácilmente el idioma predeterminado (locale) o idioma de respaldo (fallback_locale).
+
+    Mantener tus archivos de idioma actualizados automáticamente.
+
+    Tener soporte para paquetes comunes como Jetstream, Fortify, Breeze, etc.
+
+Cómo instalar Laravel Lang paso a paso
+
+1. Se puede instalar un paquete con traducciones ya hechas, por ejemplo:
+
+    $ composer require laraveles/spanish
+
+2. Y luego publica los archivos de idioma con:
+
+    $ php artisan vendor:publish --tag=lang
+
+Esto creará automáticamente la carpeta es con todos los archivos traducidos.
+
+3. Para verificar que se han creado los recursos vamos  a verificar si existe una carpeta en 
+resources/lang/es con los archivos de idioma.
+
+Se agregan los archivos:
+
+    resources/lang/es/auth.php
+    resources/lang/es/pagination.php
+    resources/lang/es/passwords.php
+    resources/lang/es/validation.php
+
+4. Para configurar al idioma por defecto a espalol abrilmos el archivo
+
+config/app.php
+
+cambiando las siguientes lineas
+
+
+    'locale' => 'en',  =>   'locale' => 'es',
+
+    'fallback_locale' => 'en',  =>   'fallback_locale' => 'es',
+
+    'faker_locale' => 'en_US',   =>     'faker_locale' => 'es_ES',
+
+
+Podremos verificar 
+
+
+O podremos instalar Laravel Lang paso a paso
+
+Instalar el paquete principal con Composer:
+
+    $ composer require laravel-lang/common
+
+(Opcional pero recomendado) Instala el paquete CLI para administración sencilla:
+
+    $ composer require laravel-lang/publisher
+
+Publicar los archivos de idioma:
+
+php artisan lang:publish es
+
+Esto te creará:
+
+    resources/lang/es/
+
+Con todos los archivos de idioma ya traducidos al español.
+
+    onfigura el idioma en config/app.php:
+
+'locale' => 'es',
+'fallback_locale' => 'en',
+
+
+Diferencia clave con el paquete laraveles/spanish
+
+    laraveles/spanish: solo incluye español (más limitado).
+
+    laravel-lang/common: incluye más idiomas, es más mantenido, y tiene mejor integración con herramientas modernas de Laravel.
+
+
+Referencias:
+
+https://laravel-lang.com/introduction.html
+
+https://laravel-lang.com/basic-usage.html
+
+https://github.com/Laravel-Lang/lang/tree/main

@@ -1,0 +1,7 @@
+#1748959555 Disk /dev/sda - 480 GB / 447 GiB - CHS 58369 255 63
+ 1 : start=       34, size=   262144, Id=00, P
+ 2 : start=   264192, size=   204800, Id=00, P
+ 3 : start=   468992, size=436873216, Id=00, P
+ 4 : start=437342208, size=     2048, Id=00, P
+ 5 : start=437344256, size=498358272, Id=00, P
+ 6 : start=935702528, size=  1998848, Id=00, P

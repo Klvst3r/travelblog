@@ -1,0 +1,195 @@
+
+
+Tue Jun  3 08:28:55 2025
+Command line: TestDisk
+
+TestDisk 7.1, Data Recovery Utility, July 2019
+Christophe GRENIER <grenier@cgsecurity.org>
+https://www.cgsecurity.org
+OS: Linux, kernel 6.1.0-35-amd64 (#1 SMP PREEMPT_DYNAMIC Debian 6.1.137-1 (2025-05-07)) x86_64
+Compiler: GCC 12.2
+ext2fs lib: 1.47.0, ntfs lib: libntfs-3g, reiserfs lib: none, ewf lib: none, curses lib: ncurses 6.3
+User is not root!
+Hard disk list
+
+
+TestDisk exited normally.
+Using locale 'en_US.UTF-8'.
+
+
+Tue Jun  3 08:28:59 2025
+Command line: TestDisk /debug
+
+TestDisk 7.1, Data Recovery Utility, July 2019
+Christophe GRENIER <grenier@cgsecurity.org>
+https://www.cgsecurity.org
+OS: Linux, kernel 6.1.0-35-amd64 (#1 SMP PREEMPT_DYNAMIC Debian 6.1.137-1 (2025-05-07)) x86_64
+Compiler: GCC 12.2
+ext2fs lib: 1.47.0, ntfs lib: libntfs-3g, reiserfs lib: none, ewf lib: none, curses lib: ncurses 6.3
+/dev/sda: LBA, HPA, LBA48 support
+/dev/sda: size       937703088 sectors
+/dev/sda: user_max   937703088 sectors
+/dev/sda: native_max 937703088 sectors
+Warning: can't get size for Disk /dev/mapper/control - 0 B - 0 sectors, sector size=512
+Warning: can't get size for Disk /dev/loop23 - 0 B - 0 sectors, sector size=512
+Hard disk list
+Disk /dev/sda - 480 GB / 447 GiB - CHS 58369 255 63, sector size=512 - ADATA SU650, S/N:AA000000000000002163, FW:S0509A0
+Disk /dev/sdg - 30 GB / 28 GiB - CHS 29510 64 32, sector size=512 - Kingston DataTraveler 3.0
+Disk /dev/loop0 - 4096 B - 8 sectors (RO), sector size=512
+Disk /dev/loop1 - 58 MB / 55 MiB - 113384 sectors (RO), sector size=512
+Disk /dev/loop10 - 366 MB / 349 MiB - 716176 sectors (RO), sector size=512
+Disk /dev/loop11 - 96 MB / 91 MiB - 187776 sectors (RO), sector size=512
+Disk /dev/loop12 - 129 MB / 123 MiB - 253120 sectors (RO), sector size=512
+Disk /dev/loop13 - 129 MB / 123 MiB - 253128 sectors (RO), sector size=512
+Disk /dev/loop14 - 46 MB / 44 MiB - 91024 sectors (RO), sector size=512
+Disk /dev/loop15 - 53 MB / 50 MiB - 104232 sectors (RO), sector size=512
+Disk /dev/loop16 - 194 MB / 185 MiB - 380048 sectors (RO), sector size=512
+Disk /dev/loop17 - 193 MB / 184 MiB - 378232 sectors (RO), sector size=512
+Disk /dev/loop18 - 466 MB / 445 MiB - 911384 sectors (RO), sector size=512
+Disk /dev/loop19 - 475 MB / 453 MiB - 929456 sectors (RO), sector size=512
+Disk /dev/loop2 - 58 MB / 55 MiB - 113384 sectors (RO), sector size=512
+Disk /dev/loop20 - 86 MB / 82 MiB - 168088 sectors (RO), sector size=512
+Disk /dev/loop21 - 185 MB / 177 MiB - 362624 sectors (RO), sector size=512
+Disk /dev/loop22 - 186 MB / 178 MiB - 364992 sectors (RO), sector size=512
+Disk /dev/loop3 - 66 MB / 63 MiB - 130600 sectors (RO), sector size=512
+Disk /dev/loop4 - 66 MB / 63 MiB - 130592 sectors (RO), sector size=512
+Disk /dev/loop5 - 70 MB / 66 MiB - 136728 sectors (RO), sector size=512
+Disk /dev/loop6 - 70 MB / 66 MiB - 136728 sectors (RO), sector size=512
+Disk /dev/loop7 - 165 MB / 157 MiB - 323200 sectors (RO), sector size=512
+Disk /dev/loop8 - 172 MB / 164 MiB - 337560 sectors (RO), sector size=512
+Disk /dev/loop9 - 228 MB / 218 MiB - 447264 sectors (RO), sector size=512
+
+Partition table type (auto): Intel
+Disk /dev/sdg - 30 GB / 28 GiB - Kingston DataTraveler 3.0
+Partition table type: EFI GPT
+
+Analyse Disk /dev/sdg - 30 GB / 28 GiB - CHS 29510 64 32
+Bad GPT partition, invalid signature.
+Trying alternate GPT
+Bad GPT partition, invalid signature.
+Current partition structure:
+Bad GPT partition, invalid signature.
+Trying alternate GPT
+Bad GPT partition, invalid signature.
+
+search_part()
+Disk /dev/sdg - 30 GB / 28 GiB - CHS 29510 64 32
+     MS Data                       63   60435647   60435585
+     exFAT, blocksize=32768, 30 GB / 28 GiB
+
+Results
+   P MS Data                       63   60435647   60435585
+     exFAT, blocksize=32768, 30 GB / 28 GiB
+
+Hint for advanced users: dmsetup may be used if you prefer to avoid rewriting the partition table for the moment:
+echo "0 60435585 linear /dev/sdg 63" | dmsetup create test0
+
+interface_write()
+ 1 P MS Data                       63   60435647   60435585
+
+search_part()
+Disk /dev/sdg - 30 GB / 28 GiB - CHS 29510 64 32
+     MS Data                       63   60435647   60435585
+     exFAT, blocksize=32768, 30 GB / 28 GiB
+     MS Data                       63   60435647   60435585
+     exFAT found using backup sector, blocksize=32768, 30 GB / 28 GiB
+
+LVM magic value at 6497/54/17
+FAT16 at 6644/40/32
+check_FAT: Unusual number of reserved sectors 4 (FAT), should be 1.
+FAT1 : 4-43
+FAT2 : 44-83
+start_rootdir : 84
+Data : 116-40959
+sectors : 40960
+cluster_size : 4
+no_of_cluster : 10211 (2 - 10212)
+fat_length 40 calculated 40
+
+FAT16 at 6644/40/32
+     EFI System              13608223   13649182      40960 [EFI System Partition] [BOOT]
+     FAT16, blocksize=2048, 20 MB / 20 MiB
+
+Results
+     MS Data                       63   60435647   60435585
+     exFAT, blocksize=32768, 30 GB / 28 GiB
+     EFI System              13608223   13649182      40960 [EFI System Partition] [BOOT]
+     FAT16, blocksize=2048, 20 MB / 20 MiB
+
+Hint for advanced users: dmsetup may be used if you prefer to avoid rewriting the partition table for the moment:
+echo "0 60435585 linear /dev/sdg 63" | dmsetup create test0
+echo "0 40960 linear /dev/sdg 13608223" | dmsetup create test1
+
+interface_write()
+ 
+No partition found or selected for recovery
+simulate write!
+
+Interface Advanced
+Bad GPT partition, invalid signature.
+Trying alternate GPT
+Bad GPT partition, invalid signature.
+New options :
+ Dump : No
+ Align partition: Yes
+ Expert mode : No
+
+Analyse Disk /dev/sdg - 30 GB / 28 GiB - CHS 29510 64 32
+Bad GPT partition, invalid signature.
+Trying alternate GPT
+Bad GPT partition, invalid signature.
+Current partition structure:
+Bad GPT partition, invalid signature.
+Trying alternate GPT
+Bad GPT partition, invalid signature.
+
+search_part()
+Disk /dev/sdg - 30 GB / 28 GiB - CHS 29510 64 32
+     MS Data                       63   60435647   60435585
+     exFAT, blocksize=32768, 30 GB / 28 GiB
+
+Results
+   P MS Data                       63   60435647   60435585
+     exFAT, blocksize=32768, 30 GB / 28 GiB
+
+Hint for advanced users: dmsetup may be used if you prefer to avoid rewriting the partition table for the moment:
+echo "0 60435585 linear /dev/sdg 63" | dmsetup create test0
+
+interface_write()
+ 1 P MS Data                       63   60435647   60435585
+
+interface_write()
+ 1 P MS Data                       63   60435647   60435585
+
+search_part()
+Disk /dev/sdg - 30 GB / 28 GiB - CHS 29510 64 32
+     MS Data                       63   60435647   60435585
+     exFAT, blocksize=32768, 30 GB / 28 GiB
+     MS Data                       63   60435647   60435585
+     exFAT found using backup sector, blocksize=32768, 30 GB / 28 GiB
+
+LVM magic value at 6497/54/17
+FAT16 at 6644/40/32
+check_FAT: Unusual number of reserved sectors 4 (FAT), should be 1.
+FAT1 : 4-43
+FAT2 : 44-83
+start_rootdir : 84
+Data : 116-40959
+sectors : 40960
+cluster_size : 4
+no_of_cluster : 10211 (2 - 10212)
+fat_length 40 calculated 40
+
+FAT16 at 6644/40/32
+     EFI System              13608223   13649182      40960 [EFI System Partition] [BOOT]
+     FAT16, blocksize=2048, 20 MB / 20 MiB
+
+Results
+     MS Data                       63   60435647   60435585
+     exFAT, blocksize=32768, 30 GB / 28 GiB
+     EFI System              13608223   13649182      40960 [EFI System Partition] [BOOT]
+     FAT16, blocksize=2048, 20 MB / 20 MiB
+
+Hint for advanced users: dmsetup may be used if you prefer to avoid rewriting the partition table for the moment:
+echo "0 60435585 linear /dev/sdg 63" | dmsetup create test0
+echo "0 40960 linear /dev/sdg 13608223" | dmsetup create test1

@@ -8,7 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="/dashboard/images/logo-TSJT.png" type="image/ico" />
 
-    <title>Bienes | Poder Judicial de Tlaxcala </title>
+    <title> Bienes | Poder Judicial de Tlaxcala</title>
+    {{-- <title>{{ config('app.name') }} </title> --}}
 
     <!-- Bootstrap -->
     {{-- <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> --}}
@@ -87,14 +88,18 @@
                     </div>
                 </div>
 
-                <div class="item form-group  has-feedback offset-2">
-                  <div class="">
-                  <label class="col-form-label "><span class="caption">Recordarme</span>
-                    <input type="checkbox" checked="checked">
-                    
-                  </label>
-                </div>
-                </div>
+                <div class="row mb-3">
+                  +
+                            <div class="col-md-6 offset-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+
+                                    <label class="form-check-label" for="remember">
+                                        {{ __('Recordarme') }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
               
 
                 <div class="item form-group">
