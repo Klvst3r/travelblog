@@ -28,9 +28,9 @@ Route::get('/', function () {
     return view('welcome', compact('posts')); //Envia un array ['posts' => $posts]
 });
 
-Route::get('admin', function(){
+Route::get('home', function(){
     return view('admin.dashboard');
-});
+})->middleware('auth');
 
 Route::get('posts', function(){
     return Post::all();
@@ -38,7 +38,7 @@ Route::get('posts', function(){
 
 //Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 //Rutas con autenticacion
 //Route::auth();
@@ -51,6 +51,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 // Rutas de autenticación modernas
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
+
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 
