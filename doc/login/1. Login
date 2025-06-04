@@ -215,3 +215,527 @@ Modificación del Template
 
 Adecuación de estilos, y contenidos del formulario, token y metodos del formualario.
 
+
+
+Clonar del proyecto despues del login
+-----------------------
+
+Nuestro proyecto se ha actualizado en un equipo diferente del que se creo, 
+
+ git pull origin login
+From github.com:Klvst3r/travelblog
+ * branch            login      -> FETCH_HEAD
+Updating d958c0a..4fba705
+Fast-forward
+ README.md                                                             |   11 +-
+ app/Http/Controllers/Auth/ConfirmPasswordController.php               |   39 +
+ app/Http/Controllers/Auth/ForgotPasswordController.php                |   22 +
+ app/Http/Controllers/Auth/LoginController.php                         |   40 +
+ app/Http/Controllers/Auth/RegisterController.php                      |   72 +
+ app/Http/Controllers/Auth/ResetPasswordController.php                 |   29 +
+ app/Http/Controllers/Auth/VerificationController.php                  |   41 +
+ app/Http/Controllers/HomeController.php                               |   28 +
+ composer.json                                                         |    3 +-
+ composer.lock                                                         |   65 +-
+ .../migrations/2014_10_12_100000_create_password_resets_table.php     |   32 +
+ doc/login/1. Login                                                    |  217 +
+ package-lock.json                                                     | 1666 +++++
+ package.json                                                          |    3 +
+ public/dashboard/bootstrap/css/bootstrap.css                          |    2 +-
+ public/dashboard/build/css/bootstrap.css                              | 9727 ++++++++++++++++++++++++++++++
+ public/dashboard/build/css/bootstrap.min.css                          |    7 +
+ public/dashboard/build/css/custom.css                                 |  225 +-
+ public/dashboard/build/css/style.css                                  | 4921 +++++++++++++++
+ public/dashboard/build/css/style_002.css                              |  208 +
+ public/img/escudo-gris.png                                            |  Bin 0 -> 78014 bytes
+ resources/js/bootstrap.js                                             |    4 +-
+ resources/sass/_variables.scss                                        |    7 +
+ resources/sass/app.scss                                               |    8 +
+ resources/views/admin/layout.blade.php                                |    2 +-
+ resources/views/auth/login.blade.php                                  |  128 +
+ resources/views/auth/login_backup.blade.php                           |   74 +
+ resources/views/auth/passwords/confirm.blade.php                      |   49 +
+ resources/views/auth/passwords/email.blade.php                        |   47 +
+ resources/views/auth/passwords/reset.blade.php                        |   65 +
+ resources/views/auth/register.blade.php                               |   77 +
+ resources/views/auth/verify.blade.php                                 |   28 +
+ resources/views/home.blade.php                                        |   23 +
+ resources/views/layouts_backup/app.blade.php                          |   80 +
+ routes/web.php                                                        |   36 +
+ vite.config.js                                                        |    5 +-
+ 36 files changed, 17968 insertions(+), 23 deletions(-)
+ create mode 100644 app/Http/Controllers/Auth/ConfirmPasswordController.php
+ create mode 100644 app/Http/Controllers/Auth/ForgotPasswordController.php
+ create mode 100644 app/Http/Controllers/Auth/LoginController.php
+ create mode 100644 app/Http/Controllers/Auth/RegisterController.php
+ create mode 100644 app/Http/Controllers/Auth/ResetPasswordController.php
+ create mode 100644 app/Http/Controllers/Auth/VerificationController.php
+ create mode 100644 app/Http/Controllers/HomeController.php
+ create mode 100644 database/migrations/2014_10_12_100000_create_password_resets_table.php
+ create mode 100644 doc/login/1. Login
+ create mode 100644 package-lock.json
+ create mode 100644 public/dashboard/build/css/bootstrap.css
+ create mode 100644 public/dashboard/build/css/bootstrap.min.css
+ create mode 100644 public/dashboard/build/css/style.css
+ create mode 100644 public/dashboard/build/css/style_002.css
+ create mode 100644 public/img/escudo-gris.png
+ create mode 100644 resources/sass/_variables.scss
+ create mode 100644 resources/sass/app.scss
+ create mode 100644 resources/views/auth/login.blade.php
+ create mode 100644 resources/views/auth/login_backup.blade.php
+ create mode 100644 resources/views/auth/passwords/confirm.blade.php
+ create mode 100644 resources/views/auth/passwords/email.blade.php
+ create mode 100644 resources/views/auth/passwords/reset.blade.php
+ create mode 100644 resources/views/auth/register.blade.php
+ create mode 100644 resources/views/auth/verify.blade.php
+ create mode 100644 resources/views/home.blade.php
+ create mode 100644 resources/views/layouts_backup/app.blade.php
+
+enciendo el servidor con
+php artisan serve --port=8000 y ahora intento visualizar mis cambios del login en la ruta:
+http://localhost:8000/login
+
+Marcandome el siguiente error:
+Symfony \ Component \ ErrorHandler \ Error \ FatalError
+PHP 8.2.28
+10.48.29
+Trait "Illuminate\Foundation\Auth\AuthenticatesUsers" not found
+
+
+El error:
+
+    Trait "Illuminate\Foundation\Auth\AuthenticatesUsers" not found
+
+significa que Laravel no encuentra el trait AuthenticatesUsers, el cual es esencial para el funcionamiento del LoginController.
+
+Causa más común
+
+Esto normalmente ocurre cuando:
+
+    Faltan dependencias necesarias, particularmente si no se ha ejecutado composer install después de clonar o actualizar el repositorio.
+
+    El archivo del trait no existe (lo cual es raro si estás usando Laravel UI).
+
+    El autoload de Composer está desactualizado.
+
+Para dar solución ejecutamos:
+
+
+    $ composer install
+
+Esto descargará todas las dependencias necesarias, incluidas las del sistema de autenticación (como el trait AuthenticatesUsers).
+
+2. (Opcional pero recomendable): Limpia y regenera el autoload
+
+    $ composer dump-autoload
+
+3. Verifica el Trait
+
+Abrimos el archivo app/Http/Controllers/Auth/LoginController.php y asegúrate de que tengas esta línea:
+
+    use Illuminate\Foundation\Auth\AuthenticatesUsers;
+
+Y que esté siendo usado:
+
+    class LoginController extends Controller
+    {
+        use AuthenticatesUsers;
+    }
+
+4. Reinicia el servidor
+
+Después de estos pasos, vuelve a correr:
+
+php artisan serve --port=8000
+
+Y prueba de nuevo la ruta:
+
+http://localhost:8000/login
+
+
+Conesto debera solucionar el problema.
+
+
+Si no se tiene Laravel UI instalado aún en el equipo nuevo, debemos asegúrarnos de instalarlo (solo una vez):
+
+    $ composer require laravel/ui
+
+
+Ahora en RegisterController debemos dirigi a rai en lugar de home
+
+    protected $redirectTo = '/home';
+
+
+Lo mismo en LoginController que es el encargado de gestionarl el login, 
+
+    protected $redirectTo = '/';
+
+Ahora ya si actualizamos el home, este ya no existira mas, volvemos a inicio y aunque estemos autenticados no habra forma de saberlo.
+
+
+
+En login.blade.php
+
+queda nuestros cuadros de texto de la siguiente manera:
+
+<div class="form-group {{ $errors->has('email') ? 'has-error' : '' }} has-feedback">
+    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Correo electronico">
+
+
+Es necesari darle el nombre email y el valor old lo que hara es que al valor que ingresemos persista en caso de que haya un error de validación.
+
+Par ano tener que volver a escribirlo,
+
+Reuired es para que no nos permita enviar el campo vacio.
+Autofocus para que el cursor se hubique en este campo y podemas comenzar a escribir inmediatamente  despues de cargar la pagina, copiamos ey en el input pegamos, 
+en la siguiente sección 
+
+     @error('email')
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $message }}</strong>
+        </span>
+    @enderror
+
+Es donde se muestran los errores de vaicación, copiamos y pegamos debajo del input
+
+Ahora con el Password, dejando el name y el required
+
+Tambenel campo password lleva si contexto para el manejo de errores.
+
+ @error('password')
+    <span class="invalid-feedback" role="alert">
+        <strong>{{ $message }}</strong>
+    </span>
+@enderror
+
+
+No incluiremos recordar pass
+
+Al igual que la plantilla de administración es importante actualizar las rutas de los CSS y los Js, quedando por ejemplo:
+
+<link rel="stylesheet" href="../dashboard/build/css/bootstrap.css">
+    
+    <!-- Style -->
+    <link rel="stylesheet" href="../dashboard/build/css/style_002.css">
+
+    <!-- Estilos de Login -->
+    <link rel="stylesheet" href="../dashboard/build/css/style.css">
+
+
+# Iniciar Sesioin
+
+En la terminal tenemos un comando para interactura con la aplicación.
+
+    $ php artisan tinker
+
+Tenemos a la palicación de Laravel, creamos un usuario interactuando con el modelos de la aplicación, desde:
+
+app\Models\User.php
+
+Creamos una nueva instancia
+
+    >>> $user = new App\Models\User;
+
+ Le agregamos un nombre
+
+    >>> $user->name = "Klvst3r"
+
+Le agregamos un email 
+    >>> $user->email = "klvst3r@email.com"
+
+Por ultimo una contraseña, algo a tener en cuenta es no almacenar conraseñas en texto plano, podemos almacenarlos encruptados, para ello Laravel nos provee de la funcion bcrypt, como parametro el pass que deseamos"
+    >>> $user->password = bcrypt('desarrollo')
+
+Generando una cadena de caracteres, es decir el password encriptado, ahora solo falta almacenarlo en la blade
+    >>> $user->save()
+
+Podemos verificar en la Bd, ahora intentamos acceder con el correo.
+
+    klvst3r@emai.com / desarrollo
+
+
+Abrimos nuestra sesión, pero sera necesario redirigir nuestro panel de administración, asi que cambiamos la ruta a home 
+
+
+Route::get('admin', function(){
+    return view('admin.dashboard');
+});
+
+
+Cambiamos la ruta a:
+
+
+Route::get('home', function(){
+    return view('admin.dashboard');
+});
+
+
+Ahora si abrimos por ejemplo 
+
+    http://localhost:8000/home
+
+Desde otro navegador sin autenticarme, nos marcara error por que se esta intentando obtener una propiedad de un no-objeto, lo que sucede es que estamos tratando de acceder al usuario autenticados en el dashboard
+
+<h2>Usuario Autenticado: {{ auth()->user()->name }}</h2>
+
+
+Pero en el caso contreo al no haber iniciado sesión no hay ninguno, entonces mediante un middleware, para acceder solo si tenemos una sesion abierta o tener una cuneta en el sistema.
+
+
+Para ello agregamos el middleware en el acceso a la ruta d ela siguiente manera:
+
+Route::get('home', function(){
+    return view('admin.dashboard');
+})->middleware('auth');
+
+Ahora si accedemos a esta misma url vemos que redirecciona al login y ahora si accedemos desde ahi ahora podemos acceder al home, y si hacemos click en el login nos redireccionara al home ya que la sessión ya esta abierta.
+
+
+Asi Laravel UI al ser Legacy es utilizado por la sencilla razon de que tenemos bootstrap en lugar de Beutify y no utilizamos React o Vue JS.
+
+Si sustituimos a Bootstrap podremos sustituilo por TailwindCSS y utiliizar Breeze, que es una excelente pcion para la autentificación.
+
+$   php artisan breeze:install
+
+Para instalar los paquetes necesarios para la autenticación. Permitir entenderlos sin problema.
+
+Fortify podremos utilizarso si tenemos un satck Frontend si el fornt no esta incluso en nuestra aplicación, es decir, puede servir para un sistema de autenticación de uns SPA, como no estamos haciendo uso de autenticacion por tokens o por cookies, de ncaso contrario podermos dar paso a Sanctum con Fortify. Pero hay que tener en cuenta que estos paquetes no son escluyentes.
+
+Jetstream es ideal cuando ya tenesmo experiencia con la autenticación e laravel ya que ocupa Fortify, con el requisito es TailwindCSS es que se conozca blade con sus mejoras.
+
+Jetstream puede incluir Inertia que reuqiere un mayor nivel de conocimiento, con Vue JS o React, y por ultimo Laravel Passwort, es cimplemente necesario para hacer uso de una implementación OAth2.
+
+
+En nuestro caso utilizaremos laravel UI.
+
+Implementamos nuestro sistema de autenticación
+
+Nuestra redirección se realiza si se esta autenticado, Estando autenticado, nos redirecciona a la ura home, pero nuestro caso es que si queremos que nos envie por ejemplo al dashboard, podemos cambiar la ruta en el middleware RediretAuthenticated
+
+Pero es mejor cambiar la constante HOME, en el archivo 
+
+App\Providers\RouteServiceProvider.php
+
+
+En la constante HOME = '/dashboard';
+
+Ahora si intentamos acceder al login, vemos que redirecciona al dashboard, si estamos en home y queremos ir al hogin nos redirecciona, tambien. 
+
+
+La opcion recuerdame, funciona cuando el usuario con el que nos registramos falla y no hay algun feedback y no sabemos la razon de por que no permite entrar, eso se soluciona con la opcion recuerdame
+
+
+# Funcion recuerdame
+En el formulario de login, necesitamos un parametro en el session guard, que por defecto es falso, en el middleware SessionGuard
+
+Para recordar la sesion, que crea una cookie que ocntemga la sesion, 
+
+
+El token de session es simplemente una cadena de 60 caracteres luego a traves del provider que es 
+
+EloquentProvider 
+
+Se llamado el token updatedRememberToken que finalmente setea el campo remember en la instancia, luego antes de guardarlo en a Bd dashabilita los timestamps para evitar que cambie la s fehca devolviendo a su estado normal.  
+
+
+Entonces cuando se crea el usuario se crea la cookie, con el uso del identificdor del usuario.
+
+Todo ello se encuatra en el trait 
+
+    vendor/laravel/framework/src/Illuminate/Auth/Authenticable
+
+{como segundo parametro podemos pasar si se reuiqre recordar o no la sessión, y para darle la opcoin al usuario, se agrega por ello el checkbox en ellogin.}
+
+
+Todo esto es por que la aplicación tiene un tiempo de vida de dos horas para recordar la seession abierta si se esta dshabilitada, expirando la sessión tendremos que volver a logearnos.
+
+
+
+# Validar e usuario 
+
+La implementacion es por la opcion de validate que reciben un array con las reglas de validación.
+
+Con las reglas de validación en el formulario, esto ns genera errores de validación en la pagina, en todas las vistas, tenemos acceso a la variable errors.
+
+Es una instancia del objeto:
+
+    Illumintae\Support\ViewBag
+
+Se pueden mostrar en lista con un foreach
+
+@foreach($errors->all() )
+El metodo all(9 devuelve los errores en forma de array.)
+
+
+Estos mensajes los traen de los archivos locales,
+
+Otra forma de mostrar errores es omostrandolos debajo del campo como lo tenemos implementado, que no cumple la validación, que con la ayuda de la directiva de blade @error, que recibe como parametro e nombre del campo cuyo error queremos mostrar,
+
+
+que con el uso de la variable {{ $message }} podemos imprmiri
+
+Si la validación pasa, cuando las credenciales son incorretas, luego de la validación verifica las credenciales enla ruta
+
+if(Auth::attemp($credentials, $remember)){
+    request()->session()->regenerate():
+    return redirect('dashboard')
+}
+
+return redirect('login');
+
+Podemos disparar un error de validación, 
+
+de ahi nuestro mensaje Las credenciales no coinciden co nuestros registros.
+
+ya que el  
+
+throw ValidationException::withMessages([
+    'email' => 'Estas credenciales no coinciden con nuestros registros'
+]);
+
+
+Estos mensajes se reciben de los archivos de traducción vistos anteriormente.
+
+podemos hacer uso de la funcion:
+
+throw ValidationException::withMessages([
+    'email' => __('auth.failed)
+])
+
+Esto mostrara el mensaje que se encuentradentro del archivo auth, y se llama failed
+
+Esto hace referencia al archivo
+
+resources/lang/en/auth.php
+
+
+la llave failed
+
+que devuelve
+
+'failed' => 'These credentials do not match our records.'
+
+
+Que es el mensaje traducida, en la traducción de la aplicación.
+
+
+si se envian las credenciales correctas, mostraremos un usuario sino un mensaje de sessión.
+
+La llave status en la ruta es la que debemoshacer referencia en la vista.
+
+En el dashboard podremos enviar el mensaje de infgreso exitoso tal cual lo muestra e archivo 
+
+/views/home.blade.php
+
+
+@extends('layout.app')
+
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">{{ __('Dashboard') }}</div>
+
+                <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
+                    {{ __('You are logged in!') }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+
+
+Que extiende el layout.app y con el mensaje.
+
+
+Para evitar repertir podremos agregar la acción en el van del dashboard.
+
+ Con unamensaje de la llave 
+ @if(session('status'))
+
+    estructura Html necesaria
+    {{ session('status) }}
+@endif
+
+
+Asi cuando ingresemos las credenciales correctas, veremos nuestro mensaje. o lo que es mejor redireccionar al dashboard.
+
+
+El mensaje dura una sola petición, es deir que si actualizamos el mensaje desaparece, 
+
+
+ Eliminando las coccies para cerrar sessión, 
+
+
+
+Hay algo que es necesario y es cerrar session, antes es puede borrarse elemail cuando es incorrecto el ingreso y se debe volver a escribir nuevamente 
+
+Paraque el valor prevaezca podemos agregarlo dentro de value la funcion old con el parametro que queremos recordar, por ello tenemos para el correo:
+
+
+value="{{ old('email') }}" 
+
+hay que tener cuidado con los datos sensibles, como las conraseñas por eso solo se agrega en el email, y si el usuario fue introducido con uno no existente en la Bd, lo devolvera alformulario de ingreso para no tener que escribirlo nuevamante.
+
+Podemosagregar require para validar del lado del cliente, tenemos tambien un autofocus, para que el cursos se ubique en el primer campo del formulario.
+
+
+Para cerrar vamos a hacer la extracción a un controlador dedicado, con un metodo 
+
+Lo podemos crear con
+
+    $ php artisan make:controller Auth/LoginController
+
+
+En nuestro caso ya existe al utilizar Laravel UI
+
+Vamos a extraser lo que existe en la ruta wen 
+Creamos     
+ y copiamos todo lo que se tiene en la ruta pegandolo en el metodo 
+
+
+# Cierre de sesion
+
+
+Para crerrar sesión es reomendable utilizar el metodo post, en lugar del metodo get, ya que de esa manera podemos ptotegernos contra, ataques CRSF.
+
+entonces para crear el metodo post debemos crear un formulario, la acción sera logout
+En nuestro template de la liga iremos a:
+
+
+Vamos a crear nuestro enlace hacia el logout
+<form action="/logout " method="POST">
+                      @csrf
+                      <a class="dropdown-item"  href="#"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                    </form>
+
+De momento no tiene ninguna acción, para ello necesitamos un boton de tipo submit, para que pueda enviarse, y c el uso de Js se envie el formulario para ello tiene en escucha el evento onclick="", se envia mediante un id, o dandole u nombre o en este caso vamos a uscar el formulario padre, o el formulario que contiene el elemento que estamos haciendo click de esta forma queda:
+
+<form action="/logout " method="POST">
+                      @csrf
+                      <a class="dropdown-item"  href="#" onclick="this.closest('form').submit()">
+                        <i class="fa fa-sign-out pull-right"></i> Log Out
+                      </a>
+                      
+                    </form>
+
+Para hacer referencia al form padre, una vez que se tiene el formulario lo enviamos con el metodo submit, debe enviarse ahora correctamente.
+
+
+
+Ahora vamos a implementar la ruta que va a procesar el formulario
+en el archvo de rutas web podemos duplicar la linea y tener la siguiente:
+
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
+Agregamos el controlador para agragr el metodo
+

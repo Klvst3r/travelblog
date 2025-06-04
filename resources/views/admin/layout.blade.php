@@ -52,7 +52,7 @@
               </div>
               <div class="profile_info">
                 <span>Welcome,</span>
-                <h2>Klvst3r</h2>
+                <h2>{{ auth()->user()->email }}</h2>
               </div>
             </div>
             <!-- /menu profile quick info -->
@@ -194,7 +194,7 @@
               <ul class=" navbar-right">
                 <li class="nav-item dropdown open" style="padding-left: 15px;">
                   <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-                    <img src="../dashboard/images/Ironman.jpg" alt="">Klvst3r
+                    <img src="../dashboard/images/Ironman.jpg" alt="">{{ auth()->user()->name }}
                   </a>
                   <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item"  href="javascript:;"> Profile</a>
@@ -203,7 +203,14 @@
                         <span>Settings</span>
                       </a>
                   <a class="dropdown-item"  href="javascript:;">Help</a>
-                    <a class="dropdown-item"  href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                    
+                    <form action="/logout " method="POST">
+                      @csrf
+                      <a class="dropdown-item"  href="#" onclick="this.closest('form').submit()">
+                        <i class="fa fa-sign-out pull-right"></i> Log Out
+                      </a>
+                      
+                    </form>
                   </div>
                 </li>
 

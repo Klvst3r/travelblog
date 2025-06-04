@@ -543,6 +543,11 @@ Modificando
 	}
 
 
+# Configuracion de Idioma
+
+La aplicación por defecto viene con el idioma en Ingles solamenete, por lo que si deseamos recurrir a la configuracion en espaol, se puede utilizar la referecna con Laravel Lang para agregar los locale al proyecto
+
+
 
 
 
