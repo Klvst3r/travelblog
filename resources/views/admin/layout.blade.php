@@ -11,7 +11,7 @@
     <title>Travel Blog!</title>
 
     <!-- Bootstrap -->
-    <link href="../dashboard/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../dashboard/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="../dashboard/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <!-- NProgress -->
@@ -26,7 +26,7 @@
     <!-- bootstrap-daterangepicker -->
     <link href="../dashboard/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
 
-    <!-- Custom Theme Style -->
+    <!-- Estilos personalizados del Tema -->
     <link href="../dashboard/build/css/custom.css" rel="stylesheet">
   </head>
 
@@ -336,7 +336,11 @@
             Travel Blog
           </div>
           <div class="text-end">
+<<<<<<< HEAD
             Klvst3r - {{ date('Y') }}
+=======
+            {{ config('app.name') }} - {{ date('Y') }}
+>>>>>>> lockscreen
           </div>
         </footer>
         <!-- /footer content -->
