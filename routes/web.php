@@ -55,6 +55,11 @@ Route::post('login', [LoginController::class, 'login']);
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 
+//Vistas de Prueba
+Route::get('lockscreen', function(){
+    return view('lockscreen.index');
+});
+
 //Rutas de registro
 //Route::get('register','Auth\RegisterController@showRegistrationForm')->name('register');
 // Route::post('register','Auth\RegisterController@register');
@@ -64,7 +69,7 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 // Route::post('register', [RegisterController::class, 'register']);
 
 //Rutas para reseteo de password
-Route::get('password/retes', 'AuthForgotPasswordCcontroller@showLinkRequestForm')->name('password.request');
-Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-Route::get('password/reset/{token}','Auth\ResetPässwordController@showResetForm')->name('password.reset');
-Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+// Route::get('password/retes', 'AuthForgotPasswordController@showLinkRequestForm')->name('password.request');
+// Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+// Route::get('password/reset/{token}','Auth\ResetPässwordController@showResetForm')->name('password.reset');
+// Route::post('password/reset', 'Auth\ResetPasswordController@reset');

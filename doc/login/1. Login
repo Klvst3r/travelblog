@@ -10,7 +10,7 @@ Si necesitamos revisar las opciones
 Para laravel 9, y 10' queremso aplicar nuestros login personalizado y aplicar las directivas de seguridad y autentificacion de usuarios.
 
 
-En Laravel 12, el comando php artisan make:auth ya no existe y fue eliminado desde Laravel 6 en adelante. En versiones modernas como Laravel 12, la autenticación se maneja utilizando Laravel Breeze, Laravel Jetstream, Laravel Fortify, o Laravel UI, según tus necesidades.
+En Laravel 10, el comando php artisan make:auth ya no existe y fue eliminado desde Laravel 6 en adelante. En versiones modernas como Laravel 12, la autenticación se maneja utilizando Laravel Breeze, Laravel Jetstream, Laravel Fortify, o Laravel UI, según tus necesidades.
 
 
 
@@ -739,3 +739,275 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 Agregamos el controlador para agragr el metodo
 
+
+
+Considerar que login y logout se sencuentran en el alrchivo sessionguard.php
+
+/home/klvst3r/dev/laravel/travelblog/vendor/laravel/framework/src/Illuminate/Auth/SessionGuard.php
+
+
+Obtiene el usuario para cerrar sesion con el metodo user, primero verifica si el usuario ya ha cerrado session, en ese caso, retornamos null, en caso contrario si el usuario ya existe en la petición, lo regresa directamente sino se va a verificar si existe una session activa y a traves d ela sesion obtener el usuario y si no obtenerlo del rememertoken.
+
+Luego se eleimina la información del usuario, del amacenameitno es decir se eleiminan los datos de sessión  y las cokies y luego se verifica si existe el remember token en la base de datos, para generar uno nuevo, luego se dispara el evento logout por si queremos hacer una accion cada vez que el usuario cierre sesion y finalmente se setea la pripiedad user a null, y la propiedad logout a verdadero.
+
+
+Hasta este punto ya estamos cerca de   tener tu botón de logout funcionando correctamente. En Laravel 10 con Laravel UI, el proceso de logout se maneja automáticamente si usas el route /logout y el método POST, que ya estás aplicando. Aquí tienes los pasos detallados para asegurarte de que todo funcione correctamente:
+
+Vamos  verificar la ruta de logout. Laravel UI ya incluye la ruta POST /logout al instalar la autenticación, que apunta al método logout del LoginController.
+
+Podemos confirmarlo con el comando:
+
+    $ php artisan route:list
+
+Buscando una ruta como esta:
+
+    POST   /logout   logout   App\Http\Controllers\Auth\LoginController@logout
+
+En nuestro caso con la versión instalada nos arroja la siguiente salida:
+
+    POST       logout .................................................. logout › Auth\LoginController@logout
+
+Eso confirma que Laravel ya se tiene registrada correctamente la ruta de cierre de sesión (logout) y que está enlazada al método logout dentro de nuestro Auth\LoginController.
+
+Ahora, para terminar debemos asegurarnos de que todo funcione, para ello:
+
+1. Nos Asegúramos de tener el método logout() en LoginController
+
+Laravel UI ya lo incluye por defecto. Solo por revisar:
+
+Aunque anteriormente se definia en el Logincontroller de la siguiente manera:
+
+    public function logout(Request $request)
+{
+    Auth::logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/login');
+}
+
+Al menos para le versión que estamos trabajando, que es Laravel 10, no es necesario definir manualmente el método logout() en nuestro LoginController, porque Laravel ya lo incluye automáticamente a través del trait:
+
+use AuthenticatesUsers;
+
+Este trait (Illuminate\Foundation\Auth\AuthenticatesUsers) ya contiene la lógica completa del logout, incluyendo:
+
+    Auth::logout()
+
+    Invalidar sesión
+
+    Regenerar token
+
+    Redirigir al login
+
+
+¿Entonces qué hace el método logout?
+
+El método logout que ya existe dentro del trait se ve más o menos así (resumen interno):
+
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+    }
+
+Así que no es necesario sobrescribirlo, a menos que se quiera cambiar el comportamiento por defecto (por ejemplo, redirigir a /login en lugar de /).    
+
+
+Si deseamos que al cerrar sesión redirija a /login, puedemos sobrescribir el método así:
+
+use Illuminate\Http\Request;
+
+public function logout(Request $request)
+{
+    $this->guard()->logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/login')->with('status', 'Sesión cerrada correctamente.');
+}
+
+Debemos importar Illuminate\Http\Request si sobrescribimos el método.
+
+Nuestro Controlador queda de la siguiente manera:
+
+    <?php
+
+    namespace App\Http\Controllers\Auth;
+
+    use App\Http\Controllers\Controller;
+    use Illuminate\Foundation\Auth\AuthenticatesUsers;
+    use Illuminate\Http\Request; // Se Importa Request
+
+    class LoginController extends Controller
+    {
+        use AuthenticatesUsers;
+
+        protected $redirectTo = '/home';
+
+        public function __construct()
+        {
+            $this->middleware('guest')->except('logout');
+            $this->middleware('auth')->only('logout');
+        }
+
+        // Agregamos este método para personalizar el logout
+        public function logout(Request $request)
+        {
+            $this->guard()->logout();
+
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect('/login')->with('status', 'Sesión cerrada correctamente.');
+        }
+    }
+
+
+Con esto el Logincontroller esta correctamente configurado. El metodo logout() ya esta incluido gracias al trait Authenticateusers.
+
+el formulario en el dashboard con POST /login y @csrf ya esta listo para funcionar. solo debemos personalizar el metodo logout() si necesitamos cambiar la redirección o agregar un mensaje.
+
+
+En nuestro formuario debe existir dentro del dashboard.blade.php lo siguiente:
+
+---
+<form action="{{ route('logout') }}" method="POST">
+    @csrf
+    <a class="dropdown-item" href="#" onclick="event.preventDefault(); this.closest('form').submit();">
+        <i class="fa fa-sign-out pull-right"></i> Log Out
+    </a>
+</form>
+
+
+---
+
+Importante: Usar event.preventDefault() evita que el <a> siga el enlace #, y en su lugar, dispara el submit() del formulario.
+
+
+(Opcional) Agrega un mensaje de éxito tras cerrar sesión
+
+Si deseas mostrar un mensaje tipo “Sesión cerrada correctamente”, puedes hacer lo siguiente en el LoginController@logout:
+
+return redirect('/login')->with('status', 'Sesión cerrada correctamente.');
+
+Y en tu vista de login (login.blade.php), muestra el mensaje si existe:
+
+@if(session('status'))
+    <div class="alert alert-success">
+        {{ session('status') }}
+    </div>
+@endif
+
+
+
+como paso adicional opcional podemos mostrar el mensaje en la vista login.blade.php, al inicio del formulario de login para mostrar el mensaje de sesion cerrada correctamente.
+
+    @if(session('status'))
+        <div class="alert alert-success">
+            {{ session('status') }}
+        </div>
+    @endif
+
+Con eso, al hacer clic en tu botón de "Log Out", nos redirigirá a /login y mostrará el mensaje de confirmación. con esto todo esta listo y funcionando.
+correctamente.
+
+
+
+# confirmacion de logout
+
+Existen  dos opciones para mostrar una confirmación al cerrar sesión en tu app Laravel con Bootstrap:
+ 
+Opción 1: Modal de Confirmación (antes de cerrar sesión)
+--------
+
+Esta opción pide al usuario confirmar que desea cerrar sesión mediante un modal de Bootstrap antes de enviar el formulario.
+
+Paso a paso:
+1. Botón que lanza el modal
+
+Reemplaza tu Log Out actual por este botón:
+
+<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+    <i class="fa fa-sign-out pull-right"></i> Cerrar sesión
+</a>
+
+2. Modal de Bootstrap (colócalo en el mismo layout o blade del dashboard)
+
+<!-- Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutModalLabel">Confirmar cierre de sesión</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro que deseas cerrar sesión?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-inline">
+            @csrf
+            <button type="submit" class="btn btn-danger">Cerrar sesión</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+3. Asegúrate de tener cargado Bootstrap 5 en tu layout
+
+Si usas Laravel UI, ya está incluido. Si no, asegúrate de tener esto en tu layout app.blade.php:
+
+<!-- Bootstrap 5 (CDN) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+Opción 2: Toast después del logout
+---------
+
+Esta opción muestra un toast visual en la vista /login después de cerrar sesión con éxito.
+
+Paso a paso:
+1. En LoginController, ya tienes este código:
+
+return redirect('/login')->with('status', 'Sesión cerrada correctamente.');
+
+2. En tu login.blade.php, agrega el toast (al final del body o del contenido):
+
+@if(session('status'))
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div class="toast align-items-center text-white bg-success border-0 show" role="alert">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{ session('status') }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const toastElList = [].slice.call(document.querySelectorAll('.toast'))
+    toastElList.map(function (toastEl) {
+        new bootstrap.Toast(toastEl).show()
+    });
+</script>
+@endif
+
+Este código muestra el mensaje como un toast verde en la parte inferior derecha al llegar al login.
+
+¿Cuál usar?
+Modal	Toast
+Confirma acción antes del logout	Informa después del logout
+Ideal para seguridad	Ideal para buena experiencia de usuario
+Requiere acción del usuario	Se muestra automáticamente

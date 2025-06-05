@@ -35,13 +35,13 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../dashboard/build/css/bootstrap.min.css">
     
-    <!-- Custom Theme Style -->
+    <!-- Estilo pertsonalizado del Tema -->
     <link href="../dashboard/build/css/custom.css" rel="stylesheet">
 
-    <!-- Style -->
+    <!-- Segundo Estilo -->
     <link rel="stylesheet" href="../dashboard/build/css/style_002.css">
 
-        <!-- Estilos de Login -->
+        <!-- Estilos del Login -->
     <link rel="stylesheet" href="../dashboard/build/css/style.css">
 
  
@@ -59,12 +59,21 @@
           <section class="login_content">
             <form method="POST" action="{{ route('login') }}">
                 @csrf
+
+               
+
                 <div class="fadeIn first">
                     <img src="img/escudo-gris.png" id="icon" alt="User Icon">
                   </div>
                   <h2>Tribunal Superior de Justicia de Tlaxcala</h2>
                   <h2>{{ config('app.name') }}</h2>
                   <p>&nbsp;</p>
+                   
+                  @if(session('status'))
+                      <div class="alert alert-success">
+                          {{ session('status') }}
+                      </div>
+                  @endif
 
                   <div class="item form-group">
                     <label for="email" class="col-form-label col-md-5 col-sm-5 ">{{ __('Usuario') }}</label>
@@ -145,5 +154,26 @@
 
       </div>
     </div>
+
+    @if(session('status'))
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div class="toast align-items-center text-white bg-success border-0 show" role="alert">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{ session('status') }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const toastElList = [].slice.call(document.querySelectorAll('.toast'))
+    toastElList.map(function (toastEl) {
+        new bootstrap.Toast(toastEl).show()
+    });
+</script>
+@endif
   </body>
 </html>
