@@ -44,9 +44,6 @@
         <!-- Estilos del Login -->
     <link rel="stylesheet" href="../dashboard/build/css/style.css">
 
- 
-   
-  <meta name="robots" content="noindex, follow">
 </head>
 
   <body class="login">
@@ -56,24 +53,24 @@
 
       <div class="login_wrapper">
         <div class="animate form login_form">
+          
+          
+          <!-- Login_content -->
           <section class="login_content">
-            <form method="POST" action="{{ route('login') }}">
-                @csrf
+            
 
                
 
                 <div class="fadeIn first">
-                    <img src="img/escudo-gris.png" id="icon" alt="User Icon">
+                    <img src="img/escudo-gris.png" id="icon" alt="Escudo Tribunal superior de Justicia del Estado de Tlaxcala">
                   </div>
                   <h2>Tribunal Superior de Justicia de Tlaxcala</h2>
                   <h2>{{ config('app.name') }}</h2>
                   <p>&nbsp;</p>
-                   
-                  @if(session('status'))
-                      <div class="alert alert-success">
-                          {{ session('status') }}
-                      </div>
-                  @endif
+            
+            <form method="POST" action="{{ route('login') }}" id="login-form" style="{{ session('status') ? 'display:none;' : '' }}">
+                            @csrf                  
+                  
 
                   <div class="item form-group">
                     <label for="email" class="col-form-label col-md-5 col-sm-5 ">{{ __('Usuario') }}</label>
@@ -104,31 +101,26 @@
                     </div>
                 </div>
 
-                <div class="row mb-3">
-                  
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Recordarme') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-              
+             
 
                 <div class="item form-group">
-                  {{-- <div class="container-login100-form-btn m-t-17"> --}}
-                      {{-- <button type="submit" class="btn btn-pill text-white btn-block btn-primary">
-                          {{ __('Login') }}
-                      </button> --}}
+      
+                       
                       <input type="submit" value="Ingresar" class="btn btn-pill text-white btn-block btn-primary">
+                      
 
-                    {{-- </div> --}}
+                    
                 </div>
 
+              </form>
           
+               {{-- ALERTA DE SESIÓN --}}
+                @if(session('status'))
+                    <div id="logout-alert" class="alert alert-success text-center">
+                        {{ session('status') }}
+                    </div>
+                @endif
+
 
                 <div class="clearfix"></div>
 
@@ -145,8 +137,8 @@
                   </div>
                 </div>
               </div>
-            </form>
           </section>
+          <!-- /Login_content -->
 
 
         
@@ -155,25 +147,24 @@
       </div>
     </div>
 
+    <!-- Cierre despues de 5 segundos -->
     @if(session('status'))
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
-    <div class="toast align-items-center text-white bg-success border-0 show" role="alert">
-        <div class="d-flex">
-            <div class="toast-body">
-                {{ session('status') }}
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-    </div>
-</div>
+      <script>
+          // Esperar 5 segundos para mostrar el formulario y ocultar la alerta
+          window.addEventListener('load', function () {
+              setTimeout(function () {
+                  const alertBox = document.getElementById('logout-alert');
+                  const loginForm = document.getElementById('login-form');
 
-<script>
-    const toastElList = [].slice.call(document.querySelectorAll('.toast'))
-    toastElList.map(function (toastEl) {
-        new bootstrap.Toast(toastEl).show()
-    });
-</script>
-@endif
+                  if (alertBox) alertBox.style.display = 'none';
+                  if (loginForm) loginForm.style.display = 'block';
+              }, 3000); // 3000 ms = 3 segundos
+          });
+      </script>
+      @endif
+
+
+
+
   </body>
 </html>

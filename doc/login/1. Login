@@ -1011,3 +1011,24 @@ Modal	Toast
 Confirma acción antes del logout	Informa después del logout
 Ideal para seguridad	Ideal para buena experiencia de usuario
 Requiere acción del usuario	Se muestra automáticamente
+
+
+
+# Remember eliminado.
+
+Al considerarse como una posible brecha de seguridad, se elimina del login el siguiente segmento de codigo ya que la funcionalidad considerada de recuerdame no se habilitara, ya que no queremos dejar vivas las sesiones, solo hasta cuando el usuario forzosamente las cierre. En este caso esta opcin ya no sera necesaria.
+
+
+   <div class="row mb-3">
+                  
+                    {{-- <div class="col-md-6 offset-md-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+
+                            <label class="form-check-label" for="remember">
+                                {{ __('Recordarme') }}
+                            </label>
+                        </div>
+                    </div> --}}
+                </div>
+              

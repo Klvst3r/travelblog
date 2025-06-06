@@ -333,14 +333,10 @@
         <!-- footer content -->
         <footer class="d-flex justify-content-between">
           <div class="text-end">
-            Travel Blog
+            Tribunal Superior de Justicia del Estado de Tlaxcala
           </div>
           <div class="text-end">
-<<<<<<< HEAD
-            Klvst3r - {{ date('Y') }}
-=======
             {{ config('app.name') }} - {{ date('Y') }}
->>>>>>> lockscreen
           </div>
         </footer>
         <!-- /footer content -->
