@@ -1,0 +1,162 @@
+Para iImplementar una pantalla de Lockscreen, necesitamos trabajar la vista, esta esta ubicada en
+
+/home/klvst3r/dev/laravel/travelblog/resources/views/lockscreen/index.blade.php
+
+
+El cual es activado desde el dashboard con el link siguiente:
+
+  <a href="{{ url('/lockscreen') }}" data-toggle="tooltip" data-placement="top" 
+                title="Bloquear pantalla">  <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+              </a>
+
+Como podemos ver este redirige hacia la ruta lockscreen, por ello en nuestroa rchivo de rutas tendremos lo siguiente:
+
+
+Route::get('lockscreen', function(){
+    return view('lockscreen.index');
+});
+
+
+con esto tenemos una activación de la vista de lockscreen realmente proteja el acceso al dashboard y obligue al usuario a desbloquearla antes de continuar, necesitas una variable de control adicional en sesión y un middleware personalizado que actúe como "candado" para bloquear temporalmente todas las rutas sensibles (como /home, /dashboard, etc.) hasta que se desbloquee.
+
+
+# Bloqueo de acceso al dashboard hasta desbloqueo.
+
+
+El proceso parabloquear el usuario al dashboard es el siguiente:
+
+1.  1. Agrega una variable de sesión en el lock
+
+Cuando el usuario active el lockscreen, guarda en sesión una bandera como:
+     locked = true.
+
+Se puede hacer esto desde un controlador, por ejemplo:
+
+Crear el controlador LockscreenController
+
+    $ php artisan make:controller LockscreenController
+
+
+Luego en el controlador:
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+
+class LockscreenController extends Controller
+{
+    public function show()
+    {
+        // Poner la bandera de bloqueo en sesión
+        session(['locked' => true]);
+        return view('lockscreen.index');
+    }
+
+    public function unlock(Request $request)
+    {
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
+        // Validar password del usuario logueado
+        if (!\Hash::check($request->password, auth()->user()->password)) {
+            return back()->withErrors(['password' => 'Contraseña incorrecta']);
+        }
+
+        // Desbloquear
+        session()->forget('locked');
+        return redirect('/home'); // o a donde quieras redirigir después del desbloqueo
+    }
+}
+
+
+2. Crearlas rutas necesarias en el archivo de Rutas en web.php
+
+// Mostrar lockscreen
+Route::get('/lockscreen', [App\Http\Controllers\LockscreenController::class, 'show'])->name('lockscreen');
+
+// Desbloquear
+Route::post('/unlock', [App\Http\Controllers\LockscreenController::class, 'unlock'])->name('unlock');
+
+
+3. Crea un Middleware personalizado: LockscreenMiddleware, con el comando:
+
+    $ php artisan make:middleware LockscreenMiddleware
+
+
+
+En app/Http/Middleware/LockscreenMiddleware.php
+
+---
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+
+class LockscreenMiddleware
+{
+    public function handle(Request $request, Closure $next)
+    {
+        if (auth()->check() && session('locked')) {
+            // Evitar loop infinito si ya estamos en lockscreen
+            if (!$request->is('lockscreen') && !$request->is('unlock')) {
+                return redirect()->route('lockscreen');
+            }
+        }
+
+        return $next($request);
+    }
+}
+
+
+
+4. Regístralo en Kernel.php
+
+En el archivo app/Http/Kernel.php, agregamos:
+
+---
+protected $routeMiddleware = [
+    // ...
+    'lockscreen' => \App\Http\Middleware\LockscreenMiddleware::class,
+];
+
+
+5. Protégemos las rutas con este middleware
+
+En las rutas donde queremos bloquear el acceso si está bloqueado:
+
+Route::middleware(['auth', 'lockscreen'])->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    // ...otras rutas protegidas
+});
+
+
+6. En tu vista del lockscreen (lockscreen.index):
+El formulario ahora debe enviar al método unlock:
+
+<form action="{{ route('unlock') }}" method="POST" class="lockscreen-credentials">
+  @csrf
+  <div class="input-group">
+    <input type="password" name="password" class="form-control" placeholder="Password" required>
+    <div class="input-group-append">
+      <button type="submit" class="btn">
+        <i class="fa-solid fa-arrow-right text-muted"></i>
+      </button>
+    </div>
+  </div>
+</form>
+
+
+
+Resultado Final:
+
+    Cuando se entra a /lockscreen, la sesión guarda locked = true.
+
+    Todas las rutas protegidas (como /home) redirigen a /lockscreen mientras esa variable exista.
+
+    Al ingresar la contraseña correcta, se elimina locked y se vuelve a permitir el acceso normal.
+
+
+Manos a la obra.    
+

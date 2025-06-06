@@ -171,9 +171,13 @@
               <a data-toggle="tooltip" data-placement="top" title="FullScreen">
                 <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
               </a>
-              <a data-toggle="tooltip" data-placement="top" title="Lock">
-                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+            
+
+              <a href="{{ url('/lockscreen') }}" data-toggle="tooltip" data-placement="top" 
+                title="Bloquear pantalla">  <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
               </a>
+
+
               <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
