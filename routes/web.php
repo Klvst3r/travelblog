@@ -8,6 +8,8 @@ use App\Models\Post;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 
+use App\Http\Controllers\Lock\LockscreenController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -56,9 +58,19 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 
 //Vistas de Prueba
-Route::get('lockscreen', function(){
-    return view('lockscreen.index');
-});
+// Route::get('lockscreen', function(){
+//     return view('lockscreen.index');
+// });
+// Utilizamos el controlador de bloqueo de sesion
+
+// Mostrar lockscreen
+Route::get('/lockscreen', [LockscreenController::class, 'show'])->name('lockscreen');
+
+// Desbloquear
+Route::post('/unlock', [LockscreenController::class, 'unlock'])->name('unlock');
+
+
+
 
 //Rutas de registro
 //Route::get('register','Auth\RegisterController@showRegistrationForm')->name('register');

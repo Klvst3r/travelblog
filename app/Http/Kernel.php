@@ -65,4 +65,21 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ];
+
+    
+    /**
+     * The application's middleware Lockscreen.
+     *
+          *
+    * Registro del Middleware Lockscreen
+     */
+    protected $routeMiddleware = [
+        
+        'lockscreen' => \App\Http\Middleware\LockscreenMiddleware::class,
+    ];
+
+
+
+
+
 }

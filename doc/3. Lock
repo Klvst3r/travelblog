@@ -36,10 +36,31 @@ Crear el controlador LockscreenController
 
     $ php artisan make:controller LockscreenController
 
+Como deseamos que el controlador este dentro de una carpeta (namespace) llamada Lock, ejecutamos:
+
+    $ php artisan make:controller Lock/LockscreenController
+
+El namescpace sera:
+
+namespace App\Http\Controllers\Lock;
+
+
+Asi al usar las rutas o tras clases, debemos importarlo de la siguente manera:
+
+use App\Http\Controllers\Lock\LockscreenController;
+
+
+
 
 Luego en el controlador:
 
 namespace App\Http\Controllers;
+
+Vamos a usar el namespace siguiente:
+
+namespace App\Http\Controllers\Lock;
+
+
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
