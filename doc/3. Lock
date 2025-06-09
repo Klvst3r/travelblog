@@ -153,8 +153,49 @@ Route::middleware(['auth', 'lockscreen'])->group(function () {
 });
 
 
+Detalle de este paso:
+
+El paso 5 consiste en aplicar el middleware lockscreen a las rutas que se desean proteger, es decir, aquellas a las que solo se debe acceder si la sesión no está bloqueada.
+
+¿Dónde colocar esas líneas?
+
+Se deben colocar en el archivo de rutas routes/web.php, envolviendo las rutas que se quieren proteger. 
+
+Por ejemplo, si el panel de control (dashboard) está en /home y se tienen otras rutas internas que se desean proteger con el lockscreen, se debería hacer así:
+
+
+
+use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Route;
+
+// Rutas públicas (sin protección por lockscreen)
+Route::get('/lockscreen', [App\Http\Controllers\Lock\LockscreenController::class, 'show'])->name('lockscreen');
+Route::post('/unlock', [App\Http\Controllers\Lock\LockscreenController::class, 'unlock'])->name('unlock');
+
+// Rutas protegidas por autenticación y lockscreen
+Route::middleware(['auth', 'lockscreen'])->group(function () {
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    
+    // Otras rutas protegidas aquí
+    // Route::get('/perfil', [PerfilController::class, 'index']);
+});
+
+¿Qué hace esto?
+
+    auth: Verifica que el usuario esté autenticado.
+
+    lockscreen: Verifica que no esté bloqueado por la pantalla de lockscreen.
+
+    Si está bloqueado, lo redirige automáticamente a /lockscreen según tu middleware personalizado.
+
+
+
+
+
+
+
 6. En tu vista del lockscreen (lockscreen.index):
-El formulario ahora debe enviar al método unlock:
+El formulario ahora debe enviar al método unlock en el controlador,
 
 <form action="{{ route('unlock') }}" method="POST" class="lockscreen-credentials">
   @csrf
@@ -169,7 +210,6 @@ El formulario ahora debe enviar al método unlock:
 </form>
 
 
-
 Resultado Final:
 
     Cuando se entra a /lockscreen, la sesión guarda locked = true.
@@ -179,5 +219,530 @@ Resultado Final:
     Al ingresar la contraseña correcta, se elimina locked y se vuelve a permitir el acceso normal.
 
 
+
+Para este paso, que es el paso 6, que es enviar la contraseña ingresada en el formulario para desbloquear la pantalla y verificar las credenciales.
+
+ Enviar el formulario al controlador
+
+Actualmente, nuestro formulario tiene esta estructura:
+
+<form class="lockscreen-credentials">
+  <div class="input-group">
+    <input type="password" class="form-control" placeholder="Password">
+    <div class="input-group-append">
+      <button type="submit" class="btn">
+        <i class="fa fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</form>
+
+ ¿Qué le falta?
+
+    Método POST
+
+    Ruta de acción (a dónde se envía el formulario)
+
+    Protección CSRF
+
+    Campo name="password" para que Laravel lo procese
+
+
+Vamos a modificarlos de la siguiente manera:
+
+
+<form class="lockscreen-credentials" method="POST" action="{{ route('unlock') }}">
+  @csrf
+  <div class="input-group">
+    <input type="password" name="password" class="form-control" placeholder="Password" required>
+    <div class="input-group-append">
+      <button type="submit" class="btn">
+        <i class="fa fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</form>
+
+
+
+
+ ¿Qué hace esto?
+
+    El formulario se enviará con método POST a la ruta unlock que se debes tener definida en web.php.
+
+    Incluir @csrf para proteger contra ataques CSRF.
+
+    El campo name="password" permitirá al controlador recibir la contraseña y validarla.
+
+
+Verificamos que la ruta exista en web.php
+
+Debemos asegúrarnos de tener en routes/web.php, el siguiente metodo:
+
+
+
+    use App\Http\Controllers\Lock\LockscreenController;
+
+    Route::post('/unlock', [LockscreenController::class, 'unlock'])->name('unlock');
+
+ Y que debemos contar con nuestro método unlock() en LockscreenController, debe ser algo como esto:
+
+        public function unlock(Request $request)
+        {
+            $request->validate([
+                'password' => 'required',
+            ]);
+
+            if (Hash::check($request->password, auth()->user()->password)) {
+                session(['locked' => false]); // desbloquea
+                return redirect()->intended('/home'); // o a donde quieras volver
+            }
+
+            return back()->withErrors(['password' => 'Contraseña incorrecta']);
+        }
+            
+
+Con eso, ya se tiene todo funcionando:
+
+    Formulario funcional
+
+    Ruta activa
+
+    Middleware bloqueando
+
+    Desbloqueo por contraseña            
+
+
+Para mostrar el mensaje de error cuando la contraseña del lockscreen es incorrecta, solo necesitamos colocar ese bloque de Blade justo después del 
+
+<div class="help-block text-center">.
+
+En el fragmento con el bloque de error integrado:
+
+
+Ubicación correcta en tu lockscreen.index
+
+Buscamos esta parte de nuestro código:
+
+    <div class="help-block text-center">
+        Introduzca su password para recuperar su sesión
+    </div>
+
+Y colocamos inmediatamente debajo esto:
+
+    @if ($errors->any())
+        <div class="text-danger text-center mt-2">
+            {{ $errors->first('password') }}
+        </div>
+    @endif
+
+Resultado esperado
+
+Quedaría así:
+
+        <!-- Credenciales del lockscreen (contenido en el formulario) -->
+            <form class="lockscreen-credentials" method="POST" action="{{ route('unlock') }}">
+            @csrf
+            <div class="input-group">
+                <input type="password" name="password" class="form-control" placeholder="Password" required>
+                <div class="input-group-append">
+                <button type="submit" class="btn">
+                    <i class="fa fa-arrow-right"></i>
+                </button>
+                </div>
+            </div>
+            </form>
+            <!-- /.credenciales del lockscreen -->
+        </div>
+
+        {{-- Mostrar mensaje de errorcuanto el usuario introduzca la contraseña de manera incorrecta --}}
+        @if ($errors->any())
+            <div class="text-danger text-center mt-2">
+                {{ $errors->first('password') }}
+            </div>
+        @endif
+
+
+
+        <!-- /.item del lockscreen -->
+        <div class="help-block text-center">
+            Introduzca su password para recuperar su sesión
+        </div>
+
+
+Esto mostrará un mensaje como:
+
+    "Contraseña incorrecta"
+
+…cuando el usuario ingrese mal su password, gracias al retorno desde tu LockscreenController@unlock:
+
+return back()->withErrors(['password' => 'Contraseña incorrecta']);    
+
+
+
+Como no hemos eliminado el home para que funcione con el clousure, tenemos un detalle en nuestro controladore de Homecontroller ya que tenemos una ruta inicial llamada home que nos lleva al home y no al dashboard construido de la siguiente manera:
+
+Route::get('home', function(){
+    return view('admin.dashboard');
+})->middleware('auth');
+
+y en nuestra ruta protegida tamben en el homeController tenemos :
+
+Route::middleware(['auth', 'lockscreen'])->group(function () {
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    
+    // Otras rutas protegidas aquí
+    // Route::get('/perfil', [PerfilController::class, 'index']);
+});
+
+Lo que queremos es que cuando se desbloquee la pantalla locscreen nos lleve a home que incluye el dashboard es decir a la ruta home pero que este protegida con el middleware
+
+
+Problema:
+
+Actualmente tenemos dos rutas distintas apuntando a /home:
+
+    Esta ruta directa con un closure (no usa controlador):
+
+        Route::get('home', function(){
+            return view('admin.dashboard');
+        })->middleware('auth');
+
+Esta ruta que sí usa el controlador y aplica también el middleware lockscreen:
+
+    Route::middleware(['auth', 'lockscreen'])->group(function () {
+        Route::get('/home', [HomeController::class, 'index'])->name('home');
+    });
+
+Esto causa confusión y conflicto porque Laravel usará la primera definición encontrada para /home, ignorando la segunda.
+
+Para dar Solución:
+
+Debemos eliminar o comentar la primera ruta y quedarte solo con la versión protegida con lockscreen y auth. Así:
+
+    //  Eliminamos o comenta esta
+    // Route::get('home', function(){
+    //     return view('admin.dashboard');
+    // })->middleware('auth');
+
+Y dejamos únicamente:
+
+    //  Ruta protegida correctamente
+    Route::middleware(['auth', 'lockscreen'])->group(function () {
+        Route::get('/home', [HomeController::class, 'index'])->name('home');
+    });
+
+
+En el HomeController.php
+
+Nos aseguramos de que el método index() devuelva correctamente el dashboard:
+
+    public function index()
+    {
+        return view('admin.dashboard');
+    }
+
+En el método unlock() de LockscreenController
+
+Cuando desbloqueamos, redirigimos a la ruta con nombre home:
+
+    return redirect()->route('home');
+
+El Resultado:
+
+    /home mostrará el dashboard.
+
+Esta ruta estará protegida tanto por auth como por tu middleware lockscreen.
+
+El usuario solo accede tras autenticarse y desbloquear la sesión.
+
+
+
+como observacin en nuestro editor nos marca el siguiente mensaje:
+Undefined type 'Hash'
+
+en la siguiente linea de codigo del LockscreenController:
+
+    if (!\Hash::check($request->password, auth()->user()->password)) {
+                return back()->withErrors(['password' => 'Contraseña incorrecta']);
+            }
+
+
+Ese mensaje "Undefined type 'Hash'" que vemos en nuestro editor VS Code u otro con inspección de tipos,  debemos entender que no es un error de ejecución de Laravel, sino una advertencia del sistema de análisis estático del editor que no encuentra la clase Hash referenciada con \Hash.
+
+Aunque Laravel la reconoce porque el alias Hash está definido en el archivo config/app.php, el editor necesita la importación explícita para reconocerla correctamente.
+
+Solución recomendada:
+
+Agregamos esta línea al principio del archivo LockscreenController.php:
+
+    use Illuminate\Support\Facades\Hash;
+
+Y luego remueve la barra invertida en la línea donde usas Hash::check:
+
+if (!Hash::check($request->password, auth()->user()->password)) {
+    return back()->withErrors(['password' => 'Contraseña incorrecta']);
+}
+
+Como Resultado
+
+    Laravel ya lo reconocía y funcionaba.
+
+    Pero ahora nuestro editor también sabrá de dónde viene Hash y no marcará advertencia alguna.
+
+
 Manos a la obra.    
 
+
+Tamien vamos apersonalizar nuestro mensaje de error.
+
+
+@if ($errors->any())
+    <div class="alert alert-danger text-center mt-3" role="alert" style="background-color: #f8d7da; color: #842029; border-radius: 8px; padding: 10px;">
+        <i class="fa fa-exclamation-triangle"></i> {{ $errors->first('password') }}
+    </div>
+@endif
+
+Pero ahora queremos acultarlo pasads 3 segundos.
+@if ($errors->any())
+    <div id="password-error" class="alert alert-danger text-center mt-3" role="alert" style="background-color: #f8d7da; color: #842029; border-radius: 8px; padding: 10px;">
+        <i class="fa fa-exclamation-triangle"></i> {{ $errors->first('password') }}
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('#password-error').fadeOut('slow');
+            }, 3000); // 3 segundos
+        });
+    </script>
+@endif
+
+
+Probamos la primera opcion perno no funciono con valilla javascrip por lo que probamos esta segunda opcion
+
+@if ($errors->any())
+    <div id="password-error" class="alert alert-danger text-center mt-3" role="alert" style="background-color: #f8d7da; color: #842029; border-radius: 8px; padding: 10px;">
+        <i class="fa fa-exclamation-triangle"></i> {{ $errors->first('password') }}
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const errorBox = document.getElementById('password-error');
+                if (errorBox) {
+                    errorBox.style.transition = 'opacity 1s ease';
+                    errorBox.style.opacity = '0';
+                    setTimeout(() => errorBox.remove(), 1000);
+                }
+            }, 3000); // 3 segundos
+        });
+    </script>
+@endif
+
+
+Algo a tener en ncunta es que si nuestro sistema detecta inactividad por cierto tiempo bloqueara en automatico nuestra sesión vamso a establecer un tiempode 5 minutos.
+
+Gestión del tiempo de inactividad (inactivity timeout)
+-----------------------------------
+ 
+ 
+ Estrategia:
+
+    Middleware para detectar inactividad.
+
+    Javascript en el frontend para detectar tiempo sin interacción.
+
+    Redirección al /lockscreen si el usuario está inactivo.
+
+
+Paso a paso:
+
+A. En el middleware LockscreenMiddleware, agrega esto:
+
+$inactivityLimit = 300; // 5 minutos
+$lastActivity = session('last_activity');
+
+if ($lastActivity && (time() - $lastActivity > $inactivityLimit)) {
+    session(['locked' => true]);
+}
+
+session(['last_activity' => time()]);
+
+
+Parece que este codigo esta fuera de lugar por loq ue lo vamos a agregrar en otro middleware
+
+
+
+Para ello creamos nuestro middleware
+Solución estructurada
+1. Crea un Middleware llamado InactivityMiddleware
+
+Ejecuta en consola:
+
+php artisan make:middleware InactivityMiddleware
+
+Esto crea el archivo en:
+app/Http/Middleware/InactivityMiddleware.php
+
+
+2. Agrega el código de control de inactividad en el middleware
+
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+
+class InactivityMiddleware
+{
+    public function handle(Request $request, Closure $next)
+    {
+        $inactivityLimit = 300; // 5 minutos en segundos
+        $lastActivity = session('last_activity');
+
+        if ($lastActivity && (time() - $lastActivity > $inactivityLimit)) {
+            session(['locked' => true]);
+        }
+
+        session(['last_activity' => time()]);
+
+        return $next($request);
+    }
+}
+
+3. Registra el middleware en app/Http/Kernel.php
+
+Busca el arreglo llamado $middlewareGroups['web'] o crea uno nuevo:
+
+protected $middlewareGroups = [
+    'web' => [
+        // ...
+        \App\Http\Middleware\InactivityMiddleware::class,
+    ],
+];
+
+O si prefieres usarlo solo en rutas específicas, registra en $routeMiddleware:
+
+protected $routeMiddleware = [
+    // ...
+    'inactivity' => \App\Http\Middleware\InactivityMiddleware::class,
+];
+
+Y luego en web.php:
+
+Route::middleware(['auth', 'inactivity', 'lockscreen'])->group(function () {
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+});
+
+🔒 Tu controlador LockscreenController queda perfecto como está.
+
+No necesitas mover nada del controlador, ya que el control de la sesión por inactividad debe hacerse desde el middleware, para que se aplique en cada petición del usuario.
+
+
+Tu controlador LockscreenController queda perfecto como está.
+
+No necesitas mover nada del controlador, ya que el control de la sesión por inactividad debe hacerse desde el middleware, para que se aplique en cada petición del usuario.
+🚀 Resultado
+
+    Cuando pasan más de 5 minutos sin actividad, se marca session('locked') = true.
+
+    El middleware lockscreen puede detectar esta bandera y redirigir al lockscreen.
+
+    El controlador desbloquea correctamente si la contraseña es válida.
+
+
+
+B. Alternativamente (o adicionalmente) con JavaScript:
+
+Agrega esto al layout general (layouts/app.blade.php o tu base):
+
+<script>
+let timeout;
+const logoutTime = 5 * 60 * 1000; // 5 minutos
+
+function resetTimer() {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+        window.location.href = '/lockscreen';
+    }, logoutTime);
+}
+
+['click', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(evt =>
+    document.addEventListener(evt, resetTimer)
+);
+
+resetTimer();
+</script>
+
+    Puedes hacer esto solo en las páginas protegidas para no afectar otras.
+
+✅ ¿Qué ganamos?
+
+    Mejor UX en la pantalla de bloqueo.
+
+    Mensajes más amigables e intuitivos.
+
+    Seguridad reforzada por inactividad.
+
+    Control visual completo sin salir de tu diseño.
+
+
+
+Lo que falta ahora es que despues de que pase un tiempo determinado, la pantalla de lockscreen se active automaticamente por lo que modificamos el siguiente codigo:
+
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+
+class InactivityMiddleware
+{
+    public function handle(Request $request, Closure $next)
+    {
+        $inactivityLimit = 300; // 5 minutos en segundos
+        $lastActivity = session('last_activity');
+
+        if ($lastActivity && (time() - $lastActivity > $inactivityLimit)) {
+            session(['locked' => true]);
+        }
+
+        session(['last_activity' => time()]);
+
+        return $next($request);
+    }
+}
+
+Por este:
+
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+
+class InactivityMiddleware
+{
+    public function handle(Request $request, Closure $next)
+    {
+        $inactivityLimit = 300; // 5 minutos en segundos
+        $lastActivity = session('last_activity');
+
+        if ($lastActivity && (time() - $lastActivity > $inactivityLimit)) {
+            session(['locked' => true]);
+
+            // Si está autenticado, redirige a la pantalla de bloqueo
+            if (auth()->check()) {
+                return redirect()->route('lockscreen');
+            }
+        }
+
+        // Actualiza el tiempo de la última actividad
+        session(['last_activity' => time()]);
+
+        return $next($request);
+    }
+}

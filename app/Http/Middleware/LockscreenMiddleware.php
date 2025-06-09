@@ -31,4 +31,20 @@ class LockscreenMiddleware
         return $next($request);
     }
 
+
+    public function unlock(Request $request)
+    {
+        $request->validate([
+            'password' => 'required',
+        ]);
+
+        if (Hash::check($request->password, auth()->user()->password)) {
+            session(['locked' => false]); // desbloquea
+            return redirect()->intended('/home'); // para evolver el dashboard
+        }
+
+        return back()->withErrors(['password' => 'Contraseña incorrecta']);
+    }
+
+
 }

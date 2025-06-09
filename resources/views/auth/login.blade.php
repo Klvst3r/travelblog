@@ -44,6 +44,9 @@
         <!-- Estilos del Login -->
     <link rel="stylesheet" href="../dashboard/build/css/style.css">
 
+    Fontawesome
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 
   <body class="login">
@@ -105,18 +108,25 @@
 
                 <div class="item form-group">
       
-                       
                       <input type="submit" value="Ingresar" class="btn btn-pill text-white btn-block btn-primary">
-                      
-
                     
                 </div>
 
               </form>
           
                {{-- ALERTA DE SESIÓN --}}
-                @if(session('status'))
-                    <div id="logout-alert" class="alert alert-success text-center">
+               @if(session('status'))
+                    <div id="logout-alert" class="alert text-center" role="alert"
+                        style="
+                            background-color: #d1e7dd;
+                            color: #0f5132;
+                            border: 1px solid #0f5132;
+                            border-radius: 8px;
+                            padding: 10px 15px;
+                            margin-top: 20px;
+                            box-shadow: 0 0 10px rgba(15, 81, 50, 0.1);
+                        ">
+                        <i class="fa fa-check-circle" style="margin-right: 8px;"></i>
                         {{ session('status') }}
                     </div>
                 @endif
@@ -148,20 +158,36 @@
     </div>
 
     <!-- Cierre despues de 5 segundos -->
-    @if(session('status'))
-      <script>
-          // Esperar 5 segundos para mostrar el formulario y ocultar la alerta
-          window.addEventListener('load', function () {
-              setTimeout(function () {
-                  const alertBox = document.getElementById('logout-alert');
-                  const loginForm = document.getElementById('login-form');
+   @if(session('status'))
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const alertBox = document.getElementById('logout-alert');
+            const loginForm = document.getElementById('login-form');
 
-                  if (alertBox) alertBox.style.display = 'none';
-                  if (loginForm) loginForm.style.display = 'block';
-              }, 3000); // 3000 ms = 3 segundos
-          });
-      </script>
-      @endif
+            if (loginForm) {
+                loginForm.style.display = 'none'; // Ocultar login mientras se muestra la alerta
+            }
+
+            // Después de 3 segundos
+            setTimeout(() => {
+                if (alertBox) {
+                    alertBox.style.transition = 'opacity 1s ease';
+                    alertBox.style.opacity = '0';
+
+                    // Luego de 1 segundo extra, quitar la alerta y mostrar el login
+                    setTimeout(() => {
+                        alertBox.remove();
+                        if (loginForm) {
+                            loginForm.style.display = 'block';
+                        }
+                    }, 1000);
+                }
+            }, 3000);
+        });
+    </script>
+    @endif
+
+
 
 
 

@@ -1032,3 +1032,55 @@ Al considerarse como una posible brecha de seguridad, se elimina del login el si
                     </div> --}}
                 </div>
               
+
+
+
+Paa finalizar los estilos, sustituimos el codigo al final del script siguente:
+
+ @if(session('status'))
+      <script>
+          // Esperar 5 segundos para mostrar el formulario y ocultar la alerta
+          window.addEventListener('load', function () {
+              setTimeout(function () {
+                  const alertBox = document.getElementById('logout-alert');
+                  const loginForm = document.getElementById('login-form');
+
+                  if (alertBox) alertBox.style.display = 'none';
+                  if (loginForm) loginForm.style.display = 'block';
+              }, 3000); // 3000 ms = 3 segundos
+          });
+      </script>
+      @endif
+
+
+Por el siguiente:
+
+    <!-- Cierre despues de 5 segundos -->
+   @if(session('status'))
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const alertBox = document.getElementById('logout-alert');
+            const loginForm = document.getElementById('login-form');
+
+            if (loginForm) {
+                loginForm.style.display = 'none'; // Ocultar login mientras se muestra la alerta
+            }
+
+            // Después de 3 segundos
+            setTimeout(() => {
+                if (alertBox) {
+                    alertBox.style.transition = 'opacity 1s ease';
+                    alertBox.style.opacity = '0';
+
+                    // Luego de 1 segundo extra, quitar la alerta y mostrar el login
+                    setTimeout(() => {
+                        alertBox.remove();
+                        if (loginForm) {
+                            loginForm.style.display = 'block';
+                        }
+                    }, 1000);
+                }
+            }, 3000);
+        });
+    </script>
+    @endif

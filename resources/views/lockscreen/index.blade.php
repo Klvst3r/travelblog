@@ -62,7 +62,11 @@
     <img src="img/escudo-gris.png" id="icon" alt="Escudo Tribunal superior de Justicia del Estado de Tlaxcala">
   </div>
   <!-- User name -->
-  <div class="lockscreen-name">Usuario en Sessión: {{ auth()->user()->name }}</div>
+  <div class="lockscreen-name">
+    {{-- Usuario en Sessión: {{ auth()->user()->name }} --}}
+    Sesión bloqueada. Bienvenido de nuevo, {{ auth()->user()->name }}
+  
+  </div>
 
   <!-- INICIA ITEM - LOCK SCREEN -->
   <div class="lockscreen-item">
@@ -73,9 +77,10 @@
     <!-- /.imagen lockscreen -->
 
     <!-- Credenciales del lockscreen (contenido en el formulario) -->
-    <form class="lockscreen-credentials">
+    <form class="lockscreen-credentials" method="POST" action="{{ route('unlock') }}">
+      @csrf
       <div class="input-group">
-        <input type="password" class="form-control" placeholder="Password">
+        <input type="password" name="password" class="form-control" placeholder="Password" required>
         <div class="input-group-append">
           <button type="submit" class="btn">
             <i class="fa fa-arrow-right"></i>
@@ -84,12 +89,40 @@
       </div>
     </form>
     <!-- /.credenciales del lockscreen -->
-
   </div>
+
+  {{-- Mostrar mensaje de errorcuanto el usuario introduzca la contraseña de manera incorrecta --}}
+  @if ($errors->any())
+    <div id="password-error" class="alert alert-danger text-center mt-3" role="alert" style="background-color: #f8d7da; color: #842029; border-radius: 8px; padding: 10px;">
+        <i class="fa fa-exclamation-triangle"></i> {{ $errors->first('password') }}
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const errorBox = document.getElementById('password-error');
+                if (errorBox) {
+                    errorBox.style.transition = 'opacity 1s ease';
+                    errorBox.style.opacity = '0';
+                    setTimeout(() => errorBox.remove(), 1000);
+                }
+            }, 3000); // 3 segundos
+        });
+    </script>
+  @endif
+
+
+
+
+
   <!-- /.item del lockscreen -->
   <div class="help-block text-center">
     Introduzca su password para recuperar su sesión
   </div>
+
+  
+
+
   <div class="text-center">
     {{-- <a href="/logout">O inicialice sesión con un usuario diferente</a> --}}
     <form action="/logout " method="POST">

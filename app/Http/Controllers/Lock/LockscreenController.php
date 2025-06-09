@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 //Use de sesiones de Laravel
 use Illuminate\Support\Facades\Session;
 
+// Importacion del alias  Hash en los facades
+use Illuminate\Support\Facades\Hash;
+
 
 class LockscreenController extends Controller
 {
@@ -25,12 +28,14 @@ class LockscreenController extends Controller
         }
 
         // Validar password del usuario logueado
-        if (!\Hash::check($request->password, auth()->user()->password)) {
-            return back()->withErrors(['password' => 'Contraseña incorrecta']);
+        if (!Hash::check($request->password, auth()->user()->password)) {
+            return back()->withErrors(['password' => ' Contraseña incorrecta, por favor intente ']);
         }
 
         // Desbloquear
         session()->forget('locked');
-        return redirect('/home'); //Dashboard después del desbloqueo
+        //return redirect('/home'); //Dashboard después del desbloqueo
+        //Redirigimos la ruta con nombre home 
+        return redirect()->route('home');
     }
 }

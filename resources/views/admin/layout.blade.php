@@ -165,11 +165,15 @@
 
             <!-- /menu footer buttons -->
             <div class="sidebar-footer hidden-small">
-              <a data-toggle="tooltip" data-placement="top" title="Settings">
-                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+              
+              
+              <a href="#" id="btnDarkMode" data-toggle="tooltip" data-placement="top" title="Dark Mode">
+                <span class="glyphicon glyphicon-adjust" aria-hidden="true"></span>
               </a>
-              <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+
+
+              <a href="#" id="btnFullscreen" data-toggle="tooltip" data-placement="top" title="FullScreen">
+                <span id="fullscreenIcon" class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
               </a>
             
 
@@ -178,9 +182,13 @@
               </a>
 
 
-              <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
+              <form id="logout-form-bottom" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
+            
+            <a data-toggle="tooltip" data-placement="top" title="Logout" href="#" onclick="event.preventDefault(); document.getElementById('logout-form-bottom').submit();">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-              </a>
+            </a>
             </div>
             <!-- /menu footer buttons -->
           </div>
@@ -346,6 +354,50 @@
         <!-- /footer content -->
       </div>
     </div>
+
+
+    <!-- Fullscreen -->
+
+    <script>
+      const btnFullscreen = document.getElementById('btnFullscreen');
+      const icon = document.getElementById('fullscreenIcon');
+
+      btnFullscreen.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen();
+          icon.classList.remove('glyphicon-fullscreen');
+          icon.classList.add('glyphicon-resize-small');
+          btnFullscreen.setAttribute('title', 'Restaurar');
+          $(btnFullscreen).tooltip('dispose').tooltip();
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          }
+          icon.classList.remove('glyphicon-resize-small');
+          icon.classList.add('glyphicon-fullscreen');
+          btnFullscreen.setAttribute('title', 'FullScreen');
+          $(btnFullscreen).tooltip('dispose').tooltip();
+        }
+      });
+
+      document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) {
+          icon.classList.remove('glyphicon-resize-small');
+          icon.classList.add('glyphicon-fullscreen');
+          btnFullscreen.setAttribute('title', 'FullScreen');
+          $(btnFullscreen).tooltip('dispose').tooltip();
+        } else {
+          icon.classList.remove('glyphicon-fullscreen');
+          icon.classList.add('glyphicon-resize-small');
+          btnFullscreen.setAttribute('title', 'Restaurar');
+          $(btnFullscreen).tooltip('dispose').tooltip();
+        }
+      });
+
+    </script>
+
 
     <!-- jQuery -->
     <script src="../dashboard/vendors/jquery/dist/jquery.min.js"></script>

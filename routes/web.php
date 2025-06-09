@@ -10,6 +10,10 @@ use App\Http\Controllers\Auth\RegisterController;
 
 use App\Http\Controllers\Lock\LockscreenController;
 
+//Rutas protegidas
+use App\Http\Controllers\HomeController;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,9 +34,10 @@ Route::get('/', function () {
     return view('welcome', compact('posts')); //Envia un array ['posts' => $posts]
 });
 
-Route::get('home', function(){
-    return view('admin.dashboard');
-})->middleware('auth');
+//Ya no utilizamos este clousure, es decir no utilizamos el controlador
+// Route::get('home', function(){
+//     return view('admin.dashboard');
+// })->middleware('auth');
 
 Route::get('posts', function(){
     return Post::all();
@@ -85,3 +90,21 @@ Route::post('/unlock', [LockscreenController::class, 'unlock'])->name('unlock');
 // Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
 // Route::get('password/reset/{token}','Auth\ResetPässwordController@showResetForm')->name('password.reset');
 // Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+
+
+// Rutas protegidas
+//home
+// Rutas protegidas por autenticación y lockscreen
+/*En esta ruta que aplica el middleware y utilizamos el controlador esta protegida*/
+Route::middleware(['auth', 'lockscreen'])->group(function () {
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    
+    // Otras rutas protegidas aquí
+    // Route::get('/perfil', [PerfilController::class, 'index']);
+});
+
+
+//Middleware de inactividad
+Route::middleware(['auth', 'inactivity', 'lockscreen'])->group(function () {
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+});

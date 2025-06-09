@@ -23,6 +23,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        // Esto servia para el clousure en el controller para redirigir a nuestra vista home
+        //return view('home');
+
+        //ahoa tenemos apuntando a nuestro daashboard
+        return view('admin.dashboard');
     }
 }
