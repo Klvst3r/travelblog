@@ -44,7 +44,7 @@
         <!-- Estilos del Login -->
     <link rel="stylesheet" href="../dashboard/build/css/style.css">
 
-    Fontawesome
+    {{-- Fontawesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 </head>

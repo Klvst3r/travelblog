@@ -53,6 +53,36 @@ Para usar laravel/ui, ejecutamos los siguientes comandos:
 
     $ composer require laravel/ui
 
+
+instalara los paquetes necesarios:
+
+
+Installing dependencies from lock file (including require-dev)
+Package operations: 1 install, 0 updates, 0 removals
+  - Installing laravel/ui (v4.6.1): Extracting archive
+Generating optimized autoload files
+> Illuminate\Foundation\ComposerScripts::postAutoloadDump
+> @php artisan package:discover --ansi
+
+   INFO  Discovering packages.  
+
+  laravel/pail ......................................................................................................... DONE
+  laravel/sail ......................................................................................................... DONE
+  laravel/tinker ....................................................................................................... DONE
+  laravel/ui ........................................................................................................... DONE
+  nesbot/carbon ........................................................................................................ DONE
+  nunomaduro/collision ................................................................................................. DONE
+  nunomaduro/termwind .................................................................................................. DONE
+
+80 packages you are using are looking for funding.
+Use the `composer fund` command to find out more!
+> @php artisan vendor:publish --tag=laravel-assets --ansi --force
+
+
+
+
+--------------
+
 Esto modificara el composer.json, composer.lock para agregar los nuevos paquetes a nuestra aplicación en nuestro caso sera la version 4.6 de Larvel/UI
 
 Instalamos el paquete con:
@@ -114,6 +144,9 @@ Dentro de las vistas generara los siguiente;
 
 resources/views/auth/
 	/passwords				Recuperqcion de contraseña
+        confirm.blade.php
+        email.blade.php
+        reset.blade.php
 	login.blade.php			login de acceso
 	register.blade.php		recuperación de contraseña
     verify.blade.php        Verificacion de autenticación
@@ -150,7 +183,7 @@ Ejecutamos
 
 	$ php artisan make:auth --views
 
-Si despues de haber cipiado las rutas de login
+Si despues de haber copiado las rutas de login
 
 //Rutas de autenticacion
 Route::get('login','Auth\LoginController@showLoginForm')->name('login');
@@ -314,7 +347,7 @@ Esto normalmente ocurre cuando:
 
     Faltan dependencias necesarias, particularmente si no se ha ejecutado composer install después de clonar o actualizar el repositorio.
 
-    El archivo del trait no existe (lo cual es raro si estás usando Laravel UI).
+    El archivo del trait no existe (lo cual es raro si estamos usando Laravel UI).
 
     El autoload de Composer está desactualizado.
 
@@ -325,13 +358,13 @@ Para dar solución ejecutamos:
 
 Esto descargará todas las dependencias necesarias, incluidas las del sistema de autenticación (como el trait AuthenticatesUsers).
 
-2. (Opcional pero recomendable): Limpia y regenera el autoload
+2. (Opcional pero recomendable): Limpia y regenerar el autoload
 
     $ composer dump-autoload
 
 3. Verifica el Trait
 
-Abrimos el archivo app/Http/Controllers/Auth/LoginController.php y asegúrate de que tengas esta línea:
+Abrimos el archivo app/Http/Controllers/Auth/LoginController.php y asegúrarnos de tener esta línea:
 
     use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -342,15 +375,15 @@ Y que esté siendo usado:
         use AuthenticatesUsers;
     }
 
-4. Reinicia el servidor
+4. Reiniciamos el servidor
 
-Después de estos pasos, vuelve a correr:
+Después de estos pasos, volvemos a correr el server:
 
-php artisan serve --port=8000
+    $ php artisan serve --port=8000
 
-Y prueba de nuevo la ruta:
+Y probamos de nuevo la ruta:
 
-http://localhost:8000/login
+    http://localhost:8000/login
 
 
 Conesto debera solucionar el problema.
