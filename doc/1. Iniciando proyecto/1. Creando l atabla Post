@@ -1,0 +1,47 @@
+Iniciando el proyecto vamos a arrancar creando la mirgacion 
+
+    $ php artisan migrate
+
+
+Base de datos
+
+create database travelblog:
+
+Se crean las tablas con la migración
+
+Migrations -> tabla para el control de las migraciones
+password_reset -> 
+Users -> Tabla de usuarios
+
+
+Partiendo de la mirgacin inicial de usuarios definia en las migraciones por defatult 
+
+
+Crear la tabla para almacenar los post, 
+    $ php artisan migrate:rollback //se deshacen las migraciones
+
+Crear la mirgacion  y el modelo que es una clase que se conecta a la bd para extraer información, entonces necesitamos una migración, un modelo y un controlador
+
+Modelo y migracion
+
+El modelo debe estar en singular 
+    $ php artisan make model Post -m //con migracion
+
+en la migracion definimos el esquema de la tabla post
+
+La tabla si es en pkural
+  public function up(): void
+    {
+        Schema::create('posts', function (Blueprint $table) {   //Tabla post
+            $table->id();
+            $table->string('title');                            //Titulo Post
+            $table->mediumText('excerpt');                      //Contenido
+            $table->text('body');                               //Cuerpo del Post
+            $table->timestamp('published_at')->nullable();      //Fecha publicació
+            $table->unsignedInteger('category_id');             // En cada post vamos a almacenar el id de la categoria para hacer referencia a el
+            $table->timestamps();
+        });
+    }
+
+Ejecutamos la migracion
+    $ php artisan migrate
