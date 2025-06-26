@@ -1,0 +1,52 @@
+Rutas:
+
+Routes Nuestro trabajo comienza en el desarrollo y definición de las rutas (routes), estas son unas de las capas mas importantes en el Framework debido a que el route se encarga de manejar el flujo de solicitudes y respuestas, desde y hacia el cliente.
+
+La carpeta Routes está compuesto por: • api.php: Aquí se definen todas las rutas de la APIs que puedan tener nuestra app. • channels.php: Aquí se definen los canales de transmisión de evento (ej. notificaciones en tiempo real). • console.php: en este archivo definimos comando de consola. • web.php: Aquí se definen las rutas de nuestra aplicación web (HTTP).
+
+
+Dentro de la carpeta de rutas:
+
+web.php:
+Todo lo que tenga que ver con desarrollo web, trabajar con este archivo significa que se ativa todo lo ncesario a nivel, web, como los estados de sesiones, protección a formularios, y otras configuraciones.
+
+
+as rutas en Laravel son utilizadas para definir cómo se debe responder a una petición, es decir, indicar qué controlador debe manejar la petición y qué método de ese controlador debe ser ejecutado.
+
+Para definir una ruta en Laravel, se usa el método Route:: seguido del verbo HTTP correspondiente (get, post, put, delete, etc.), seguido de la URL que se desea asociar con la ruta y el controlador y método que se encargarán de manejar la petición.
+
+
+
+Para api, los controladores, modelos y bases de datos son lo mismo. Lo único que cambia es que en lugar de retornar vistas al cliente, se retornan objetos JSON. Y en lugar de declarar las rutas en web.php, lo haces en api.php, que automáticamente agrega "/api" a cada endpoint.
+
+
+
+
+Comandos:
+
+Para ver el de tus rutas creadas puedes utilizar el comando artisan
+
+php artisan route:list
+
+
+También podemos usar la versión abreviada:
+
+php artisan r:l
+
+
+
+Rutas:
+
+cuando comento que se hace una consulta a la base de datos, se hace en este archivo de rutas o en un método de un controlador que es llamado por una ruta? . Comparto mi resultado de la consulta con request
+
+
+Como lo comenta Fernando, la consulta a la base de datos se hace a través del controlador y el controlador es asignado a la ruta. Aquí dejo un ejemplo:
+
+Route::get('miruta', [App\Http\Controllers\MiControladorController::class, 'show']);
+
+En este caso la ruta se llama "miruta" y el controlador es "MiControladorController" que a la vez tiene un método de nombre show. En el método **show **se puede hacer la consulta a la base de datos, por ejemplo para mostrar información.
+
+
+
+
+En ese caso, en el "archivo de rutas" se haría la llamada a un método en algún controlador. Ahí se realizaría la consulta a base de datos. Después esos datos pueden ser devueltos a, por ejemplo, una vista para visualizarlos en la web.

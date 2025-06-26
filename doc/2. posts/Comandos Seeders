@@ -1,0 +1,12 @@
+Cuando estamos desarrollando y probando nuestras aplicaciones, es necesario tener datos de prueba en la base de datos, para ir verificando el comportamiento de la aplicación, y llenar estos datos manualmente puede consumir gran cantidad de nuestro tiempo, sin embargo, con Laravel, tenemos a disposición los Seeders que nos ayudan con esta tarea.
+
+Vamos a tener un  seeder de categorias dentro  de PostsTableSeeder, los seeders se hacen por conveniencia; la intención de los seeders es llenar la base de datos, no es regla utilizar un seeder por cada modelo.
+
+
+Comando para crear seeders
+
+    $ php artisan make:seeder PostsTableSeeder
+
+Para ejecutar el seeder
+
+    $ php artisan db:seed

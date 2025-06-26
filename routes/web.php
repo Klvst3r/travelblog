@@ -8,7 +8,13 @@ use App\Models\Post;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 
+
+use App\Http\Controllers\PagesController;
+
 use App\Http\Controllers\Lock\LockscreenController;
+
+//Posts de admin
+use App\Http\Controllers\Admin\PostsController;
 
 //Rutas protegidas
 use App\Http\Controllers\HomeController;
@@ -25,14 +31,16 @@ use App\Http\Controllers\HomeController;
 |
 */
 
-Route::get('/', function () {
-    // $posts = Post::all();     //Anteriormente debvolvia todos los post
+// Route::get('/', function () {
+//     // $posts = Post::all();     //Anteriormente debvolvia todos los post
 
-    $posts = Post::latest('published_at')->get();                    // Los ordena por fecha de creación
-    //return view('welcome')->with('posts', $posts);  //Devolvemos los valores de la consylta a la vista
+//     $posts = Post::latest('published_at')->get();                    // Los ordena por fecha de creación
+//     //return view('welcome')->with('posts', $posts);  //Devolvemos los valores de la consylta a la vista
 
-    return view('welcome', compact('posts')); //Envia un array ['posts' => $posts]
-});
+//     return view('welcome', compact('posts')); //Envia un array ['posts' => $posts]
+// });
+
+Route::get('/', [PagesController::class, 'index'])->name('posts.index');
 
 //Ya no utilizamos este clousure, es decir no utilizamos el controlador
 // Route::get('home', function(){
@@ -42,6 +50,29 @@ Route::get('/', function () {
 Route::get('posts', function(){
     return Post::all();
 });
+
+
+//Catalogo de Marca
+Route::get('/catalogos/marca', function () {
+    return view('catalogos.marca.index');
+})->name('catalogos.marca');
+
+//Grupo para la adminisración
+Route::group(['prefix' => 'home'], function(){
+    Route::get('home/posts', [PostsController::class, 'index']);
+} );
+
+//Posts
+//Route::get('/posts/index', [PostController::class, 'index'])->name('posts.index');
+
+
+//Ruta para post de admin
+//Route::get('home/posts','Admin\PostsController@index');
+//Route::get('home/posts', [PostsController::class, 'index']);  //Pasa al grupo de home
+
+
+
+
 
 //Auth::routes();
 

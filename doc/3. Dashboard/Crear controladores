@@ -1,0 +1,115 @@
+Controladores en Laravel - Gestión de Rutas y Funciones
+
+Comandos
+
+    $ php artisan make:controller PageController //sin estructura
+
+Comando para crear controlador con recursos del controlador
+
+    $ php artisan make:controller PostController -r
+
+
+
+Definir grupo de rutas
+
+Para tener control sobre las rutas que vamos creando, con este comando de artisan podemos ver que rutas estan registradas.
+
+    $ php artisan route:list
+
+Filtrar rutas que compienzen por alguna palabra asi:
+
+    $ php artisan route:list --path=blog
+
+    $ php artisan route:list --path=articles
+
+Esconder las rutas de paquetes de terceros (esta es muy util, para ver solamente las rutas que hemos creado)
+
+    $ php artisan route:list --except-vendor
+
+
+
+En resumen:
+
+    Un controlador es sirve para aislar la lógica de las rutas
+
+    cada ruta debe tener un controlador.
+
+
+Comando:
+    $ Create Route::controller by group
+
+
+POr qué se coloca class después de PageController en el archivo web.php
+
+
+Se usa en clases con namespace, haz este ejemplo y ve el resultado :)
+
+    <?php
+
+    namespace App;
+
+    class Example { }
+
+    echo Example::class;    
+
+
+Despues de haber creado el controlador y definir la estructur inicial de los metodos a utilizar, vamos a la ruta y definir la ruta de importracion del controlador creado
+
+
+Con el alias de la caprtea y a partir de ahi la ruta de la carpeta
+
+Ahora podremos r al controlador y llmar a las vistas
+
+Para que ahora el manejo de las peticionesse haga desde un controlador
+
+Tranformando ahora la ruta de la siguiente manera:
+
+    Route::get('/', [PageController::class, 'home'])->name('home');
+
+Basicamente decimos que el metodo post es el que va a responder y se encuentra dentro de este controlador
+
+
+Lo unico que escrribios de una forma mas organizada a traves de un grupo de rutas y eliminamos el acceo al controlador ya que esta difinido de manera inicial al definir el grupod e rutas
+
+Quedandono solo con la ruta y el metodo
+
+
+Route::controller(PageController::class)->group(function(){
+   
+    Route::get('/', 'home')->name('home');
+
+    Route::get('blog', 'blog')->name('blog');;
+
+    Route::get('blog/{slug}', 'post')->name('post');;
+});
+
+
+
+
+Para poder crear nuestro controlador tenemos
+    $ php artisan make:controller PostController
+
+
+Nota sobre controladores
+-----
+A la hora de crear un controlador siempre se debe de crear en singular.
+
+Por ejemplo si creare un para clientes (customers), en donde tendré todas las acciones las acción que realizare con lo clientes, el controlador debe llamarse CustomerController
+
+Tomando como ejemplo la documentación de Laravel ellos usan nombres de controladores en Singular.
+
+
+
+Comandos:
+-----
+Crear controlador
+    $ php artisan make:controller     
+
+Ayuda dsobre el comando anterior
+    $ php artisan make:controller --help
+
+Crear modelo
+    $ php artisan make:model --help
+
+
+

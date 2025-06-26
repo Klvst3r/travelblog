@@ -1,0 +1,139 @@
+Migraciones Qué son las migraciones
+
+Las migraciones son un mecanismo proporcionado por Laravel con el que podemos tener una especie de control de versiones sobre los cambios en la estructura de nuestra base de datos. Con las migraciones podemos diseñar esta estructura utilizando PHP y programación orientada a objetos, sin necesidad de escribir código SQL.
+
+Métodos de una migración Dentro de la clase de la migración encontramos dos métodos, up()y down(): El método down() nos permite revertir o «devolver» la operación realizada en el método up(). En el caso de CreateUsersTable, down()nos permitirá eliminar la tabla users  (utlizando el método dropIfExistsdel Facade Schema):
+
+Configurar la base de datos
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel9
+DB_USERNAME=username
+DB_PASSWORD=password
+
+Con el comando de Artisan migratepodemos ejecutar todas las migraciones:
+
+	$ php artisan migrate
+
+
+
+Nombres de lo Schemas en Laravel
+
+Si bien por "convención" se usa la estructura create_migracion_table, también puedes usar:
+
+<php artisan make:migration  NombreMigracionComoQuiera 
+--table="nombre_tabla"> 
+
+Esto creara la migración con el nombre que quieras con la diferencia de que de una vez te creara la estructura del Schema
+
+
+Para ejecutar un archivo seeder en Laravel, utiliza el siguiente comando en tu terminal:
+
+php artisan db:seed --class=NombreDelSeeder
+
+Reemplaza NombreDelSeeder con el nombre de tu clase seeder. Asegúrate de que la base de datos esté configurada correctamente en el archivo .env antes de ejecutar el comando. Esto llenará las tablas de tu base de datos con los datos definidos en tu seeder, facilitando el proceso de pruebas y desarrollo.
+
+Comandos clase
+
+php artisan migrate
+php artisan make:migration name
+
+
+
+
+    Las migraciones son estructuras que permiten gestionar el esquema de la base de datos.
+
+    Permiten tener un historial de versiones de la base de datos.
+
+
+    
+
+Todo lo que son migraciones, controladores y factories tienen su origen en los modelos es decir no tiene sentido tener una migración, un factory sino existe un modelo.
+
+Así que una forma facil de crear todo seria partir del modelo con un comando tipo:
+
+	$ php artisan make:model Post -mcf
+
+Lo que dice es creame un modelo Post, además su migración, además su controlador y además su factory. Con esto podriamos evitar algún error de dedo.
+
+Adicionalmente como todos los controladores o generalmente van a tener los mismos métodos de: listar, crear, actualizar y borrar podemos agregar algo asi:
+
+	$ php artisan make:model Post -mcf --resource
+
+Lo que hace adicionalmente es crear los métodos básicos de un crud en el controllador
+
+
+Los Migrations son como un control de versiones para nuestra base de datos, permitiendo a nosotros y a nuestro equipo definir el esquema (schema) de nuestra base de datos y poder compartirla.
+
+Como bien mencionamos, las migraciones se encargan de definir todas las tablas y atributos de nuestra base de datos desde nuestra aplicación de php, haciendo uso de una interfaz orientada a objetos (OOP).
+
+Una de sus mayores ventajas es que podemos tener diferentes versiones de nuestra base de datos, como si de git se tratace, además nos permite generar tablas para diferentes motores de base de datos (MySQL, MariaBD, SQLite, PostgreSQL, etc) haciendo uso del mismo lenguaje, php.
+
+
+Si estás haciendo la conexión con postgres recuerda
+
+Para pasar de un esquema de base de datos hacia la creación de una tabla utilizamos las migraciones,
+
+
+
+jecutar migraicones.
+$ php artisan migrate
+
+
+Para crear una migraccion
+
+Por convencion el nombre de la micgracion tiene la palabra create para crear una tabla y alter para modificar una tabla
+
+Se deben colocar el nombre de las tablas que se vana relacionar en singular y ordenadas alfabeticamente,todo separado por _ al final se agrega la palabra table
+
+
+  $ php artisan make:migration create_post_table --create=post
+
+
+Vamos a ejecutar nuevamente la migracion
+    php artisan migrate:rollback //quitar la ultima migracion
+
+Ahora refrescamos una sola vez, 
+    php artisan migrate:refresh
+
+
+Ahora podremos hacer
+    $ php artisan migrate:fresh //vacia la bd
+
+ahora ejecutamos los seeders
+    $ php artisan db:seed //vuelve a llenar la bd
+
+Podemos hacer esto con un solo comando
+
+    $ php artisan migrate:refresh --seed  //refresca la bd y ejecuta los seeders
+        
+
+Crear la migracion para la tabla post
+
+Considerando la estrcutra que deseamos de nuestra tabla:
+
+desc posts;
++--------------+---------------------+------+-----+---------+----------------+
+| Field        | Type                | Null | Key | Default | Extra          |
++--------------+---------------------+------+-----+---------+----------------+
+| id           | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
+| title        | varchar(255)        | NO   |     | NULL    |                |
+| excerpt      | mediumtext          | NO   |     | NULL    |                |
+| body         | text                | NO   |     | NULL    |                |
+| published_at | timestamp           | YES  |     | NULL    |                |
+| category_id  | int(10) unsigned    | NO   |     | NULL    |                |
+| created_at   | timestamp           | YES  |     | NULL    |                |
+| updated_at   | timestamp           | YES  |     | NULL    |                |
++--------------+---------------------+------+-----+---------+----------------+
+
+
+php artisan make:migration create_posts_table 
+
+
+En este caso cuando creo migraciones para evitar colocar el nombre “create_<nombre>_table” prefiero utilizar el comando de modelo diciéndole que cree la migración por si solo, recuerda que los modelos son nombrados en singular y las migraciones en plural, con el siguiente comendo Laravel lo hace por si solo:
+
+php artisan make:model Post -mfc
+
+crea al modelo Post, la migración create_posts_table, el factory Post y su respectivo controlador

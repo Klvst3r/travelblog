@@ -15,7 +15,7 @@ class InactivityMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $inactivityLimit = 300; // 5 minutos en segundos
+        $inactivityLimit = 900; // 15 minutos en segundos
         $lastActivity = session('last_activity');
 
         if ($lastActivity && (time() - $lastActivity > $inactivityLimit)) {

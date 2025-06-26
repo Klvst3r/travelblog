@@ -1,0 +1,143 @@
+Para la integración delpanel de administración vamos a utilizar un temnplate llamado AdminLTE podemos descargarlo desde:
+
+URL de los dashboard
+AdminLTE 2.3.11
+https://github.com/ColorlibHQ/AdminLTE/releases/tag/v2.3.11
+
+Laravel BoilerPlate
+
+
+En nuestro caso vamos a utilizar un dashboard alternativo.
+
+https://github.com/Labs64/laravel-boilerplate
+
+Para poder instalarlo seguimos el siguiente procedimiento:
+
+Vamos a dejar en la rama dashboard la instalación de nuestro dashboard
+
+Existe una subcarpeta para el login y su construcción en la carpeta de seguridad, para poder interactuar con el dashboard
+
+
+al tener nuestro dashboard corriendo en un proyecto instalado de manera alterna vamos a utiilzar las carpetas public
+
+
+Copiamos los archivos de
+/public
+
+/resources
+--dashboard
+
+/resoures/views/dashboard
+
+Como nuestro layout esta dentro de un componente integramos ese componente
+
+components
+-dashboard
+
+Es necesario agregar las rutas par dasboard y home
+
+
+
+Ahora nos falta integrar nuestra plantilla de amdinistrración.
+
+
+Vamos a crear nuestra carpeta admin para ver nuestra plantilla de administración funcionando.
+
+
+Ya tenemos integrado nuestro dashboard
+
+
+Es importante integrar las rutas utilizadas para poder ver nuestras rutas registradas ejecutasmos
+
+    $ php artisan route:list
+
+
+La integramos a nuestro archivo de rutas:
+
+
+//Catalogo de Marca
+Route::get('/catalogos/marca', function () {
+    return view('catalogos.marca.index');
+})->name('catalogos.marca');
+
+
+Ya que nos faltaba esa ruta especifica
+
+Para el contenido dentro de nuestro componente tenemos la siguiente estructura:
+
+
+        
+        <div class="right_col" role="main">
+            <!-- top tiles -->
+            <div class="row">
+            </div>
+                
+            <div class="x_panel">
+                <div class="x_title">
+                    {{-- <h2>{{ $titulo ?? 'Título por defecto' }} - <small>{{ $subtitulo ?? '' }}</small></h2> --}}
+                        <h2>{{ $titulo }} - <small>{{ $subtitulo }}</small></h2>
+                <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                <div class="row">
+                    <div class="col-sm-12">
+        
+                                {{ $slot }}
+        
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                </div>
+            </div>
+        
+        </div>
+        
+
+Nuestra etiqueta
+
+{{ $slot }}
+
+Colocara el contenido de acuerdo a  la etieueta de blade para el contenido, asi en nuestra plantilla de blade por ejemplo
+
+/home/index
+sera nuestra plantilla indice de la carpeta home
+
+Esto es redirigido por el HomeController en su metodo index que es al que hacemos referencia en nuestro archivo de rutas
+
+    public function index()
+ {
+     
+        return view('home.index');
+    }
+
+posteriormente despues de haberse autentificado el usuario, para las referencias de seguridad y su implementación con los usuaruos, debemos revisar la carpeta de seguridad para verificar la imlementación.
+
+asi tanto login como lockscreen nos enviaran a home cuando hayamos sido autenticados e indicados por las rutas
+
+
+Route::middleware(['auth', 'lockscreen'])->group(function () {
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+});
+
+
+//Middleware de inactividad
+Route::middleware(['auth', 'inactivity', 'lockscreen'])->group(function () {
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+});
+
+Podremos hacer uso de nuestra tabla con data tables pero eso se ra tema de otra sección.
+
+Por ahora tenemos nuestro layout con sistema de autentificación, y las opcioens de modo dark, full size, lockscreen y logout
+
+con eso tendremos para tener una interfaz profesional
+
+
+Pero es accesible publicamente por lo que debemos pensar en las rutas de login y log out ennuestro archivo de rutas
+
+Route::post('login', [LoginController::class, 'login']);
+
+Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
+Esta sección tambien se cubre en el apartado 4. seguridad
+

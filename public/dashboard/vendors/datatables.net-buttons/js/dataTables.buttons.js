@@ -1087,6 +1087,8 @@ Buttons.buttonSelector = function ( insts, selector )
  * @type {Object}
  * @static
  */
+
+// VALORES PREDETERMINADOS PARA LOS BOTONES
 Buttons.defaults = {
 	buttons: [ 'copy', 'excel', 'csv', 'pdf', 'print' ],
 	name: 'main',

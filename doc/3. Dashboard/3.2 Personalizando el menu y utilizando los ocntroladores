@@ -1,0 +1,213 @@
+11. Personalizando el menú y utilizando controladores
+
+Agregamos los primeros links de navegación de la administración, y con el fin de mejorar la estructura de nuestro código comenzamos a utilizar controladores.
+
+
+Protegiendo routes Admin creando un group en routes.php
+
+Ya podemos autenticarnos, y tenemos acceso al panel de administración, en elside menu vamos a crear una parte para queno s pueda llevar a todos los post y otro link para que nos permita crear un post, entonces, 
+
+en la pagina de adminisración, 
+
+resources/views/layout/side_menu.blade.php
+
+vamos a a agregar nuestro link para ver los posts
+
+
+Los datos de nuestro usuario estan disponibles ennuestro top_navigation.php
+
+<a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+                    <img src="{{  asset('img/user-profile.png') }} " alt="">{{ auth()->user()->name }}
+                  </a>
+
+y en el side menu
+
+<div class="profile_info">
+                <span>Bienvenido,</span>
+                <h2>{{ auth()->user()->email }}</h2>
+              </div>
+
+
+Es importante que nuestra plantilla este dividido en partials
+
+Es decir tenemos
+/views/layout/partials/
+header
+side_menu
+top_navigation
+footer
+
+
+entonces los vamos a inlcuir con la directiva de inclusión
+
+ejemplo
+    @include('layout.partials.footer')
+
+Ahora en side_menu 
+
+Vamos a trabajar con los links
+
+
+Dentro vemos que hay iconos para identificar a cada sección si queremos ver los iconos disponibles podemos ir a:
+
+https://fontawesome.com/icons
+
+
+
+Nuestro apartado sera 
+blog
+    posts
+        crear post
+
+tenemos nuestras referencias del lilng hacianostros posts        
+
+<li><a><i class="fa fa-edit"></i> Blog <span class="fa fa-chevron-down"></span></a>
+                          <ul class="nav child_menu">
+                              <li><a href="{{ route('catalogos.marca') }}">Post</a></li>
+
+
+
+Para ello desntro de nuestras vistas vamos a crear una carpeta donde se guardaran las vistas relacionadas a lso posts
+
+
+empezaremos por la vista
+
+/views/layout/posts/
+y dentro nuetro archivo de indice
+
+index.blade.php
+
+Vamos a personaliar nuestro layout
+
+Inicialmente vamos a replicar la plantilla de home, cambiando los parametros necesarios
+
+
+Si vemos las ruts esto se empieza a salir de control , lo ideal es utilizar una sola linea para cada ruta.
+
+
+Si vamos a la carpeta d elos controladores, 
+
+Podemos ver que en Homecontroller tiene unmiddleware llamado auth, que es lo mismo que se hizo en la ruta.
+
+Entonces la ruta homa nos puede llevar al controlador homecontroler en la vista index.
+
+podemos observar que en el hme controller tenemos en el construcctor el middleware por lo que ya no es necesario incluirlo en la ruta
+
+ public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+Vamos a utilizar otro controlador par controlar las paginas, 
+
+Controlador para las paginas, 
+
+    $ ph artisan make:controller -h
+
+Al crar nuestro controlador, podemos pasarle un modelo para que nos ayude con el codigo neceario para vincularlo au un modelo
+Podemos decirle que sea un resuources, para implementar el diseño rest
+
+    $ php artisan make:controller PagesController -r 
+
+Ahora tenemos el metodo de inicio retornando la vista.
+
+
+y agregamos la ruta para esa vista
+
+
+Tenemos ahora la vista paralos posts desde el panel de adminisytración
+
+Tenemos entonces un primer controlador para las vistas de los posts despues de hacer login
+
+
+$ php artisan make:controller PagesController -r 
+
+De ahi lo registramos en el archivo de rutas:
+
+Route::get('/', [PagesController::class, 'index'])->name('posts.index');
+
+Verificamos
+
+    $ php artisan route:list
+
+
+y en la vista copíamos el contenido de welcome
+
+
+es un poco enredado por que la ruta
+
+
+http://localhost:7000/home
+
+me lleva a mi dashboard ya
+
+http://localhost:7000/
+
+me lleva a los post publicados
+
+
+
+
+
+http://localhost:7000/posts/index
+
+
+ahora vamos a crear otro controlador para las paginas de la administración 
+
+
+    $ php artisan make:controller PostsController
+
+
+Ahor apara la pagina de la administración, pero dentro de una carpeta admin de los controladores de administración le antemonemos
+
+
+    $ php artisan make:controller Admin/PostsController
+
+
+Metodo para el index
+    retorna hacia home/admin
+
+Posteriora ello hay que generar la ruta.
+
+ 
+
+ La ruta para ir a esos posts seria:
+
+ http://localhost:7000/home/posts
+
+ Target class [PostsController] does not exist.
+
+Debemos anteponerle Admin
+Target class [Admin\PostsController] does not exist.
+
+
+en la vista index importamos el layout y los posts en si que ahora solo hay contenido de un titulo
+
+@section('titulo')
+    Dashboard
+@endsection
+
+@section('subtitulo')
+ Sesión de usuario
+@endsection
+
+@section('content')
+
+    <p>Mostrar todos los posts.</p>
+
+@endsection
+
+ahora lo que ocurre aca es que si no estamos autenticados nos solicita autenticarnos y no es lo que necesitamos, 
+
+Lo que podemos hacer es otro archivo de rutas para la administración, por ahora vamos a crear un grupo conun prefijo
+
+
+Route::group(['prefix' => 'admin'], );
+
+
+Quiere decir que todas rutas dentro de este grupo van aestar precedidas por admin o home en nuestro caso, entonces.
+
+
+
+
+10:43

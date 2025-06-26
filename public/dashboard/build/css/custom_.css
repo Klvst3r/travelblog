@@ -855,7 +855,7 @@
 .nav-sm .nav.side-menu li a {
   text-align: center !important;
   font-weight: 400;
-  font-size: 10px; /*Cuando el nav este contarido*/
+  font-size: 10px;
   padding: 10px 5px; }
 
 .nav-sm .nav.child_menu li.active,
@@ -886,9 +886,8 @@
   top: 0;
   width: 210px;
   z-index: 4000;
-  background: #3a3a3a;
-  display: none; 
-  color: #000000;}
+  background: #3E5367;
+  display: none; }
 
 .nav-sm ul.nav.child_menu li {
   padding: 0 10px; }
@@ -1159,15 +1158,6 @@ body {
   font-weight: 400;
   line-height: 1.471; }
 
-.text-end {
-  color: #73879C;
-  
-  font-family: "Helvetica Neue", Roboto, Arial, "Droid Sans", sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 1.471; }  
-
-
 .main_container .top_nav {
   display: block;
   margin-left: 230px; }
@@ -1367,7 +1357,7 @@ a:hover, a:focus {
   border-radius: 50%; }
 
 .nav-md ul.nav.child_menu li:after {
-  border-left: 1px solid #684242;
+  border-left: 1px solid #425668;
   bottom: 0;
   content: "";
   left: 27px;
@@ -2305,7 +2295,7 @@ span.right {
   height: 65px;
   border-left: 2px solid #ADB2B5;
   margin-top: 10px; }
-EDEDED
+
 @media (min-width: 992px) {
   .tile_count .tile_stats_count:first-child:before {
     border-left: 0; } }

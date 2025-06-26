@@ -27,6 +27,7 @@ class HomeController extends Controller
         //return view('home');
 
         //ahoa tenemos apuntando a nuestro daashboard
-        return view('admin.dashboard');
+        //return view('admin.dashboard');  //vista anterior
+        return view('home.index');
     }
 }

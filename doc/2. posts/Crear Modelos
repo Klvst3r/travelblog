@@ -1,0 +1,17 @@
+Modelo:
+Un modelo es "una tabla de la base de datos ejemplo usuarios" Un controlador : es una clase que nos permite gestionar las solicitudes sobre la tabla
+
+
+
+Imagen Procesdo de protocolo HTTP paa el Back end
+
+
+    Controlador: Es el intermediario y encargado de solucionar los request y los response
+
+    Modelo: Representacion de una tabla de la base de datos para poder manejarla desde nuestro programa y hacer las tipicas operaciones CRUD
+
+Para las caterorias para los mpost creamos un modelo categorias con su respectiva migracion
+
+    $ php artisan make:model Post -M
+
+    

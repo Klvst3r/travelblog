@@ -1,5 +1,11 @@
+La idea de implementar un metodo de seguridad es para no permitir publicar o visualizar información de nuestra aplicación si no estan autenticadas, para ello tenemos esta seccion para poder implementar nuestro login de autenticación.
+
+
+
+
 
 # Login
+
 //Genera las vistas y las rutas para un login y registro basico, necesario ejecutar al principio del desarrollo, ya que genera algunos archivos que pueden interferir con el desarrollo.
 
 		php artisan make:auth  
@@ -169,9 +175,26 @@ Ahora tenemos un avista de Login con Laravel UI, tenemos tambien register
 
 Cuando ejecutamos el comando inicial para la creación de nuestro login, estas vistas aparecen con bootstrap CSS.
 
+
+Deshabilitar la opcion de registro de usuarios
+-------------------------------------------
+
 Vamos a deshabilitar el registro de usuarios
 
+Para ello Laravel utiliza 
 
+vender/laravel/framework/src/illuminae/Routing/Router.php
+
+
+buscamosun metodo especifico
+
+@auth
+
+Ahi estan todas las rutas que genera el metodo, pasamos las rutas hacia el archivo web y ahi es donde deshabilitamos las rutas de registro desde el archivo web.php
+
+Dentro de la vista tabien hay que eleiminar la referencia ahacia la ruta register
+
+ahora el problema se ha solucionado.
 
 
 
@@ -407,6 +430,27 @@ Ahora ya si actualizamos el home, este ya no existira mas, volvemos a inicio y a
 
 
 
+Manejo de Errores, en el formulario.
+-------------------------------------
+Para poder utilizar un metodo de validación con el campo agragara un alerta para alertar al usuario de que debe  cumplir las condiciones de registro
+
+
+Lo implementamos en cada campo del formulario donde queremos que valide nuestra información registrada
+
+Ahor apara cuando tenemos errores y no tengamos que escribir la información al recargarse la pagina utilizamos  la directiva 
+
+value="{{ old('email') }}"
+
+
+ required espara que no nos envie un valor vacio
+ 
+ autofocus  para que el cursor se ubique en este campo y podamos escribir inmediatamente despues de cargar la pagina.
+
+ Ahora nuestro login de autenticación se encuentra dentro de la ruta
+
+ /views/auth/login.blade.php
+
+
 En login.blade.php
 
 queda nuestros cuadros de texto de la siguiente manera:
@@ -455,6 +499,35 @@ Al igual que la plantilla de administración es importante actualizar las rutas 
     <link rel="stylesheet" href="../dashboard/build/css/style.css">
 
 
+Rutas de referencia del login
+-----------------------
+Al igual que hicimos con la plantilla de adminisytracion vamos a actualizar las rutas de los CSS y Js 
+
+desntro de nuestro login de acceso.
+
+
+<!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../dashboard/build/css/bootstrap.min.css">
+    
+    <!-- Estilo pertsonalizado del Tema -->
+    <link href="../dashboard/build/css/custom.css" rel="stylesheet">
+
+    
+Asi con los CSS y los JS
+
+
+
+
+
+Enctriptacin de datos de acceso para la contraseña
+--------------------------------------------------
+
+
+
+
+
+
+
 # Iniciar Sesioin
 
 En la terminal tenemos un comando para interactura con la aplicación.
@@ -479,7 +552,7 @@ Le agregamos un email
 Por ultimo una contraseña, algo a tener en cuenta es no almacenar conraseñas en texto plano, podemos almacenarlos encruptados, para ello Laravel nos provee de la funcion bcrypt, como parametro el pass que deseamos"
     >>> $user->password = bcrypt('desarrollo')
 
-Generando una cadena de caracteres, es decir el password encriptado, ahora solo falta almacenarlo en la blade
+Generando una cadena de caracteres, es decir el password encriptado, ahora solo falta almacenarlo en la bd
     >>> $user->save()
 
 Podemos verificar en la Bd, ahora intentamos acceder con el correo.
@@ -506,6 +579,32 @@ Route::get('home', function(){
 Ahora si abrimos por ejemplo 
 
     http://localhost:8000/home
+
+
+
+Confirmación de sesion iniciada
+-------------------------------
+
+
+Mediante un midleware accedemos al usuaruio autenticado, para que solo pudeamos acceder al panel de administración, si tenemosuna sesion activa, es decir si tenemos una cuenta en el sistema.
+
+
+Por ello en nuestra ruta tenemos ese middleware
+Route::middleware(['auth', 'lockscreen'])->group(function () {
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+   
+});
+
+Aunque no es la unica opcion podemos tambien hacerlo mediante
+
+Route::get('home', function(){
+    return view('home.index')->middleware('auth');
+})
+
+
+Por eso cada vez qie intentemos acceder directamente al dashboard nos redirigira hacia el login para poder autenticarnos
+
+
 
 Desde otro navegador sin autenticarme, nos marcara error por que se esta intentando obtener una propiedad de un no-objeto, lo que sucede es que estamos tratando de acceder al usuario autenticados en el dashboard
 
@@ -737,6 +836,9 @@ Creamos
 
 
 # Cierre de sesion
+
+El token utilizado en los formularios @csrf nos sirve para generar un token que laravel utiliza para verificar el origen del formulario y evitar la suplantacin de identidad, y cada que utilizamos un metodo post debemos agregarle este ccampo por seguridad
+
 
 
 Para crerrar sesión es reomendable utilizar el metodo post, en lugar del metodo get, ya que de esa manera podemos ptotegernos contra, ataques CRSF.
