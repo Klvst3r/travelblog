@@ -1,0 +1,29 @@
+Para acceder a los datos de la bd
+
+en rutas creamos una ruta, empezaremos con welcome devolviendo todos los posts
+
+Route::get('posts', function(){
+    return Post::all();
+});
+
+al acceder a 
+
+localhost/posts
+mostrara un array con los posts
+
+view/welcome
+
+Enviando solo el primer post, paa mosrar todos debemos hacer uso del foreach
+
+ @foreach($posts as $post) {{-- Recorre todos los post como un post --}}
+
+ En la vista welcome
+
+ En blade <h1> {{ $post->title }} </h1>
+
+ las {{  }} seria comoutilizar la etiqueta echo
+
+ 
+
+
+

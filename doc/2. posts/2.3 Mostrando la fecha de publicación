@@ -1,0 +1,27 @@
+Para mostrar la fecha
+con el created_at
+
+<span class="c-gris">{{ $post->published_at->diffForHumans() }}</span>
+
+Por defecto laravel trata como fechas de carbn que permite trabajar de forma mas intuitiva, para trabajar como instancia de carbon, en
+
+app/post
+
+en el modelo utilizamos una instancia de carbon
+ protected $casts = [
+        'published_at' => 'datetime',
+    ];
+
+Podemos tambien hacer uso del formatoen l vista
+
+<span class="c-gris">{{ $post->published_at->format('M d) }}</span>
+
+Categorias y etiquetas
+
+Un post puedetener varias categorias y etiquetas
+
+No seria optimo en la tala post el uso de las categorias y las etieutas, por lo que se utilizaran las relaciones.
+
+Tabla de catagorias
+Otra tabla para las etiquetas
+

@@ -1,0 +1,44 @@
+1 Conetactor a la Bd
+
+Archivo .env 
+Configurar credenciales
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=travelblog
+DB_USERNAME=klvst3r
+DB_PASSWORD=desarrollo
+
+
+Migraciones por defecto
+Usuarios, create_password_reset, para los usuario s y recuperacion de contraseñas
+
+Tablas para almacear posts
+
+Modelo y migracion
+
+El modelo debe estar en singular 
+    $ php artisan make model Post -m //con migracion
+
+en la migracion definimos el esquema de la tabla post
+
+La tabla si es en pkural
+  public function up(): void
+    {
+        Schema::create('posts', function (Blueprint $table) {   //Tabla post
+            $table->id();
+            $table->string('title');                            //Titulo Post
+            $table->mediumText('excerpt');                      //Contenido
+            $table->text('body');                               //Cuerpo del Post
+            $table->timestamp('published_at')->nullable();      //Fecha publicació
+            $table->unsignedInteger('category_id');             // En cada post vamos a almacenar el id de la categoria para hacer referencia a el
+            $table->timestamps();
+        });
+    }
+
+Ejecutamos la migracion
+    $ php artisan migrate
+
+    
+

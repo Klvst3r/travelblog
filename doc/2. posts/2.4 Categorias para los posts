@@ -1,0 +1,104 @@
+Para las caterorias para los mpost creamos un modelo categorias con su respectiva migracion
+
+    $ php artisan make:model Category -M
+
+Modelo Category y la mMiracin
+
+Migracion categorias
+
+
+  public function up(): void
+    {
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+    }
+
+Ejecutamos la migracion
+    php artisan migrate //crea la nueva tabla
+
+Ahora vamos a asociar un post a un categorias
+
+Tenemos la relacion de uno a muchos
+
+Una categoria puede tener varios posts, pero un post no puede tener varias categorias
+
+Esta relacion se define en el modelo
+ //Relacion de uno a muchos
+    public function category(){        //$post->category->name;  -> El post pertenece a la categoria
+
+        return $this->belongsTo(Category::class);       //Retorna el objeto (post actual)
+    }
+
+Retorna el objeto es decir el post actual con
+belongsTo
+Pertenece  una categoria
+
+Con el name space no es necesario poner toda la ruta de la categoria 
+
+namespace App\Models;
+
+Estamos diciendo que el post pertenece a la categoria, pero en la migracion post no hay ningun campo para referernos a esa categoria, vamos a crear un nuevo campo
+para establecer la relacion en la migracion:
+
+    $table->unsignedInteger('category_id');             // En cada post vamos a almacenar el id de la categoria para hacer referencia a el
+
+}en cada post vamos a almacenar el id de la categoria
+
+Vamos a ejecutar nuevamente la migracion
+    php artisan migrate:rollback //quitar la ultima migracion
+
+Ahora refrescamos una sola vez, 
+    php artisan migrate:refresh
+
+Hace roolback de todas las migraciones y vuelve a ejecutar el migrate, todas estaran vacias
+
+Para hacer pruebas debemos tener archivos que llenen estas tablas
+
+Para reemplazar ls etiquetas en el post. 
+
+Ej.
+
+Teniendo dos post y dos categorias 
+
+Vamos a decir que el post con id=1 pertenezca a la categoria con id:2
+
+Para ello
+
+en la tabla:
+
+select * from posts;
++----+-----------------+----------------------------+--------------------------------+---------------------+-------------+---------------------+---------------------+
+| id | title           | excerpt                    | body                           | published_at        | category_id | created_at          | updated_at          |
++----+-----------------+----------------------------+--------------------------------+---------------------+-------------+---------------------+---------------------+
+|  1 | Mi Primer Post  | Extracto de mi primer post | <p>Cuerpo del Primer Post</p>  | 2025-05-15 07:39:34 |           1 | 2025-05-19 07:39:34 | 2025-05-19 07:39:34 |
+|  2 | Mi Segundo Post | Extracto del segundo post  | <p>Cuerpo del Segundo Post</p> | 2025-05-16 07:39:34 |           1 | 2025-05-19 07:39:34 | 2025-05-19 07:39:34 |
+|  3 | Mi Tercer Post  | Extracto de mi Tercer post | <p>Cuerpo del Tercer Post</p>  | 2025-05-17 07:39:34 |           2 | 2025-05-19 07:39:34 | 2025-05-19 07:39:34 |
+|  4 | Mi Cuarto Post  | Extracto de mi Cuarto post | <p>Cuerpo del Cuarto Post</p>  | 2025-05-18 07:39:34 |           2 | 2025-05-19 07:39:34 | 2025-05-19 07:39:34 |
++----+-----------------+----------------------------+--------------------------------+---------------------+-------------+---------------------+---------------------+
+
+
+
+
+Vemos que esl post 1 tiene la categoria 2 y como ya se tiene definida la relacion en el modelos, lo que se debe hacer es:
+
+en la vista welcome vamos a utilizar la propiedad name de la categoria
+
+<span class="category text-capitalize">{{ $post->category->name }}</span>
+
+
+podemos hacer un var_dup para verificar datos
+
+ej
+
+var_dump($post->category)
+
+en la bd en el campo id_category no debe haber null 
+
+Ahora para saber cual es el beneficio de extraerlo en su propia tabla, por que podriamos poner el nombre, pero el hecho si se crea otro post con otra categoria, la ventaja de tenerlo en una tabla aparte es que si hay cambio en el nombre de la categoria, ese cambio se vera reflejado en todos los posts en sus categorias.
+
+
+Pr no hacer los cambios manuales uno por uno. asi se actualiza en todas partes
+
