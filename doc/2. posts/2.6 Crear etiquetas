@@ -1,0 +1,126 @@
+7. Creando las Etiquetas
+
+Creamos el modelo y la migración para las Etiquetas, y definimos la relación de “muchos a muchos” con el modelo Post. De esta forma, podremos asociar varias etiquetas a un mismo post, y cada etiqueta podrá tener varios posts asociados.
+Ricardo Som
+
+
+Enneste caso no podemos crear una referencia directa enla tabla posts ya que se pueden tener multiples etiquetas, ya que las categorias solo podemos tener una,
+
+como es una relacion de muchos a muchos, es decir un post podra tener muchas etiquetas, y una etieuta podra tener muchos posts, 
+
+Primero vamos acrear el modelo y la mirgacion 
+
+    $ php artisan make:model Tag -m
+
+Estructura de la migración:
+
+ public function up(): void
+    {
+        Schema::create('tags', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->timestamps();
+        });
+    }
+
+
+Para referenciar que un post pueda tener varias etiquetas, debemos crear otra tabla para almacenar los id que se relacionan, es decir crearemos una tabla para almacenar el campo para el id del tag, y otro campo para almacenar el id del post
+
+
+Por convencion el nombre de la micgracion tiene la palabra create para crear una tabla y alter para modificar una tabla
+
+Se deben colocar el nombre de las tablas que se vana relacionar en singular y ordenadas alfabeticamente,todo separado por _ al final se agrega la palabra table
+
+Al no neceitar un modelo vamos a crear
+
+    $ php artisan make:migration create_post_tag_table --create=post_tag
+
+el parametros --create es para indicarle que vamos a crear la migracion, si la ejecutamos sin la opcion create, crea en el migracin el metodo sin nada dentro, con el parametro y el nombre de la tabla 
+Vamos a crear la tabla postTag
+
+AL ejecutar puede generarnosun error, se soliciona con
+    $ composer dumpautolad
+
+para refresque el autoloader
+
+Hasta aca uya tenemos las siguientes tablas:
+
++------------------------+
+| Tables_in_travelblog   |
++------------------------+
+| categories             |
+| failed_jobs            |
+| migrations             |
+| password_reset_tokens  |
+| personal_access_tokens |
+| post_tag               |
+| posts                  |
+| tags                   |
+| users                  |
++------------------------+
+La estructura de la migracion es la siguiente
+
+ Schema::create('post_tag', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedInteger('post_id');  //Para acetpar solo numeros positivos
+            $table->unsignedInteger('tag_id');
+            $table->timestamps();
+        });
+
+Al ejecutar la migracion, 
+    $ php artisan migrate
+
+Ya se tiene la tabla.
+
+Ahora, la relacion de muchos a michso como funciona, vamos a crear dos etiquetas, al agregar al post 1 las dos etiquetas, lo que tenemos que hacer es
+
+select * from post_tag;
++----+---------+--------+------------+------------+
+| id | post_id | tag_id | created_at | updated_at |
++----+---------+--------+------------+------------+
+|  1 |       1 |      1 | NULL       | NULL       |
+|  2 |       1 |      2 | NULL       | NULL       |
+|  3 |       2 |      1 | NULL       | NULL       |
+|  4 |       3 |      2 | NULL       | NULL       |
+|  5 |       4 |      2 | NULL       | NULL       |
+|  6 |       1 |      3 | NULL       | NULL       |
++----+---------+--------+------------+------------+
+
+
+con esto el post 1 tendra dos etiquetas, de esta forma es que se tienen las referencias en esta tabla, y si queremos añadir al post 3 y 4 el tag 2
+
+
+tambien podemos hacer que al post 1 tenga un tercer tag,
+
+ahor para defirni la relación, para poder utilizarla en el Modelo Post se crea una nueva funcion, y se llama tags(), haciendo algo similar como se hizo en category
+
+ public function tags(){     //Etiquetas
+
+        return $this->belongsToMany(Tag::class);       //Retorna this belonstomany pertenece a muchos, la relacion es con la clase Tag
+
+    }
+
+
+Pertenece a muchs y la relacion es con Tag, con esto ya lo tenemos, ahora como estamos utilizando la convencion de llamar a la tabla post_tsg y a los id no es necesario hacer ninguna otra configuracion Laravel utilizara esos valores, pord defecto, 
+
+Ahora en la vista welcome estan las etiquetas hascienco una impresion de estas etiquetas con:
+
+ {{  $post->tags }}
+
+ Ahora lo que debemos hacer es utilizar un foreach para que cada etiqueta aparezca dentro de un span,
+
+ Dentro del primer foreach
+ 
+ @foreach($posts as $post) {{-- Recorre todos los post como un post --}}
+ ...
+    @foreach($post->tags as $tag)
+							<span class="tag c-gris text-capitalize">#{{ $tag->name }}</span>
+						@endforeach
+
+
+Si imprimirmos {{ $tag }}                        
+
+no devolvera todo el arreglo de cada etiqueta
+
+ahora llamamos a la propiedad name,  ya tenemos ahora nuestras etiquetas para cada post
+

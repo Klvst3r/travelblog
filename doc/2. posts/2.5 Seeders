@@ -1,0 +1,120 @@
+6. Qué son y cómo utilizar Seeders
+
+Cuando estamos desarrollando y probando nuestras aplicaciones, es necesario tener datos de prueba en la base de datos, para ir verificando el comportamiento de la aplicación, y llenar estos datos manualmente puede consumir gran cantidad de nuestro tiempo, sin embargo, con Laravel, tenemos a disposición los Seeders que nos ayudan con esta tarea.
+
+Vamos a tener un  seeder de categorias dentro  de PostsTableSeeder, los seeders se hacen por conveniencia; la intención de los seeders es llenar la base de datos, no es regla utilizar un seeder por cada modelo.
+
+Semillas, el eproblema actual es que al hacer un refresh, de la bd cuando cambiamos unso campos de las migraciones, a ejecutar refresh las tabas quedan vacios.
+
+Entonces al refrescar la bd, vamos a guardar los datos nuevamente.
+
+Si vamos al archivo database/seeders/DatabaseSeeder.php
+
+Esto lo que hace es llamar a la clase seed, vamos a ver lo que sucede
+
+Va a ejecutar la clase UsersTableSeeders, vamos a crear un seeders para la tabla posts
+
+Comando para crear seeders
+
+    $ php artisan make:seeder PostsTableSeeder
+
+
+Como solo queremos que nos ejecute PostTableSeeder cambiamos ycreamos los posts de prueba
+
+
+variable con nueva instancia de posts
+
+$post = new Post;
+
+Agregamos los campos, podemos utilizar carbon, al final que guarde en la bd
+
+para ejecutar el seeder
+
+    $ php artisan db:seed
+
+
+Para no repetir registros, utilizamos
+
+ Post::truncate(); 
+
+ y luego cree el post, ejecutamos, no importa cuantas veces ejecutamos solo colocara el contenido del seeder, asi hacemos con los demas registros de los posts
+
+
+
+Al tener la referen cia de categoria_id vamos crear esa referencia, simplemente con la siguiente linea:
+
+Importante importar en el seeder
+
+use App\Models\Post; // Ruta del modelo Post
+use App\Models\Category; // Ruta del modelo Category
+
+  Category::truncate();
+  Tag::truncate();
+
+
+
+CReamos los tags y las categorias
+ // Crear Tags
+        $tag1 = Tag::create(['name' => 'Etiqueta 1']);
+        $tag2 = Tag::create(['name' => 'Etiqueta 2']);
+        $tag3 = Tag::create(['name' => 'Etiqueta 3']);
+
+        // Crear Categorías
+        $category1 = Category::create(['name' => 'Laravel']);
+        $category2 = Category::create(['name' => 'Segunda Categoria']);
+
+
+agregamos el id de la categoria_id para cada post
+
+el formato de los posts sera antonces:
+  // Crear Posts
+        $post1 = Post::create([
+            'title' => 'Mi Primer Post',
+            'excerpt' => 'Extracto de mi primer post',
+            'body' => '<p>Cuerpo del Primer Post</p>',
+            'published_at' => Carbon::now()->subDay(4),
+            'category_id' => $category1->id,
+        ]);
+
+
+Con ello creara las catergorias y los post asignados a esa catagoria
+
+
+Laintencion es tener cuatro post, dos con categoria 1 y 2 posts con categoria 2
+
+para cambiar los dias de cada post podemos hacer
+
+    'published_at' => Carbon::now()->subDay(3),
+
+Sustrea el numero de dias
+
+
+Cambiando las fechas de publicación
+
+al guardar actualiza las fechas de publicación de los posts
+
+Ahora podremos hacer
+    $ php artisan migrate:fresh //vacia la bd
+
+ahora ejecutamos los seeders
+    $ php artisan db:seed //vuelve a llenar la bd
+
+Podemos hacer esto con un solo comando
+
+    $ php artisan migrate:refresh --seed  //refresca la bd y ejecuta los seeders
+    
+
+Dentro de esta parte vamosa crear la tabla de categorias y su modelo
+
+Para despues tener los seeders tambien de esta tabla
+
+    $ php artisan make:model Category -m
+
+
+Modificamos l amigracion de acuerdo a las necesidades de la tabla, y ejecutamos la migraciones
+
+    $ php artisan migrate
+
+Al querer tener dats entonces debemos llenar la migracion de la tabla Category
+
+

@@ -1,3 +1,7 @@
+Mostrando los posts desde la base de datos
+
+Utilizando el modelo Post, hacemos un foreach para imprimir en pantalla todos los posts que tenemos en la base de datos.
+
 Para acceder a los datos de la bd
 
 en rutas creamos una ruta, empezaremos con welcome devolviendo todos los posts

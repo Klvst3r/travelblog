@@ -1,3 +1,7 @@
+5. Creando las Categorías
+
+Creamos el modelo y la migración para las categorías y utilizamos Eloquent para definir la relación con el modelo Post que nos permitirá asociar posts con categorías.
+
 Para las caterorias para los mpost creamos un modelo categorias con su respectiva migracion
 
     $ php artisan make:model Category -M

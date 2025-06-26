@@ -1,3 +1,8 @@
+4. Mostrando la fecha de publicación de los posts
+
+Eloquent reconoce las fechas de creación y actualización com instancias de Carbon para manejar las fechas más eficientemente, sin embargo, hemos creado un campo para almacenar la fecha de publicación del post y debemos informarle a Eloquent sobre esto
+
+
 Para mostrar la fecha
 con el created_at
 
