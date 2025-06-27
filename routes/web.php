@@ -8,8 +8,9 @@ use App\Models\Post;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 
-
+//posts
 use App\Http\Controllers\PagesController;
+
 
 use App\Http\Controllers\Lock\LockscreenController;
 
@@ -56,6 +57,10 @@ Route::get('posts', function(){
 Route::get('/catalogos/marca', function () {
     return view('catalogos.marca.index');
 })->name('catalogos.marca');
+
+
+Route::get('/posts', [PagesController::class, 'index'])->name('posts.index');
+
 
 //Grupo para la adminisración
 Route::group(['prefix' => 'home'], function(){
