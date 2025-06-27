@@ -28,6 +28,15 @@ class HomeController extends Controller
 
         //ahoa tenemos apuntando a nuestro daashboard
         //return view('admin.dashboard');  //vista anterior
-        return view('home.index');
+
+        //return view('home.index');
+         $articulos = collect([
+            (object) ['clave' => 'ART001', 'descripcion' => 'Artículo de prueba 1'],
+            (object) ['clave' => 'ART002', 'descripcion' => 'Artículo de prueba 2'],
+            (object) ['clave' => 'ART003', 'descripcion' => 'Artículo de prueba 3'],
+            (object) ['clave' => 'ART004', 'descripcion' => 'Artículo de prueba 4'],
+        ]);
+
+        return view('home.index', compact('articulos'));
     }
 }

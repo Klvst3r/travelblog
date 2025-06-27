@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const $table = $(table);
     if ($table.length) {
       $table.DataTable({
-        dom: 'Bfrtip',
+        dom: 'Bflrtip',
         buttons: [
           {
             extend: 'copy',
@@ -54,7 +54,25 @@ document.addEventListener("DOMContentLoaded", function () {
           zeroRecords: "No se encontraron registros",
           infoEmpty: "Mostrando 0 a 0 de 0 registros",
           infoFiltered: "(filtrado de _MAX_ registros)"
+        },
+         initComplete: function () {
+          // Agrega botón "Agregar" a la derecha
+          let $botonAgregar = $(`
+            <div class="ms-auto">
+              <a href="/catalogos/test/create" class="btn btn-success">
+                <i class="fa fa-plus"></i> Agregar
+              </a>
+            </div>
+          `);
+
+          let $wrapper = $table.closest('.dataTables_wrapper');
+          let $btns = $wrapper.find('.dt-buttons');
+
+          // Envolver los botones y el agregar en un contenedor flex
+          $btns.wrap(`<div class="d-flex justify-content-between flex-wrap w-100 align-items-center mb-3"></div>`);
+          $btns.parent().append($botonAgregar);
         }
+
       });
     }
   });

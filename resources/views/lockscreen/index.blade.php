@@ -19,7 +19,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ config('app.name', 'Laravel') }}</title>
+  <title>{{ config('app.name', 'app.title') }}</title>
 
   <!-- Fuentes de Google Fuente: Source Sans Pro -->
   <!-- Font Awesome CDN -->
@@ -52,14 +52,14 @@
 <div class="lockscreen-wrapper">
   <div class="lockscreen-logo">
     
-      {{ config('app.name') }}
+      {{ config('app.title') }}
 
   </div>
 
 
 
   <div class="lockscreen-logo">
-    <img src="img/escudo-gris.png" id="icon" alt="Escudo Tribunal superior de Justicia del Estado de Tlaxcala">
+    <img src="img/logo.png" id="icon" alt="{{ config('app.name') }}">
   </div>
   <!-- User name -->
   <div class="lockscreen-name">

@@ -1,0 +1,502 @@
+12. Mostrando los posts con DatatablesJs
+
+Agregamos una vista en la administración para ver todos los posts utilizando el plugin de JQuery llamado Datatables.
+
+Estan los loinks para crear posts yver los posts
+
+Los posts seran tratados por la ruta:
+
+Route::get('home/', [HomeController::class, 'index']);
+
+El controller
+
+public function index()
+{
+    $posts = Post::with(['category', 'tags'])->latest()->get(); 
+    return view('posts.index', compact('posts'));
+}
+
+retornmamos la vista hacia los posts, agregamos el archivo a la navegacion
+
+
+<li><a href="{{ route('home') }}">Ver todos los Post</a></li>
+
+integrando el contenido del dashboard
+
+
+Regularmente se muestran en una tabla HTML
+
+Taambien se puede integrar la ibreria de DataTables de JS, es la que utulizaremos que es un polugin de jQuery, que convierte tablas HTML en Tablas dinamicas, tiene paginación, busqueda instantanea.
+
+Vamos a utilizar un componente para integrar datatables:
+
+
+el identificador de la tabla sera posts tables
+
+Vamos a reemplazar el contenido de la tabla con los posts
+
+los tr seran
+
+    id
+    titulo
+
+@foreach $posts as $post
+
+Por cada post creamos una fila, en la primera celda el id del post, el titulos, 
+
+Puede generarnos un error de que la variable $posts no seha definido, para ello en el controlador en el metodo index, creamos la variables posts
+
+y obtenemos los valores de la bd,
+
+    $ posts = Post::all()
+
+no hay que olvidar importar elmodelo, ahora pasamos la variable a la vista, con esto ya tendremos los posts. Vamos a cambiar el titulo y en la tabña- Si queremos mostrar el estracto del post por ejemplo, simplemente creamos otra celda para el titulo, y tra velda con el vaor, vamos a agrgar una columna para las acciones, Celda acciones. con la clase btn-info fa fa-pencil para crear un lapiz , duplicamos la clase fa-times.
+
+se agrega la clase btn
+
+<td class="text-center">
+        <i class="fa fa-pencil text-success" title="Editar" style="cursor:pointer; font-size:20px; margin: 0 5px;"></i>
+        <i class="fa fa-trash text-danger" title="Eliminar" style="cursor:pointer; font-size:20px; margin: 0 5px;"></i>
+      </td>
+
+Podemos porbar con
+
+<td class="text-center">
+    <a href="#" class="btn btn-xs btn-info"><i class="fa fa-pencil"></i></a>
+    <a href="#" class="btn btn-xs btn-danger"><i class="fa fa-times"></i></a>
+        
+      </td>
+
+Hasta aca debemos tener el diseño, vamos a integrarlo      
+
+
+Dentro de nuestro conteto de desarrollo y trabajo con DataTabes tenemos un boton agregar que quiero que se alinee a la derecha a la altura de la exportación, 
+
+
+Considerando que estamos trabajando con componentes tenemos un componente de Blade que tiene la funcion de renderizar una tabla con la estrcutua de DataTables dinamicamente, los datos los pasaremos 
+
+Entonces vamos a construir nuestro componente de Datatables
+
+1. Creamos componente
+
+  $ php artisan make:component TablaIndice
+
+2. Configuramos el DataTable en el constructor la variable id del DataTable 
+En:
+/app/View/Components/TablaIndice.php
+
+     public $id;
+    /**
+     * Create a new component instance.
+     */
+    public function __construct($id = 'indice-tabla')
+    {
+         $this->id = $id;
+    }
+
+
+3. Construir la estructura del componente de Datatable a partir del Ejemplo de Mari
+
+
+<table id="{{ $id }}" class="table table-striped dt-indice responsive" style="width:100%">    
+  <thead>
+    {{ $thead }}
+  </thead>
+  <tbody>
+    {{ $slot }}
+  </tbody>
+</table>
+
+@once
+  @push('scripts')
+    <script src="{{ asset('js/dt-init.js') }}"></script>
+  @endpush
+@endonce
+
+
+4. Colocar el Js de inicialización del DataTable (Ya incluye el boton agregar ;) 
+
+public/js/dt-init.js
+
+---
+document.addEventListener("DOMContentLoaded", function () {
+  const tables = document.querySelectorAll('.dt-indice');
+
+  tables.forEach(function (table) {
+    const $table = $(table);
+    if ($table.length) {
+      $table.DataTable({
+        dom: 'Bflrtip',
+        buttons: [
+          {
+            extend: 'copy',
+            text: '<i class="fa fa-files-o" style="font-size:20px;"></i>',
+            titleAttr: 'Copiar'
+          },
+          {
+            extend: 'csv',
+            text: '<i class="fa fa-file-text-o text-secondary" style="font-size:20px;"></i>',
+            titleAttr: 'Exportar a CSV'
+          },
+          {
+            extend: 'excel',
+            text: '<i class="fa fa-file-excel-o text-success" style="font-size:20px;"></i>',
+            titleAttr: 'Exportar a Excel'
+          },
+          {
+            extend: 'pdf',
+            text: '<i class="fa fa-file-pdf-o text-danger" style="font-size:20px;"></i>',
+            titleAttr: 'Exportar a PDF'
+          },
+          {
+            extend: 'print',
+            text: '<i class="fa fa-print text-info" style="font-size:20px;"></i>',
+            titleAttr: 'Imprimir'
+          }
+        ],
+        language: {
+          url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
+          search: "Filtrar:",
+          lengthMenu: "Mostrar _MENU_ registros",
+          info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+          paginate: {
+            first: "Primero",
+            last: "Último",
+            next: "Siguiente",
+            previous: "Anterior"
+          },
+          buttons: {
+            copyTitle: 'Copiado al portapapeles',
+            copySuccess: {
+              1: 'Se copió una fila',
+              _: 'Se copiaron %d filas'
+            }
+          },
+          zeroRecords: "No se encontraron registros",
+          infoEmpty: "Mostrando 0 a 0 de 0 registros",
+          infoFiltered: "(filtrado de _MAX_ registros)"
+        },
+         initComplete: function () {
+          // Agrega botón "Agregar" a la derecha
+          let $botonAgregar = $(`
+            <div class="ms-auto">
+              <a href="/catalogos/test/create" class="btn btn-success">
+                <i class="fa fa-plus"></i> Agregar
+              </a>
+            </div>
+          `);
+
+          let $wrapper = $table.closest('.dataTables_wrapper');
+          let $btns = $wrapper.find('.dt-buttons');
+
+          // Envolver los botones y el agregar en un contenedor flex
+          $btns.wrap(`<div class="d-flex justify-content-between flex-wrap w-100 align-items-center mb-3"></div>`);
+          $btns.parent().append($botonAgregar);
+        }
+
+      });
+    }
+  });
+});
+
+
+5. Cosntrir la vista pasando los parametros de los titulos, subtitulo y conetenido del slot
+
+Extendemos el layout (Wraper)
+
+Pej.
+
+resources/views/catalogos/test/index.blade.php
+---
+
+@extends('layout.index')
+
+@section('titulo', 'Catálogo de test')
+@section('subtitulo', 'Indice de test')
+
+@section('content')
+<div class="d-flex justify-content-between flex-wrap mb-3">
+  <!-- Botones exportación se generan automáticamente con DataTables -->
+
+  <x-tabla-indice id="tabla-test">
+    <x-slot name="thead">
+      <tr>
+        
+        <th>Clave</th>
+        <th>Descripción</th>
+        
+      </tr>
+    </x-slot>
+
+    @foreach($articulos as $articulo)
+      <tr>
+        
+        <td>{{ $articulo->clave }}</td>
+        <td>{{ $articulo->descripcion }}</td>
+        
+      </tr>
+    @endforeach
+  </x-tabla-indice>
+@endsection
+
+
+6. Integrar los JS en el header y footer
+
+layout/partials/header.blade.php
+------
+ <!-- Datatables -->
+    <link href="{{ asset('dashboard/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dashboard/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dashboard/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dashboard/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('dashboard/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css') }}" rel="stylesheet">
+
+
+layout/partials/footer.blade.php
+------    
+
+<!-- Datatables -->
+  <script src="{{ asset('dashboard/vendors/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('dashboard/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+  <script src="{{ asset('dashboard/vendors/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+  <script src="{{ asset('dashboard/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js') }}"></script>
+  <script src="{{ asset('dashboard/vendors/datatables.net-buttons/js/buttons.flash.min.js') }}"></script>
+  <script src="{{ asset('dashboard/vendors/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+  <script src="{{ asset('dashboard/vendors/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+  <script src="{{ asset('dashboard/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js') }}"></script>
+  <script src="{{ asset('dashboard/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js') }}"></script>
+  <script src="{{ asset('dashboard/vendors/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+  <script src="{{ asset('dashboard/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js') }}"></script>
+  <script src="{{ asset('dashboard/vendors/datatables.net-scroller/js/dataTables.scroller.min.js') }}"></script>
+  <script src="{{ asset('dashboard/vendors/jszip/dist/jszip.min.js') }}"></script>
+  <script src="{{ asset('dashboard/vendors/pdfmake/build/pdfmake.min.js') }}"></script>
+  <script src="{{ asset('dashboard/vendors/pdfmake/build/vfs_fonts.js') }}"></script>
+  @stack('scripts')
+
+
+  Para la visualizacion de los elementos de datatables se hacen en el archivo JS 
+
+
+  Paginado, Botones de exportación y filtrado
+
+    dom: 'Bflrtip',
+
+Para el boton agregar alineado a la derecha agregamos:
+
+ initComplete: function () {
+          // Agrega botón "Agregar" a la derecha
+          let $botonAgregar = $(`
+            <div class="ms-auto">
+              <a href="/catalogos/test/create" class="btn btn-success">
+                <i class="fa fa-plus"></i> Agregar
+              </a>
+            </div>
+          `);
+
+          let $wrapper = $table.closest('.dataTables_wrapper');
+          let $btns = $wrapper.find('.dt-buttons');
+
+          // Envolver los botones y el agregar en un contenedor flex
+          $btns.wrap(`<div class="d-flex justify-content-between flex-wrap w-100 align-items-center mb-3"></div>`);
+          $btns.parent().append($botonAgregar);
+        }
+
+
+
+Para la colocación de las columnas agregamos en nuestra vista las columnas necesarias
+
+Ej.
+
+ <x-tabla-indice id="tabla-test">
+    <x-slot name="thead">
+      <tr>
+        <th>#</th>
+        <th>Clave</th>
+        <th>Descripción</th>
+        <th>Acciones</th>
+      </tr>
+    </x-slot>
+
+    @foreach($articulos as $articulo)
+      <tr>
+         <td>1</td>
+        <td>{{ $articulo->clave }}</td>
+        <td>{{ $articulo->descripcion }}</td>
+        <td class="text-center">
+        <i class="fa fa-pencil text-info" title="Editar" style="cursor:pointer; font-size:20px; margin: 0 5px;"></i>
+        <i class="fa fa-trash text-danger" title="Eliminar" style="cursor:pointer; font-size:20px; margin: 0 5px;"></i>
+      </td>
+      </tr>
+    @endforeach
+  </x-tabla-indice>
+
+
+  Ennuestro controlador enviamos los datos 
+
+
+  public function index()
+    {
+        $articulos = collect([
+            (object) ['clave' => 'ART001', 'descripcion' => 'Artículo de prueba 1'],
+            (object) ['clave' => 'ART002', 'descripcion' => 'Artículo de prueba 2'],
+            (object) ['clave' => 'ART003', 'descripcion' => 'Artículo de prueba 3'],
+            (object) ['clave' => 'ART004', 'descripcion' => 'Artículo de prueba 4'],
+        ]);
+
+        return view('catalogos.test.index', compact('articulos'));
+    }
+
+
+
+Para el boton agregar alineado a la derecha agregamos:
+
+ initComplete: function () {
+          // Agrega botón "Agregar" a la derecha
+          let $botonAgregar = $(`
+            <div class="ms-auto">
+              <a href="/catalogos/test/create" class="btn btn-success">
+                <i class="fa fa-plus"></i> Agregar
+              </a>
+            </div>
+          `);
+
+          let $wrapper = $table.closest('.dataTables_wrapper');
+          let $btns = $wrapper.find('.dt-buttons');
+
+          // Envolver los botones y el agregar en un contenedor flex
+          $btns.wrap(`<div class="d-flex justify-content-between flex-wrap w-100 align-items-center mb-3"></div>`);
+          $btns.parent().append($botonAgregar);
+        }
+
+
+
+Para el boton agrgar tenemos varias opciones de inetgracin al datatables:
+
+ Opcion 1
+ 
+ Dado que estás usando un componente Blade personalizado para tu tabla, y el botón “Agregar” no forma parte del componente <x-tabla-indice>, podemos agregar ese botón justo fuera del componente, pero alineado junto a los botones de DataTables, usando una estructura de diseño con flex.
+
+
+Solución integrada en la vista index.blade.php
+---
+    @extends('layout.index')
+
+    @section('titulo', 'Catálogo de test')
+    @section('subtitulo', 'Índice de test')
+
+    @section('content')
+    {{-- Grupo de botones personalizado con flex --}}
+    <div class="d-flex justify-content-between flex-wrap gap-2 mb-3">
+        {{-- DataTables insertará aquí sus botones automáticamente --}}
+        <div class="dt-buttons-container"></div>
+
+        {{-- Botón Agregar a la derecha --}}
+        <div>
+        <a href="{{ route('ruta.agregar') }}" class="btn btn-success">
+            <i class="fa fa-plus"></i> Agregar
+        </a>
+        </div>
+    </div>
+
+    {{-- Componente Blade de la tabla --}}
+    <x-tabla-indice id="tabla-test">
+        <x-slot name="thead">
+        <tr>
+            <th>Clave</th>
+            <th>Descripción</th>
+        </tr>
+        </x-slot>
+
+        @foreach($articulos as $articulo)
+        <tr>
+            <td>{{ $articulo->clave }}</td>
+            <td>{{ $articulo->descripcion }}</td>
+        </tr>
+        @endforeach
+    </x-tabla-indice>
+    @endsection
+---
+
+
+ Ajuste en el archivo JS (dt-init.js)
+
+Para insertar los botones de DataTables en el nuevo contenedor .dt-buttons-container, añadimos esta línea después de crear el DataTable:
+
+const dataTable = $table.DataTable({
+  // ... configuración actual ...
+});
+
+// Mover los botones al nuevo contenedor
+
+const container = $table.closest('.dt-indice').prev('.d-flex').find('.dt-buttons-container');
+dataTable.buttons().container().appendTo(container);
+
+Esta línea:
+
+dataTable.buttons().container().appendTo(container);
+
+Mueve los botones generados por DataTables al div.dt-buttons-container que se colocaron en la vista.
+Nuestro Resultado:
+
+    Exportar/copy/print quedan a la izquierda (como pide el diseño).
+    Botón “Agregar” a la derecha.
+    Responsive.
+    Compatible con el componente Blade y reutilizable.
+
+
+
+Opcion 2 (Elegida)
+------------------
+
+Integración del botón "Agregar" con estilo responsive y limpio
+
+Agregamos este bloque justo encima de nuetro componente <x-tabla-indice> en views/catalogos/test/index.blade.php:
+
+<div class="d-flex justify-content-between flex-wrap mb-3">
+  <!-- Botones exportación se generan automáticamente con DataTables -->
+
+  <!-- Botón Agregar alineado a la derecha -->
+  <div class="ms-auto">
+    <a href="{{ route('catalogos.test.create') }}" class="btn btn-success">
+      <i class="fa fa-plus"></i> Agregar
+    </a>
+  </div>
+</div>
+
+Debemos asegúrarnos de que este div se encuentre fuera del control de DataTables (dom: 'Bfrtip') para que no lo sobreescriba ni lo reubique.
+
+Alternativa: incluirlo dentro del DOM generado por DataTables
+
+Como es nuestro deseo cargar el botón "Agregar" y que se integre dentro del grupo de botones de DataTables pero alineado a la derecha, podemos usar un pequeño truco con DataTables y su opción initComplete para agregar el botón dinámicamente:
+
+En el archivo js/dt-init.js, modificamos el DataTable({...}) así:
+---
+    $table.DataTable({
+    dom: 'Bfrtip',
+    buttons: [ ... ],
+    language: { ... },
+    initComplete: function () {
+        // Agrega botón "Agregar" a la derecha
+        let $botonAgregar = $(`
+        <div class="ms-auto">
+            <a href="/catalogos/test/create" class="btn btn-success">
+            <i class="fa fa-plus"></i> Agregar
+            </a>
+        </div>
+        `);
+
+        let $wrapper = $table.closest('.dataTables_wrapper');
+        let $btns = $wrapper.find('.dt-buttons');
+
+        // Envolver los botones y el agregar en un contenedor flex
+        $btns.wrap(`<div class="d-flex justify-content-between flex-wrap w-100 align-items-center mb-3"></div>`);
+        $btns.parent().append($botonAgregar);
+    }
+    });
+---
+
+¿Cuál método es mejor?
+
+Método	                            Pros	                    Contras
+HTML separado antes del componente	Más simple, control total	No forma parte del wrapper de DataTables
+Insertado en initComplete con JS	Se integra dentro del wrapper .dataTables_wrapper	Depende del correcto manejo JS, más complejo de depurar
