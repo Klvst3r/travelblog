@@ -3,7 +3,7 @@
  <!-- footer content -->
         <footer class="d-flex justify-content-between">
           <div class="text-end">
-            Tribunal Superior de Justicia del Estado de Tlaxcala
+            {{ config('app.title') }}
           </div>
           <div class="text-end">
             {{ config('app.name') }} - {{ date('Y') }}

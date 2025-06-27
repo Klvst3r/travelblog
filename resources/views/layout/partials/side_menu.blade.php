@@ -9,12 +9,12 @@
             <!-- Perfil institucinal  -->
             <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;" class="profile clearfix">
                 <a href="#" >
-                        <img src="{{ asset('dashboard/images/logo-TSJT.png') }}" alt="Logo Tribunal Superior de Justicia de Tlaxcala" style="max-height: 4rem;">
+                        <img src="{{ asset('img/logo.png') }}" width="200px;" alt="{{ config('app.title') }}" style="max-height: 4rem;">
                 </a>
                     </div>
 
             <div class="profile clearfix">
-              <h2 class="tsj-text" style="padding: 0.1rem; text-align: center;">Tribunal Superior de Justicia del Estado de Tlaxcala</h2>
+              <h2 class="tsj-text" style="padding: 0.1rem; text-align: center;">{{ config('app.title') }}</h2>
               <div class="profile_pic">
                 <img src="{{ asset('img/user-profile.png') }}" alt="Usuario en linea" class="img-circle profile_img">
               </div>

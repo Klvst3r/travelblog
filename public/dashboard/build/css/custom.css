@@ -802,7 +802,9 @@
   content: "\e260"; }
 
 .left_col {
-  background: #2A3F54; }
+  /* background: #2A3F54;  */
+  background: #1abc9c
+}
 
 .container {
   width: 100%;
@@ -1268,7 +1270,8 @@ h1, .h1, h2, .h2, h3, .h3 {
   margin-bottom: 10px; }
 
 a {
-  color: #5A738E;
+  /* color: #5A738E; */
+  color: white;
   text-decoration: none; }
 
 a, a:visited, a:focus, a:active, :visited, :focus, :active, .btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn.active.focus {
@@ -1310,7 +1313,9 @@ a:hover, a:focus {
   padding: 12px 20px; }
 
 .top_nav li a i {
-  font-size: 15px; }
+  font-size: 15px;
+  color: #73879C;
+ }
 
 .navbar-static-top {
   position: fixed;
@@ -1395,7 +1400,9 @@ a:hover, a:focus {
   padding: 13px 15px 12px; }
 
 .nav.side-menu > li.current-page, .nav.side-menu > li.active {
-  border-right: 5px solid #1ABB9C; }
+  /* border-right: 5px solid #1ABB9C;  */
+   border-right: 5px solid #172D44; 
+}
 
 .nav li.current-page {
   background: rgba(255, 255, 255, 0.05); }
@@ -1409,7 +1416,9 @@ a:hover, a:focus {
 .nav.side-menu > li.active > a {
   text-shadow: rgba(0, 0, 0, 0.25) 0 -1px 0;
   background: -webkit-gradient(linear, left top, left bottom, from(#334556), to(#2C4257)), #2A3F54;
-  background: linear-gradient(#334556, #2C4257), #2A3F54;
+  /* background: linear-gradient(#334556, #2C4257), #2A3F54; */
+  background: linear-gradient(#0c6654, #0c6654), #0c6654;
+
   -webkit-box-shadow: rgba(0, 0, 0, 0.25) 0 1px 0, inset rgba(255, 255, 255, 0.16) 0 1px 0;
   box-shadow: rgba(0, 0, 0, 0.25) 0 1px 0, inset rgba(255, 255, 255, 0.16) 0 1px 0; }
 
@@ -2261,7 +2270,9 @@ span.right {
   padding: 5px 0 0 0;
   position: fixed;
   width: 230px;
-  background: #2A3F54; }
+  /* background: #2A3F54;  */
+  background: #0c6654;
+}
 
 .sidebar-footer a {
   padding: 7px 0 3px;
@@ -2270,7 +2281,9 @@ span.right {
   font-size: 17px;
   display: block;
   float: left;
-  background: #172D44; }
+  /* background: #172D44; */
+  background: #0c6654;
+ }
 
 .sidebar-footer a:hover {
   background: #425567; }
