@@ -6,9 +6,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="/dashboard/images/logo-TSJT.png" type="image/ico" />
+    <link rel="icon" href="/img/logo.png" type="image/ico" />
 
-    <title> {{ config('app.name') }} | Poder Judicial de Tlaxcala</title>
+    <title> {{ config('app.name') }} | {{ config('app.title') }}</title>
     {{-- <title>{{ config('app.name') }} </title> --}}
 
     <!-- Bootstrap -->
@@ -65,9 +65,10 @@
                
 
                 <div class="fadeIn first">
-                    <img src="img/escudo-gris.png" id="icon" alt="Escudo Tribunal superior de Justicia del Estado de Tlaxcala">
+                    <img src="img/logo.png" id="icon" alt="Escudo Tribunal superior de Justicia del Estado de Tlaxcala">
                   </div>
-                  <h2>Tribunal Superior de Justicia de Tlaxcala</h2>
+                  <div class="mb-6"><p class="mt-3">&nbsp;</p><p class="mt-3">&nbsp;</p></div>
+                  <h2>{{ config('app.title') }}</h2>
                   <h2>{{ config('app.name') }}</h2>
                   <p>&nbsp;</p>
             
@@ -143,7 +144,7 @@
                 <div>
               
                   <div class="text-end">
-                    Bienes - {{ date('Y') }}
+                    Klvst3r - {{ date('Y') }}
                   </div>
                 </div>
               </div>

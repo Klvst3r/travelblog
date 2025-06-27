@@ -1,0 +1,41 @@
+Para podr trabajar adecuadamente en nustra aplicación de Blog vamos a cambiar la cnonfiguracion del login, especificamente para nuestro Blog Zender
+
+- Cambiamos El nombre de la apliacación,
+- El Logo en el login
+
+Para que puedamos usar nombre de la aplicacion y titulo de la palicación:
+
+Para que config('app.title') funcione correctamente, sí necesitas modificar el archivo config/app.php además de declarar la variable APP_TITLE en tu archivo .env.
+
+1. Vamos a gregarle en el archivo de variabes de entorno, .env
+
+APP_NAME="Zendero"
+APP_TITLE="Travel Blog"
+
+2. Debemos modificar el archivo config/app.php
+
+Laravel no carga automáticamente nuevas claves de .env a menos que estén definidas en los archivos de configuración. Así que debes agregar title en el array de configuración config/app.php:
+
+return [
+
+    'name' => env('APP_NAME', 'Laravel'),
+
+    // Agrega esta línea:
+    'title' => env('APP_TITLE', 'Blog'),
+
+    // ... resto de configuración
+];
+
+
+
+Ahora podremos usarla en nuestra vista algo como:
+
+<title> {{ config('app.name') }} | {{ config('app.title') }}</title>
+
+o donde lo requieramos
+
+
+
+Tambien aplicamos los cambios en el dashboard 
+- footer
+- Side-menu
