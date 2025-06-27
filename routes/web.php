@@ -41,12 +41,18 @@ use App\Http\Controllers\HomeController;
 //     return view('welcome', compact('posts')); //Envia un array ['posts' => $posts]
 // });
 
-Route::get('/', [PagesController::class, 'index'])->name('posts.index');
+//Route::get('/', [PagesController::class, 'index'])->name('posts.index');
+Route::get('/', [PagesController::class, 'index'])->name('home.index');
 
 //Ya no utilizamos este clousure, es decir no utilizamos el controlador
 // Route::get('home', function(){
 //     return view('admin.dashboard');
 // })->middleware('auth');
+
+//Route::get('home/', [HomeController::class, 'index']);
+Route::get('home/', [HomeController::class, 'index']);
+
+//Route::get('home/posts','Admin\PostsController@index');
 
 Route::get('posts', function(){
     return Post::all();
@@ -59,12 +65,13 @@ Route::get('/catalogos/marca', function () {
 })->name('catalogos.marca');
 
 
-Route::get('/posts', [PagesController::class, 'index'])->name('posts.index');
+//Posts desde home
+//Route::get('/posts', [PagesController::class, 'index'])->name('posts.index');
 
 
 //Grupo para la adminisración
 Route::group(['prefix' => 'home'], function(){
-    Route::get('home/posts', [PostsController::class, 'index']);
+    Route::get('home/', [PostsController::class, 'index']);
 } );
 
 //Posts

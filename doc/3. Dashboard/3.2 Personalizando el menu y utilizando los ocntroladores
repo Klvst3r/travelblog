@@ -137,15 +137,27 @@ y en la vista copíamos el contenido de welcome
 es un poco enredado por que la ruta
 
 
-http://localhost:7000/home
+http://localhost:8000
 
 me lleva a mi dashboard ya
 
-http://localhost:7000/
-
 me lleva a los post publicados
 
+en la vista index importamos el layout y los posts en si que ahora solo hay contenido de un titulo
 
+@section('titulo')
+    Dashboard
+@endsection
+
+@section('subtitulo')
+ Sesión de usuario
+@endsection
+
+@section('content')
+
+    <p>Mostrar todos los posts.</p>
+
+@endsection
 
 
 
@@ -173,36 +185,48 @@ Posteriora ello hay que generar la ruta.
 
  La ruta para ir a esos posts seria:
 
- http://localhost:7000/home/posts
+ http://localhost:7000/home/
 
  Target class [PostsController] does not exist.
 
 Debemos anteponerle Admin
 Target class [Admin\PostsController] does not exist.
 
+El metodo para el index es:
 
-en la vista index importamos el layout y los posts en si que ahora solo hay contenido de un titulo
+ public function index()
+    {
+        $posts = Post::all(); // o como lo manejes
+        return view('home.index', compact('posts')); // vista correcta según lo que dijiste
+    }
 
-@section('titulo')
-    Dashboard
-@endsection
 
-@section('subtitulo')
- Sesión de usuario
-@endsection
+Nosretornara hacia
 
-@section('content')
+/home/index.blade.php
+de acuerdo a la ruta:
 
-    <p>Mostrar todos los posts.</p>
+   return view('home.index', compact('posts')); // vista correcta según lo que dijiste
 
-@endsection
+
+La ruta para este metodo es:
+
+Route::get('home/posts','Admin\PostsController@index');
+
 
 ahora lo que ocurre aca es que si no estamos autenticados nos solicita autenticarnos y no es lo que necesitamos, 
+
+http://localhost:8000/home
+
+
 
 Lo que podemos hacer es otro archivo de rutas para la administración, por ahora vamos a crear un grupo conun prefijo
 
 
-Route::group(['prefix' => 'admin'], );
+Route::group(['prefix' => 'home'], function(){
+    Route::get('home/posts', [PostsController::class, 'index']);
+} );
+
 
 
 Quiere decir que todas rutas dentro de este grupo van aestar precedidas por admin o home en nuestro caso, entonces.

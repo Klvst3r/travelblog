@@ -38,7 +38,7 @@
                       </li>
                       <li><a><i class="fa fa-edit"></i> Blog <span class="fa fa-chevron-down"></span></a>
                           <ul class="nav child_menu">
-                              <li><a href="{{ route('posts.index') }}">Post</a></li>
+                              {{-- <li><a href="{{ route('posts.index') }}">Post</a></li> --}}
                               <li><a href="form_advanced.html"> Concepto </a></li>
                               <li><a href="form_validation.html"> Pertenece </a></li>
                               <li><a href="form_wizards.html"> Estado </a></li>
