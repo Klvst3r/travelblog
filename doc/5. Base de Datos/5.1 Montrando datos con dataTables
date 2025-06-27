@@ -500,3 +500,7 @@ En el archivo js/dt-init.js, modificamos el DataTable({...}) así:
 Método	                            Pros	                    Contras
 HTML separado antes del componente	Más simple, control total	No forma parte del wrapper de DataTables
 Insertado en initComplete con JS	Se integra dentro del wrapper .dataTables_wrapper	Depende del correcto manejo JS, más complejo de depurar
+
+
+En este prpoyecto vamos a redirigir hacia una vista en lugar de trabajar con un modal, pero la persectiva es la misma
+
