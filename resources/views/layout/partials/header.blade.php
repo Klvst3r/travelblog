@@ -39,4 +39,9 @@
     <link href="{{ asset('dashboard/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('dashboard/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css') }}" rel="stylesheet">
 
+    <!-- Parsley.js validacion de formularios -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.3/parsley.css" rel="stylesheet">
+
+
+
   </head>

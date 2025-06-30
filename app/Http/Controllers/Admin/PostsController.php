@@ -15,4 +15,12 @@ class PostsController extends Controller
         $posts = Post::all(); // o como lo manejes
         return view('home.index', compact('posts')); // vista correcta según lo que dijiste
     }
+
+    public function create(){
+        return view('home.create');
+    }
+
+    public function store(){
+        
+    }
 }

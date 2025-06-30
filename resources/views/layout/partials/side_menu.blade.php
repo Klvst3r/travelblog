@@ -38,17 +38,13 @@
                       </li>
                       <li><a><i class="fa fa-edit"></i> Blog <span class="fa fa-chevron-down"></span></a>
                           <ul class="nav child_menu">
-                              <li {{ request()->is('home') ? 'class=active' : '' }}"
+                              <li {{ request()->is('home') ? 'class=active' : '' }}
                               ><a href="{{ route('home') }}">Ver todos los Post</a></li>
+
+                              <li {{ request()->is('home') ? 'class=active' : '' }}
+                              ><a href="{{ route('home.create') }}">Crear Post</a></li>
                               
-                              <li><a href="form_advanced.html"> Concepto </a></li>
-                              <li><a href="form_validation.html"> Pertenece </a></li>
-                              <li><a href="form_wizards.html"> Estado </a></li>
-                              <li><a href="form_upload.html"> Áreas </a></li>
-                              <li><a href="form_buttons.html"> Personal </a></li>
-                              <li><a href="form_buttons.html"> Categoría </a></li>
-                              <li><a href="form_buttons.html"> Ubicaciones </a></li>
-                              <li><a href="form_buttons.html"> Unidad de Medida </a></li>
+                              
                           </ul>
                       </li>
                       <li><a><i class="fa fa-desktop"></i> Inventario <span class="fa fa-chevron-down"></span></a>

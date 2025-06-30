@@ -79,6 +79,10 @@ Route::group([
         //Route::get('posts/', [PostsController::class, 'index'])->name('posts.index');
         Route::get('/', [HomeController::class, 'index'])->name('home');
         Route::get('admin/', [AdminController::class, 'index'])->name('admin');
+
+        //Crear, guardar y editar post
+        Route::get('create/', [PostsController::class, 'create'])->name('home.create');
+        Route::get('store/', [PostsController::class, 'store'])->name('home.store');
     } );
 
 //Posts

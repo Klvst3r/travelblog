@@ -36,9 +36,12 @@
         <nav aria-label="breadcrumb" class="mt-2 mb-3">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ url('/home') }}">Inicio</a></li>
-            <li class="breadcrumb-item active" aria-current="page">
+           <li class="breadcrumb-item">
+            <a href="{{ View::yieldContent('ruta_titulo', '#') }}">
               {{ View::yieldContent('titulo', 'Título por defecto') }}
-            </li>
+            </a>
+          </li>
+
             @hasSection('subtitulo')
               <li class="breadcrumb-item active" aria-current="page">
                 {{ View::yieldContent('subtitulo') }}

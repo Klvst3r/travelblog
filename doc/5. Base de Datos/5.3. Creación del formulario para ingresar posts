@@ -1,0 +1,389 @@
+14. Creación del formulario para ingresar posts
+
+Cambiamos la redirección de la url “home” a “admin” para las páginas de administración. Y agregamos la clase “active” a los links de navegación para que nos indique en qué página estamos.
+
+
+Vamos acrear un formulario para ingresar posts,
+
+Vamos a administración y en el link de crar un post no nos lleva a ningun lado
+
+
+ahora aca
+lis links de navehación
+
+resources/views/layout/partials/side_menu.blade.php
+
+<li {{ request()->is('home') ? 'class=active' : '' }}"
+                              ><a href="{{ route('home.create') }}">Crear Post</a></li>
+
+Debemos acrear ahora la ruta hacia esta vista
+
+nos sugiere en el link tener activo el link
+<li {{ request()->is('home') ? 'class=active' : '' }}"
+                              >
+
+Lo pasamos y despues lo concentraremos enun archivo independiente
+
+Hacemos una pequeña modificación en el layout
+@section('ruta_titulo', route('home')) 
+
+y en la definicion del layout
+
+ennuestro caso:
+
+resources/views/layout/index.blade.php
+
+<li class="breadcrumb-item">
+            <a href="{{ View::yieldContent('ruta_titulo', '#') }}">
+              {{ View::yieldContent('titulo', 'Título por defecto') }}
+            </a>
+          </li>
+
+para que en la vista nos lleve a la vista home/cargando nuestro indice por la ruta index especificada en el controlador y las rutas de home          
+
+Vamos a colocr un formulario con un contenedr interno vayamos a ello.
+
+<div class="row">
+						<div class="col-md-12 col-sm-12 ">
+							<div class="x_panel">
+								<div class="x_title">
+									<h2>Form Design <small>different form elements</small></h2>
+									<ul class="nav navbar-right panel_toolbox">
+										<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+										</li>
+										<li class="dropdown">
+											<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+											<ul class="dropdown-menu" role="menu">
+												<li><a class="dropdown-item" href="#">Settings 1</a>
+												</li>
+												<li><a class="dropdown-item" href="#">Settings 2</a>
+												</li>
+											</ul>
+										</li>
+										<li><a class="close-link"><i class="fa fa-close"></i></a>
+										</li>
+									</ul>
+									<div class="clearfix"></div>
+								</div>
+								<div class="x_content" style="display: block;">
+									<br>
+									<form id="demo-form2" data-parsley-validate="" class="form-horizontal form-label-left" novalidate="">
+
+										<div class="item form-group">
+											<label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">First Name <span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 ">
+												<input type="text" id="first-name" required="required" class="form-control parsley-error" data-parsley-id="5"><ul class="parsley-errors-list filled" id="parsley-id-5"><li class="parsley-required">This value is required.</li></ul>
+											</div>
+										</div>
+										<div class="item form-group">
+											<label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Last Name <span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 ">
+												<input type="text" id="last-name" name="last-name" required="required" class="form-control parsley-error" data-parsley-id="7"><ul class="parsley-errors-list filled" id="parsley-id-7"><li class="parsley-required">This value is required.</li></ul>
+											</div>
+										</div>
+										<div class="item form-group">
+											<label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Middle Name / Initial</label>
+											<div class="col-md-6 col-sm-6 ">
+												<input id="middle-name" class="form-control" type="text" name="middle-name" data-parsley-id="9">
+											</div>
+										</div>
+										<div class="item form-group">
+											<label class="col-form-label col-md-3 col-sm-3 label-align">Gender</label>
+											<div class="col-md-6 col-sm-6 ">
+												<div id="gender" class="btn-group" data-toggle="buttons">
+													<label class="btn btn-secondary" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
+														<input type="radio" name="gender" value="male" class="join-btn" data-parsley-multiple="gender" data-parsley-id="12"> &nbsp; Male &nbsp;
+													</label>
+													<label class="btn btn-primary active" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
+														<input type="radio" name="gender" value="female" class="join-btn" data-parsley-multiple="gender"> Female
+													</label>
+												</div>
+											</div>
+										</div>
+										<div class="item form-group">
+											<label class="col-form-label col-md-3 col-sm-3 label-align">Date Of Birth <span class="required">*</span>
+											</label>
+											<div class="col-md-6 col-sm-6 ">
+												<input id="birthday" class="date-picker form-control parsley-error" placeholder="dd-mm-yyyy" type="text" required="required" onfocus="this.type='date'" onmouseover="this.type='date'" onclick="this.type='date'" onblur="this.type='text'" onmouseout="timeFunctionLong(this)" data-parsley-id="16"><ul class="parsley-errors-list filled" id="parsley-id-16"><li class="parsley-required">This value is required.</li></ul>
+												<script>
+													function timeFunctionLong(input) {
+														setTimeout(function() {
+															input.type = 'text';
+														}, 60000);
+													}
+												</script>
+											</div>
+										</div>
+										<div class="ln_solid"></div>
+										<div class="item form-group">
+											<div class="col-md-6 col-sm-6 offset-md-3">
+												<button class="btn btn-primary" type="button">Cancel</button>
+												<button class="btn btn-primary" type="reset">Reset</button>
+												<button type="submit" class="btn btn-success">Submit</button>
+											</div>
+										</div>
+
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+
+Para complicarlo un poco de inicio vamosa crear un componente que tenga nuestro template del formulario dentro de umn componente:
+
+Convertir tu formulario en componente
+---------------------------------------
+
+
+1. Creamos un componente Blade
+
+Archivo:
+resources/views/components/form-panel.blade.php
+
+Contenido:
+
+<div class="row">
+  <div class="col-md-12 col-sm-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>{{ $titulo ?? 'Formulario' }} <small>{{ $subtitulo ?? '' }}</small></h2>
+        <ul class="nav navbar-right panel_toolbox">
+          <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-wrench"></i></a>
+            <ul class="dropdown-menu" role="menu">
+              <li><a class="dropdown-item" href="#">Settings 1</a></li>
+              <li><a class="dropdown-item" href="#">Settings 2</a></li>
+            </ul>
+          </li>
+          <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+        </ul>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        <br>
+        <form id="{{ $formId ?? 'form-principal' }}" action="{{ $action ?? '#' }}" method="{{ $method ?? 'POST' }}" class="form-horizontal form-label-left" novalidate>
+          @csrf
+          {{ $slot }}
+
+          <div class="ln_solid"></div>
+          <div class="item form-group">
+            <div class="col-md-6 col-sm-6 offset-md-3">
+              <button class="btn btn-primary" type="button">Cancelar</button>
+              <button class="btn btn-primary" type="reset">Limpiar</button>
+              <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+2. Usarlo en tu vista Blade (posts/create.blade.php o home/index.blade.php)
+
+<x-form-panel 
+  titulo="Crear Post" 
+  subtitulo="Ingresa los datos del nuevo post" 
+  formId="form-post" 
+  action="{{ route('posts.store') }}" 
+  method="POST">
+
+  {{-- Campo: Título --}}
+  <div class="item form-group">
+    <label class="col-form-label col-md-3 col-sm-3 label-align">Título <span class="required">*</span></label>
+    <div class="col-md-6 col-sm-6">
+      <input type="text" name="title" class="form-control" required>
+    </div>
+  </div>
+
+  {{-- Campo: Extracto --}}
+  <div class="item form-group">
+    <label class="col-form-label col-md-3 col-sm-3 label-align">Extracto</label>
+    <div class="col-md-6 col-sm-6">
+      <textarea name="excerpt" class="form-control" rows="3"></textarea>
+    </div>
+  </div>
+
+  {{-- Campo: Contenido --}}
+  <div class="item form-group">
+    <label class="col-form-label col-md-3 col-sm-3 label-align">Contenido</label>
+    <div class="col-md-6 col-sm-6">
+      <textarea name="body" class="form-control" rows="5"></textarea>
+    </div>
+  </div>
+
+  {{-- Campo: Fecha publicación --}}
+  <div class="item form-group">
+    <label class="col-form-label col-md-3 col-sm-3 label-align">Fecha de Publicación</label>
+    <div class="col-md-6 col-sm-6">
+      <input name="published_at" type="date" class="form-control">
+    </div>
+  </div>
+
+</x-form-panel>
+
+
+De esta manera podremos:
+
+- Crear múltiples formularios para diferentes modelos (Post, User, etc.) reutilizando solo el componente contenedor.
+- Si cambiamos el diseño (por ejemplo, los botones o el estilo), solo lo hacemos en un lugar: el componente.
+- Muy útil si estamos usando AdminLTE, Gentelella, o cualquier template administrativo.
+
+Validacion del formulario del lado del Front endforeach
+Para nuestro caso tenemos
+        <input type="text" name="title" class="form-control" required>
+ennuestro formulario podemos hacer uso de una libraria que valide los formularios
+
+
+arsley.js, una librería de validación de formularios en el lado del cliente (frontend). No necesitas escribir ese bloque manualmente si ya estás usando Parsley de forma correcta.
+
+Teniendo el atributo 
+
+required en el input:
+
+<input type="text" name="title" class="form-control" required>
+
+
+por ejemplo:
+
+Debemos incluir 
+
+Incluye Parsley.js en nuestro proyecto
+
+Lo hacemos via CDN para probar:
+en el header
+<link href="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.3/parsley.css" rel="stylesheet">
+
+en el footer
+<script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.3/parsley.min.js"></script>
+
+
+
+Es importante agregarlo alformulario
+
+Agrega data-parsley-validate al formulario:
+
+<form id="form-post" data-parsley-validate>
+
+
+Parsley se encargará automáticamente de mostrar el <ul class="parsley-errors-list"> y sus mensajes cuando un campo inválido intente enviarse.
+
+Probamos
+
+
+y podemos usar atributos adicionales, para hacer validaciones mas especificas:
+
+<input type="email" name="correo" class="form-control" required data-parsley-type="email">
+
+<input type="text" name="rfc" class="form-control" required data-parsley-pattern="^[A-Z]{4}\d{6}[A-Z0-9]{3}$">
+
+
+
+Para tener nuestros mensajes en español vamos apersonalizarlo.
+
+cargamos la tradcuccion al español
+
+
+    Esto cambiará todos los mensajes de validación por defecto (como “This value is required.” → “Este valor es requerido.”).
+
+
+
+2. Personalizar mensajes por campo (opcional)
+
+Podemos agregar mensajes personalizados en el atributo data-parsley- correspondiente:
+
+<input type="text" name="title" required
+  data-parsley-required-message="Por favor, escribe un título para el post"
+  class="form-control">
+
+Otros ejemplos útiles:
+
+<!-- Email -->
+<input type="email" name="email" required
+  data-parsley-type="email"
+  data-parsley-required-message="El correo electrónico es obligatorio"
+  data-parsley-type-message="Debes ingresar un correo válido"
+  class="form-control">
+
+<!-- Número -->
+<input type="text" name="edad" required
+  data-parsley-type="number"
+  data-parsley-min="18"
+  data-parsley-required-message="La edad es requerida"
+  data-parsley-type-message="Debe ser un número"
+  data-parsley-min-message="Debes tener al menos 18 años"
+  class="form-control">
+
+
+
+Bonus: Personalizar globalmente (menos recomendado, pero posible)
+
+Podemos sobreescribir los mensajes por defecto en nuestro JS:
+
+window.Parsley.addMessages('es', {
+  defaultMessage: "Este valor parece ser inválido.",
+  required: "Este campo es obligatorio.",
+  type: {
+    email:        "Este valor debe ser un correo válido.",
+    number:       "Este valor debe ser numérico."
+  }
+});
+
+Parsley.setLocale('es');
+
+✅ Recomendación final
+
+    Usa data-parsley-required-message por campo cuando necesites algo más específico o contextual.
+
+    Usa la traducción es.js para que todo esté en español sin esfuerzo adicional.
+
+    Asegúrate de incluir data-parsley-validate en tu <form> para que todo funcione correctamente.
+
+Al no cargar    Parsley y su traducción al español no están siendo cargados correctamente porque los scripts desde CDN están fallando.
+
+Tu navegador muestra errores como:
+
+    Loading failed for the <script> with source “https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.3/parsley.min.js”
+
+Esto significa que el archivo JS no pudo descargarse. Posibles causas:
+
+    Problemas de red o restricciones locales/firewall.
+
+    CDN bloqueado por alguna política de red.
+
+    Versión eliminada del CDN (poco común pero posible).
+
+
+    entonces vamos a instalr 
+Parsley localmente
+
+Ya que estás usando muchos assets locales (dashboard/vendors/...), lo mejor es descargar Parsley y sus archivos de idioma y servirlos tú mismo.
+1. Descarga los archivos:
+
+    parsley.min.js
+
+    i18n/es.js
+
+Puedes bajarlos manualmente o con un comando wget desde consola:
+
+wget https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.3/parsley.min.js -P public/js/
+wget https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.3/i18n/es.js -P public/js/
+
+
+verificamos que existan nuestros archivos en locales
+
+ls -l public/js/
+
+total 60
+-rw-r--r-- 1 klvst3r klvst3r   624 Jun 27 15:00 dark-mode.js
+-rw-r--r-- 1 klvst3r klvst3r  2668 Jun 30 09:59 dt-init.js
+-rw-r--r-- 1 klvst3r klvst3r  1421 Jun 30 13:53 es.js
+-rw-r--r-- 1 klvst3r klvst3r  1506 Jun 27 15:00 fullscreen.js
+-rw-r--r-- 1 klvst3r klvst3r 42773 May  4  2020 parsley.min.js
+
+
+y ahi existan
