@@ -33,12 +33,14 @@
                   <ul class="nav side-menu">
                       <li><a><i class="fa fa-home"></i> Inicio <span class="fa fa-chevron-down"></span></a>
                           <ul class="nav child_menu">
-                              <li><a href="home">Dashboard</a></li>
+                              <li {{ request()->is('admin') ? 'class=active' : '' }}><a href="{{ route('admin') }}">Dashboard</a></li>
                           </ul>
                       </li>
                       <li><a><i class="fa fa-edit"></i> Blog <span class="fa fa-chevron-down"></span></a>
                           <ul class="nav child_menu">
-                              <li><a href="{{ route('home') }}">Ver todos los Post</a></li>
+                              <li {{ request()->is('home') ? 'class=active' : '' }}"
+                              ><a href="{{ route('home') }}">Ver todos los Post</a></li>
+                              
                               <li><a href="form_advanced.html"> Concepto </a></li>
                               <li><a href="form_validation.html"> Pertenece </a></li>
                               <li><a href="form_wizards.html"> Estado </a></li>

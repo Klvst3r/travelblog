@@ -13,6 +13,15 @@ class Post extends Model
         'published_at' => 'datetime',
     ];
 
+    //Posteriormente los utilizaremos cuando enviaemos mas post desde un formulario
+     protected $fillable = [
+        'title',
+        'excerpt',
+        'body',
+        'published_at',
+        'category_id',
+    ];
+
     //Relacion de uno a muchos
     public function category(){        //$post->category->name;  -> El post pertenece a la categoria
 

@@ -16,9 +16,10 @@ use App\Http\Controllers\Lock\LockscreenController;
 
 //Posts de admin
 use App\Http\Controllers\Admin\PostsController;
+use App\Http\Controllers\Admin\AdminController;
 
 //Rutas protegidas
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\HomeController;
 
 
 /*
@@ -70,9 +71,15 @@ Route::get('/catalogos/marca', function () {
 
 
 //Grupo para la adminisración
-Route::group(['prefix' => 'home'], function(){
-    Route::get('home/', [PostsController::class, 'index']);
-} );
+Route::group([
+    'prefix' => 'home',
+    'namespace' => 'Home',
+    'middleware' => 'auth',
+    ], function(){
+        //Route::get('posts/', [PostsController::class, 'index'])->name('posts.index');
+        Route::get('/', [HomeController::class, 'index'])->name('home');
+        Route::get('admin/', [AdminController::class, 'index'])->name('admin');
+    } );
 
 //Posts
 //Route::get('/posts/index', [PostController::class, 'index'])->name('posts.index');

@@ -1,0 +1,360 @@
+13. Reestructuración de código y activación de links
+
+Cambiamos la redirección de la url “home” a “admin” para las páginas de administración Y agregamos la clase “active” a los links de navegación para que nos indique en qué página estamos
+
+
+Con tinuando cuando vaya a la ul admin es dcir a nuestro home, redireccione al login si no estamos autenticados, lo cual ya tenemos configurado con auth, y que redireccioe al dashboard en caso de que se este logueado, 
+
+
+Puede que no encuentre la colecciond e la ruta, el controlador es el login
+
+es 
+
+cntroler\Aut\'Logincontroller
+
+Se encarga de la logica del usuario, hay una propiedad redirectTo, aqui ees donde nos redirige, 
+
+/home
+
+cuando estemos autenticados redirigira al home, que esta cargo del middleware, que viene con Laravel
+
+Un middleware es simplemente un clase clase que intercepta una petcicion http la filtra y develve una respuesta.
+
+
+Revisando
+
+app\Middleware\RedirectIfAuthenticated,
+
+Este es el encargardo de redireccionar si esta autenticado, todos los middleeares tiene un metodo habdle, que se ejecuta automaticamente, lo que hace es verificar si el usuario esta autenticado, y redirecicona a home, si esta autenticado lo deja pasar.
+
+
+En archivo 
+app\Http\Kernel
+
+Es donde se registran los middlewares,
+
+
+Si bajamos tensdfemoes
+
+
+$routeMiddleware
+
+
+donde tenemos reghistrado el middleeares
+
+
+guess
+
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+
+
+        pero en nuestro caso esta en la clase
+
+           /**
+     * The application's middleware aliases.
+     *
+     * Aliases may be used instead of class names to conveniently assign middleware to routes and groups.
+     *
+     * @var array<string, class-string|string>
+     */
+    protected $middlewareAliases = [
+
+
+    Vemos que es asignado la llavhe gues
+
+    en el constructor se aplica aqui mismo e aplica a todos los metodos, de este controler, excepto al logout, ya que al estar autenticados debemos poder cerrar la sesion.
+
+
+    Enel middleware cambiamos a /home y en la ruta
+
+    cambiamos a admin, en nuestro caso conservamos a home que es nuestro destino hacia admin,
+
+    Si regirigimos hacia /home sin estar autenticado nos redirecciona al login.
+
+
+    Si hacemos login nos redirecciona a /home
+
+
+    Vamos a cambiar el nombre de estecontrolador de home controler a AdminController, en nuestro caso lo vamos a dejar asi, por que es nuestro deseo trabajar en home como si fuera nuestro panel de amsinditración. solo establecemos la referencia.
+
+    Y postcontroller sera el controlador de nuestro home controller solo cambiamos esas referencias
+
+
+    admin => home
+    Post => /
+
+
+    Podremos cambiar si asi lo desamos, como veremos podria ser una solucion para coincidir
+
+    Tambien es importante mover la ruta de admin dentro del grupo de las rutas.
+
+Lo que apunte a admin
+sera hacia home
+/admin => home
+
+ahora si hacemos 
+
+http://localhost:7000/home
+
+y no estamos autenticados nos redirecciona a login
+
+y si estamos logeados 
+
+nos direcciona hacia 
+
+
+http://localhost:7000/home
+
+
+Que para nuestro caso es admin,
+
+
+Hay que considderar que las rutas son de la administracion
+
+como cambiamos el homceController dentro de la carpeta admin
+es decir
+
+estaba inicialmente:
+App\Controller\Homecontroller.php
+
+ahora esta
+
+App\Controller\Admin\HomeController.php
+
+en la ruta lo tengo definico domo en el controlador  Homecontroller defini los namespace asi:
+
+namespace App\Http\Controllers\Admin;
+use App\Http\Controllers\Controller;
+
+Y debemos cambiar tambien el namespace en el archivo we.php
+//Rutas protegidas
+use App\Http\Controllers\Admin\HomeController;
+
+
+Para que e nuestras rutas portegidas puedamos hacer lo siguiente:
+//Grupo para la adminisración
+Route::group([
+    'prefix' => 'home',
+    'namespace' => 'Home',
+    'middleware' => 'auth',
+    ], function(){
+        //Route::get('posts/', [PostsController::class, 'index'])->name('posts.index');
+        Route::get('home/', [HomeController::class, 'index'])->name('home.index');
+    } );
+
+
+Ahora tenemos correcta nuestra ruta
+
+
+Ahora en el admincontroller o en nuestro caso HomeController, la ruta sera en cnuetro archivo web
+
+tenemos nuestros posts dentro de un Datatables
+
+
+ahora queremos que nuestros links queremos que se activen cuando estemos en determinadas paginas
+
+Partamos desde nuestros posts
+
+http://localhost:7000/home/
+
+
+Contruimos una vista de administracin de la siguiente manera:
+@extends('layout.index')
+@section('titulo', 'Posts')
+@section('subtitulo', 'Todos los Posts')
+
+@section('content')
+  <h2>Usuario Autenticado: {{ auth()->user()->name }}</h2>
+  <h2>Email: {{ auth()->user()->email }}</h2>
+@endsection
+
+agregamos
+    use App\Http\Controllers\Admin\AdminController;
+
+        Route::get('admin/', [AdminController::class, 'index'])->name('admin');
+
+Dentro del grupode rutas
+
+y el controlador:
+
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+class AdminController extends Controller
+{
+    
+     public function index()
+    {
+        return view('admin.index');
+    }
+}
+
+
+Finalmente el link de nuestro nav_menu queda:
+
+
+    <li><a><i class="fa fa-home"></i> Inicio <span class="fa fa-chevron-down"></span></a>
+                          <ul class="nav child_menu">
+                              <li {{ request()->is('admin') ? 'class=active' : '' }}><a href="{{ route('admin') }}">Dashboard</a></li>
+                          </ul>
+                      </li>
+                      <li><a><i class="fa fa-edit"></i> Blog <span class="fa fa-chevron-down"></span></a>
+                          <ul class="nav child_menu">
+                              <li {{ request()->is('home') ? 'class=active' : '' }}"
+                              ><a href="{{ route('home') }}">Ver todos los Post</a></li>
+                              
+                              
+
+Ahora vamos a traer todos los posts a nutero home de la base de datos
+
+Primero modificamos la vista:
+---
+@extends('layout.index')
+
+@section('titulo', 'Posts')
+@section('subtitulo', 'Todos los Posts')
+
+@section('content')
+
+<div class="d-flex justify-content-between flex-wrap mb-3">
+    <x-tabla-indice id="tabla-posts">
+    <x-slot name="thead">
+      <tr>
+                <th>#</th>
+                <th>Título</th>
+                <th>Extracto</th>
+                <th>Categoría</th>
+                <th>Acciones</th>
+            </tr>
+    </x-slot>
+
+   @foreach($posts as $post)
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $post->title }}</td>
+                <td>{{ Str::limit($post->excerpt, 50) }}</td>
+                <td>{{ $post->category->name ?? 'Sin categoría' }}</td>
+                <td class="text-center">
+                    <i class="fa fa-pencil text-info" title="Editar" style="cursor:pointer; font-size:20px; margin: 0 5px;"></i>
+                    <i class="fa fa-trash text-danger" title="Eliminar" style="cursor:pointer; font-size:20px; margin: 0 5px;"></i>
+                </td>
+            </tr>
+        @endforeach
+  </x-tabla-indice>
+
+@endsection
+
+
+Y nuestro home controller sera
+
+use App\Models\Post;
+public function index()
+    {
+              $posts = Post::all(); // O puedes usar paginación si prefieres
+        return view('home.index', compact('posts'));
+    }
+
+En nuestro medelo auntque no utilizamos
+
+// app/Models/Category.php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Category extends Model
+{
+    protected $fillable = ['name'];
+}
+
+
+Posteriormente desde el formualrio enviaremos inforamcion por lo que si sera necesario asi que lo vamos a incoroporar
+
+Si fuera de solo lectura la tabla no seria necesario
+Sobre protected $fillable = ['name'];
+
+No es estrictamente necesario para mostrar datos, así que no lo necesitas si solo estás haciendo consultas (lectura) como en tu vista con:
+
+$post->category->name
+
+El atributo $fillable se usa en operaciones de escritura, específicamente cuando:
+
+    Usas Category::create([...])
+
+    Usas $category->update([...])
+
+    Quieres proteger qué campos pueden ser asignados en masa (mass assignment)
+
+
+    ¿Qué es $fillable?
+
+El atributo $fillable le dice a Laravel qué columnas de tu tabla pueden ser llenadas automáticamente desde un array, por ejemplo con:
+
+Post::create($request->all());
+
+
+Entonce nuestro modelos de posts quedaria:
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model
+{
+    use HasFactory;
+
+    protected $casts = [
+        'published_at' => 'datetime',
+    ];
+
+    //Posteriormente los utilizaremos cuando enviaemos mas post desde un formulario
+     protected $fillable = [
+        'title',
+        'excerpt',
+        'body',
+        'published_at',
+        'category_id',
+    ];
+
+    //Relacion de uno a muchos
+    public function category(){        //$post->category->name;  -> El post pertenece a la categoria
+
+        return $this->belongsTo(Category::class);       //Retorna el objeto (post actual)
+    }
+
+    public function tags(){     //Etiquetas
+
+        return $this->belongsToMany(Tag::class);       //Retorna this belonstomany pertenece a muchos, la relacion es con la clase Tag
+
+    }
+
+}
+
+ Sin $fillable o $guarded, Laravel bloquea la creación o actualización masiva como medida de seguridad.
+Ejemplo sin $fillable:
+
+Post::create([
+    'title' => 'Nuevo post',
+    'excerpt' => 'Resumen...',
+    'body' => 'Contenido completo...',
+    'category_id' => 1,
+    'published_at' => now(),
+]);
+
+Este código lanzaría una excepción si no defines $fillable.
+Alternativa menos recomendada:
+
+Si quieres permitir todos los campos sin restricción (poco seguro en apps reales), podrías usar:
+
+protected $guarded = []; // No bloquea ningún campo
+
+Pero es mejor usar $fillable para tener control sobre lo que se puede guardar.
+
+Ahora veremos como insertar mas post s desde un formualrio
