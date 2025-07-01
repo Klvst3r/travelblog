@@ -387,3 +387,11 @@ total 60
 
 
 y ahi existan
+
+por ultimo centramo el boton de Guardar
+
+      <div class="col-12 text-center">
+         <button type="submit" class="btn btn-success">Guardar</button>
+       </div>
+
+       
