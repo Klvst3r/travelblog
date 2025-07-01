@@ -4543,12 +4543,25 @@ div[data-role="editor-toolbar"] {
   width: 20px;
   height: 20px; }
 
+
 /** /Switchery **/
+
+
+/* resources/css/custom.css */
+.select2-selection.error-border {
+    border: 1px solid red !important;
+}
+
 /** Normalize.css **/
 fieldset {
   border: none;
   margin: 0;
   padding: 0; }
+
+
+
+
+
 
 /** /Normalize.css **/
 /** Cropper **/

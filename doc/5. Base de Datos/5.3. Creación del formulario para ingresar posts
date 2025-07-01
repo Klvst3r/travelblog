@@ -394,4 +394,630 @@ por ultimo centramo el boton de Guardar
          <button type="submit" class="btn btn-success">Guardar</button>
        </div>
 
-       
+
+15. Implementación de un selector de fechas 'datepicker'
+
+En esta lección integramos un datepicker para permitir al usuario seleccionar fechas a través de un calendario. También optimizamos la carga de las páginas de administración utilizando la directiva de BLADE llamada STACK.
+
+
+
+Para el datepicker utilizamos lo siguiente ene l formulario
+
+ <div class="item form-group">
+        <label class="col-form-label col-md-3 col-sm-3 label-align">Fecha de Publicación</label>
+        <div class="col-md-6 col-sm-6">
+        <input name="published_at" type="date" class="form-control" required>
+        </div>
+    </div>
+
+Para optimizar la carga, debemos incluir los estilos solo cuando se necesiten, para ello se tiene una directiva llamada @stack
+
+@stack('styles')
+
+
+Por que no utilizar @yield en su lugar, ya que hace lo mismo. el probema es que cuando incluirmos muchos archivos el @yield se sobreescribe, 
+
+en cambio con stack se pone uno debajo del otro, independiente de que nivel estemos. Stack no sobreescribe los archivos,
+
+al final @stack('scripts')
+
+Para poner los scripts debajo.
+
+para utiliarlo en lugar de utilizar section
+
+decimos 
+
+@push('styles')
+
+
+el nombre que le dimes al stack 'styles', y cerramos el push, entonces lo que haya dentro, cuando se carga la pagina los va a agrtegar en la parte indicada lo mismo con los scripts
+
+Ahora tenemos el calendario en la fecha.
+
+ Es importante indicar cuando se crgaran las paginas y que scripts y estilos cargar.
+
+
+Ahora en el tema de categorias.
+
+las categorias necesitamos asignar un post a una categoria, en la vista create y ubicamos y agregamos un select 
+
+Para colocar la categoria en el formulario a traves de un select en el controlador vamos a enviarle las categorias consultandolas primero a la bd.
+
+public function create(){
+         $categories = Category::all(); // O podemos usar Category::pluck('name', 'id')
+        return view('home.create', compact('categories'));
+    }
+
+Ahora en la vista cargamos esso valores
+
+
+
+    {{-- Campo: Categoría --}}
+    <div class="item form-group">
+        <label class="col-form-label col-md-3 col-sm-3 label-align">Categoría <span class="required">*</span></label>
+        <div class="col-md-6 col-sm-6">
+            <select name="category_id" class="form-control" required>
+                <option value="">-- Selecciona una categoría --</option>
+                @foreach ($categories as $category)
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+
+
+
+
+16. Integrando un editor de contenido y un selector múltiple
+
+En esta lección vemos cómo integrar CKEDITOR un editor WYSIWYG para poder ingresar contenido HTML fácilmente, también implementaremos el plugin select2 para la selección de etiquetas.
+
+
+
+
+
+
+Para que lapublicación tengatexto enriquecido en el formulario, es decir que pueda insertar contenido html facilmente y tambien vamos a ingresar las etiquetas.
+
+
+En la plantilla, admin en la seccion forms, aditors, tenemos dos editores, CKEditors, abrimos para buscar la seccion del SKeditor
+
+En nuestro caso vamos a implementar la seccion con el formulario de texto enriquecido.
+
+ Para ello vamos a integrar un area de teto enriquecido: 
+
+ área de texto enriquecido (WYSIWYG) en nuestro formulario de publicación en Laravel con Blade, pero requiere también de JavaScript para que funcione correctamente
+
+Para que funciones necesitamos de una estrcutura dentro de un div:
+
+El div con contenteditable="true" (#editor-one) es la interfaz visual del editor de texto enriquecido.
+
+El <textarea name="descr" id="descr" style="display:none;"> es el campo real que se enviará al backend en el POST, porque los editores como este no envían el contenido del div editable automáticamente.
+
+El botón "Add" de la barra de herramientas, al igual que las demás herramientas, requieren que el JavaScript de Gentelella esté activo.
+
+Para que funcione necesitamos:
+
+1. Incluir los Javascript necesarios
+
+<!-- jQuery -->
+<script src="{{ asset('vendors/jquery/dist/jquery.min.js') }}"></script>
+<!-- Bootstrap -->
+
+<script src="{{ asset('vendors/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+<!-- WYSIWYG Editor (bootstrap-wysiwyg) -->
+<script src="{{ asset('vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js') }}"></script>
+<script src="{{ asset('vendors/jquery.hotkeys/jquery.hotkeys.js') }}"></script>
+<script src="{{ asset('vendors/google-code-prettify/src/prettify.js') }}"></script>
+
+
+
+
+2. Inicializar el editor con JavaScript:
+   Vamos a colocar en nuestro footer de la plantilla Blade al final, dentro de un @push('scripts') como usamos layouts layouts, o directamente dentro de un <script>:
+
+<script>
+	$(document).ready(function () {
+		$('#editor-one').wysiwyg();
+
+		$('form').on('submit', function () {
+			let content = $('#editor-one').html();
+			$('#descr').val(content); // Pasa el contenido del editor al textarea oculto
+		});
+	});
+</script>
+
+
+Ahora integramos el editor dentro de nuestro formularios
+
+Dentro de tu formulario de publicación (<form action="..." method="POST">), asegúrate de que:
+
+    El div editable esté incluido.
+    El textarea oculto (#descr) tenga el atributo name="body" (o el que tengamos en la validación Laravel):
+
+<div class="x_content">
+    <div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#editor-one">
+        {{-- botones del toolbar aquí --}}
+    </div>
+
+    <div id="editor-one" class="editor-wrapper placeholderText" contenteditable="true"></div>
+    
+    {{-- Este textarea es el que Laravel procesará --}}
+    <textarea name="body" id="descr" style="display:none;"></textarea>
+</div>
+
+    Cambia name="body" si tu campo en el controlador es diferente, como content, description, etc.
+
+
+ {{-- Campo: Contenido --}}
+    {{-- Campo: Contenido (con editor enriquecido) --}}
+    <div class="item form-group">
+        <label class="col-form-label col-md-3 col-sm-3 label-align">Contenido</label>
+        <div class="col-md-6 col-sm-6">
+            {{-- Toolbar --}}
+            <div class="btn-toolbar editor mb-2" data-role="editor-toolbar" data-target="#editor-one">
+                <div class="btn-group">
+                    <a class="btn" data-edit="bold"><i class="fa fa-bold"></i></a>
+                    <a class="btn" data-edit="italic"><i class="fa fa-italic"></i></a>
+                    <a class="btn" data-edit="underline"><i class="fa fa-underline"></i></a>
+                </div>
+                <div class="btn-group">
+                    <a class="btn" data-edit="insertunorderedlist"><i class="fa fa-list-ul"></i></a>
+                    <a class="btn" data-edit="insertorderedlist"><i class="fa fa-list-ol"></i></a>
+                </div>
+                <div class="btn-group">
+                    <a class="btn" data-edit="justifyleft"><i class="fa fa-align-left"></i></a>
+                    <a class="btn" data-edit="justifycenter"><i class="fa fa-align-center"></i></a>
+                    <a class="btn" data-edit="justifyright"><i class="fa fa-align-right"></i></a>
+                </div>
+            </div>
+
+            {{-- Área editable con contenido --}}
+            <div id="editor" class="editor-wrapper placeholderText" contenteditable="true" style="border:1px solid #ccc; padding:10px; min-height:150px;"></div>
+
+            {{-- Textarea oculto que se enviará al servidor --}}
+            <textarea name="body" id="descr" style="display:none;" required></textarea>
+        </div>
+    </div>
+
+
+
+Para la validación es necesari hacer algunos ajustes:
+
+Primero en la vista renombramos al nombre de nuestro campo
+
+
+Primero como estamos usando Parsley para validaciones del lado del cliente, tienes dos opciones, implementamos ambas
+:
+Opción A: Agregamos data-parsley-required directamente en el textarea oculto:
+
+    <textarea name="body" id="descr" style="display:none;" required data-parsley-required></textarea>
+
+
+Opción B: Agregamos validación personalizada (opcional si deseas validar HTML en tiempo real):
+
+Agregamos un bloque como este a un script en footer:
+
+$('#form-post').on('submit', function () {
+    const content = $('#editor').html().trim();
+    $('#descr').val(content);
+
+    if (content === '' || content === '<br>' || content === '<p><br></p>') {
+        alert('El campo "Contenido" no puede estar vacío.');
+        return false; // Evita el envío
+    }
+});
+
+    Esto evita enviar contenido vacío aunque el HTML lo parezca (como <p><br></p>).
+
+Asi el Resumen
+Capa	                    Validación
+Frontend	                Parsley sobre el <textarea name="body">
+JS personalizada	        Validación de contenido HTML no vacío
+Backend (Laravel)	        `$request->validate(['body' => 'required    
+
+
+Por ahora nos quedsmos con ese editr aunque existen otros mas completos y funcionales.
+
+
+
+
+1. CKEditor 5 – Profesional, modular, moderno
+
+    🌟 Muy completo: incluye subida de imágenes, tablas, enlaces, estilos, etc.
+
+    🔧 Modular: puedes elegir una build ligera o personalizada.
+
+    📦 Laravel: integración sencilla con CDN o npm.
+
+🔗 Sitio oficial:
+👉 https://ckeditor.com/ckeditor-5/
+
+📖 Guía de integración Laravel + CDN:
+👉 https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/frameworks/laravel.html
+
+📦 CDN para probar rápidamente:
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
+
+📘 Tutorial Laravel + CKEditor 5:
+👉 https://dev.to/syedmohsin/ckeditor-5-with-laravel-complete-guide-5e1h
+✍️ 2. Trix Editor – Simple, limpio, de los creadores de Basecamp
+
+    💡 Ideal para blogs, comentarios o notas.
+
+    🔌 Funciona directo desde el navegador.
+
+    📦 Requiere pocos archivos.
+
+🔗 Sitio oficial:
+👉 https://trix-editor.org/
+
+📦 CDN para integración rápida:
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/trix/2.0.0/trix.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/trix/2.0.0/trix.min.js"></script>
+
+📘 Guía Laravel + Trix:
+👉 https://blog.quickadminpanel.com/using-trix-editor-in-laravel-form/
+🖋️ 3. TinyMCE – Editor clásico, muy completo
+
+    🔥 Uno de los editores más conocidos del mundo.
+
+    📷 Soporta subida de imágenes, plugins, personalización.
+
+    💲 Tiene versión gratuita y de pago.
+
+🔗 Sitio oficial:
+👉 https://www.tiny.cloud/
+
+📘 Guía Laravel + TinyMCE:
+👉 https://larainfo.com/blogs/how-to-use-tinymce-editor-in-laravel
+
+📦 CDN de prueba rápida:
+
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+🪶 4. Quill – Ligero, moderno, personalizable
+
+    🎨 Interfaz limpia y elegante.
+
+    🔌 API flexible para control total.
+
+    ❗ Requiere más código para funciones avanzadas (como imágenes).
+
+🔗 Sitio oficial:
+👉 https://quilljs.com/
+
+📦 CDN básico:
+
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+📘 Guía Laravel + Quill:
+👉 https://dev.to/mayanktiwari2011/quill-editor-integration-in-laravel-app-3oj8
+📌 Recomendación según caso de uso
+Editor	Ideal para...	Subida imágenes	Plugins	Complejidad
+CKEditor 5	Aplicaciones completas / CMS	✅	✅	Media–Alta
+Trix	Notas / publicaciones simples	❌*	❌	Baja
+TinyMCE	Todo tipo de contenido	✅	✅	Media
+Quill	UI moderna / SPA Vue/React apps	Opcional	Algunos	Media
+* Trix requiere soluciones externas para imágenes.
+
+Parece que la opcion recomenable es: CKEdiotr 5
+
+De momento nos quedamos on la opcion implementada
+
+
+Ahora vamos a utilizar un selector multiple para nustros post
+
+Las referencias que tengo los las siguientes:
+
+https://adminlte.io/themes/v3/pages/forms/general.html
+
+https://adminlte.io/themes/AdminLTE/pages/forms/advanced.html
+
+https://adminlte.io/themes/AdminLTE/pages/forms/general.html
+
+Vamos a utilizar el que nos indica la siguiente url
+
+https://adminlte.io/themes/v3/pages/forms/advanced.html
+
+
+
+Vamos a integrar un campo de seleccion multiple con un select2, para ello vamo a añadir debajo de categorias lo siguiente:
+
+1. Añadir el campo <select multiple> en tu vista
+
+Dentro del <x-form-panel>, justo después del campo Categoría, agregamos:
+
+            {{-- Campo: Etiquetas (ejemplo multiple select con Select2) --}}
+            <div class="item form-group">
+                <label class="col-form-label col-md-3 col-sm-3 label-align">Etiquetas</label>
+                <div class="col-md-6 col-sm-6">
+                    <select name="tags[]" class="form-control select2" multiple="multiple" style="width: 100%;" data-placeholder="Selecciona etiquetas">
+                        <option value="1">Etiqueta 1</option>
+                        <option value="2">Etiqueta 2</option>
+                        <option value="3">Etiqueta 3</option>
+                        <option value="4">Etiqueta 4</option>
+                        <option value="5">Etiqueta 5</option>
+                    </select>
+                </div>
+            </div>
+
+name="tags[]" para que se envíen como arreglo al backend.
+    Clase select2 para que el JS lo detecte.
+    multiple="multiple" para selección múltiple.
+    style="width: 100%;" para que ocupe todo el ancho.
+
+
+
+2. Añadir los assets de Select2 (CSS y JS)
+
+Si nuestro layout principal (layout.index) ya tiene un bloque para cargar CSS y JS extra, agrega ahí:
+
+En el <head> (o en la sección CSS):
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+Antes del cierre de <body> o al final de tu layout (sección JS):
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+e inicializamos el plugin
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: 'Selecciona etiquetas',
+                allowClear: true
+            });
+        });
+    </script>
+
+    ya tenemos cargado jQuery cargado, por que también debemos incluirlo (Select2 depende de jQuery).
+
+Ejemplo para incluir jQuery:
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+3. Resumen de cómo quedaría la parte relevante del formulario
+
+{{-- Campo: Categoría --}}
+<div class="item form-group">
+    <label class="col-form-label col-md-3 col-sm-3 label-align">Categoría <span class="required">*</span></label>
+    <div class="col-md-6 col-sm-6">
+        <select name="category_id" class="form-control" required>
+            <option value="">-- Selecciona una categoría --</option>
+            @foreach ($categories as $category)
+                <option value="{{ $category->id }}">{{ $category->name }}</option>
+            @endforeach
+        </select>
+    </div>
+</div>
+
+{{-- Campo: Etiquetas (Select2 múltiple) --}}
+<div class="item form-group">
+    <label class="col-form-label col-md-3 col-sm-3 label-align">Etiquetas</label>
+    <div class="col-md-6 col-sm-6">
+        <select name="tags[]" class="form-control select2" multiple="multiple" style="width: 100%;" data-placeholder="Selecciona etiquetas">
+            <option value="1">Etiqueta 1</option>
+            <option value="2">Etiqueta 2</option>
+            <option value="3">Etiqueta 3</option>
+            <option value="4">Etiqueta 4</option>
+            <option value="5">Etiqueta 5</option>
+        </select>
+    </div>
+</div>
+
+4. (Opcional) Validación y recepción en backend
+
+    En tu controlador puedes validar:
+
+$request->validate([
+    'category_id' => 'required|exists:categories,id',
+    'tags' => 'array',
+    'tags.*' => 'integer|exists:tags,id',
+]);
+
+    En el formulario tags[] enviará un arreglo con los valores seleccionados.
+
+Para la validación de nuestro codigo y orden de los scripts en el footer
+Teniamos
+
+
+
+    <!-- Activar idioma español -->
+    <script>
+      window.Parsley.addMessages('es', {
+        defaultMessage: "Este valor parece ser inválido.",
+        type: {
+          email:        "Este valor debe ser un correo válido.",
+          url:          "Este valor debe ser una URL válida.",
+          number:       "Este valor debe ser un número.",
+          integer:      "Este valor debe ser un número entero.",
+          digits:       "Este valor debe ser dígitos.",
+          alphanum:     "Este valor debe ser alfanumérico."
+      },
+        notblank:       "Este valor no debe estar en blanco.",
+        required:       "Este campo es obligatorio.",
+        pattern:        "Este valor es incorrecto.",
+        min:            "Este valor no debe ser menor que %s.",
+        max:            "Este valor no debe ser mayor que %s.",
+        range:          "Este valor debe estar entre %s y %s.",
+        minlength:      "Este valor es muy corto. La longitud mínima es de %s caracteres.",
+        maxlength:      "Este valor es muy largo. La longitud máxima es de %s caracteres.",
+        length:         "La longitud de este valor debe estar entre %s y %s caracteres.",
+        mincheck:       "Debe seleccionar al menos %s opciones.",
+        maxcheck:       "Debe seleccionar %s opciones o menos.",
+        check:          "Debe seleccionar entre %s y %s opciones.",
+        equalto:        "Este valor debe ser igual."
+      });
+      window.Parsley.setLocale('es');
+    </script>
+
+
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        window.Parsley.setLocale('es');
+        $('form[data-parsley-validate]').parsley();
+        // console.log("Parsley inicializado y listo.");
+      });
+    </script>
+
+    {{-- Validacion del text area --}}
+    <script>
+          $('#form-post').on('submit', function () {
+        const content = $('#editor').html().trim();
+        $('#descr').val(content);
+
+        // if (content === '' || content === '<br>' || content === '<p><br></p>') {
+        //     alert('El campo "Contenido" no puede estar vacío.');
+        //     return false; // Evita el envío
+        // }
+        if (content === '' || content === '<p><br></p>') {
+            $('#editor').css('border', '1px solid red');
+        } else {
+            $('#editor').css('border', '1px solid #ccc');
+        }
+
+
+    });
+
+    </script>
+
+    {{-- Inicialiar editor WISIWYG --}}
+    <script>
+        $(document).ready(function () {
+            $('#editor-one').wysiwyg();
+
+            $('#form-post').on('submit', function () {
+                $('#descr').val($('#editor-one').html());
+            });
+        });
+    </script>
+
+   
+
+    {{-- Inicializacipn del select 2 --}}
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: 'Selecciona etiquetas',
+                allowClear: true
+            });
+        });
+    </script>
+
+     {{-- Validacion --}}
+    {{-- <script>
+        document.getElementById('form-post').addEventListener('submit', function(e) {
+            const selectTags = $('.select2');
+            if (selectTags.val().length === 0) {
+                alert('Debes seleccionar al menos una etiqueta.');
+                selectTags.focus();
+                e.preventDefault();
+            }
+        });
+    </script> --}}
+    <script>
+      $(document).ready(function () {
+    // Inicializa Select2
+    $('#tags').select2({
+        placeholder: 'Selecciona etiquetas',
+        allowClear: true
+    });
+
+    // Validación al enviar
+    $('#form-post').on('submit', function (e) {
+        let isValid = true;
+
+        // VALIDACIÓN DEL SELECT2
+        const selectedTags = $('#tags').val();
+        if (!selectedTags || selectedTags.length === 0) {
+            $('#tags').parent().find('.select2-selection').css('border', '1px solid red !important');
+            $('#tags-error').show();
+            isValid = false;
+        } else {
+            $('#tags').parent().find('.select2-selection').css('border', '1px solid #ccc');
+            $('#tags-error').hide();
+        }
+
+        // VALIDACIÓN DEL EDITOR RICO
+        const content = $('#editor').html();
+        if (content === '' || content === '<p><br></p>') {
+            $('#editor').css('border', '1px solid red');
+            isValid = false;
+        } else {
+            $('#editor').css('border', '1px solid #ccc');
+            // Copia el contenido al textarea oculto
+            $('#descr').val(content);
+        }
+
+        // Previene el envío si algo no está válido
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+});
+
+
+    </script>
+
+
+Ahora la estructura sepropone:
+
+Estructura sugerida en public/js/
+
+public/js/
+│
+├─ init-select2.js          // Inicializa y estiliza todos los <select> con clase .select2
+├─ init-wysiwyg.js          // Arranca el editor enriquecido y copia su contenido al <textarea>
+├─ validate-select2.js      // Valida genéricamente cualquier <select2> múltiple requerido
+├─ validate-editor.js       // Valida cualquier editor rico con #editor + #descr
+└─ validate-post.js         // Orquesta la validación del formulario #form-post
+
+    Ventaja: cada archivo hace una sola cosa (principio de responsabilidad única).
+    Si mañana creas otro formulario que solo necesita Select2, incluyes init‑select2.js y listo.
+
+
+Orden de carga en tu layout (layout.index)
+
+{{-- ...otros CSS de vendor… --}}
+<link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+
+@stack('styles')
+</head>
+<body>
+    {{-- … contenido… --}}
+
+    {{-- Vendor JS --}}
+    <script src="{{ asset('dashboard/vendors/jquery/dist/jquery.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{{ asset('dashboard/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js') }}"></script>
+
+    {{-- Inicializadores (no dependen de validaciones) --}}
+    <script src="{{ asset('js/init-select2.js') }}"></script>
+    <script src="{{ asset('js/init-wysiwyg.js') }}"></script>
+
+    {{-- Validaciones reutilizables --}}
+    <script src="{{ asset('js/validate-select2.js') }}"></script>
+    <script src="{{ asset('js/validate-editor.js') }}"></script>
+
+    {{-- Validación específica del formulario Post --}}
+    <script src="{{ asset('js/validate-post.js') }}"></script>
+
+    @stack('scripts')
+</body>
+</html>
+
+    Clave:
+
+        jQuery + plugins (Select2, WYSIWYG)
+
+        Inicializadores globales
+
+        Funciones de validación genéricas
+
+        Validaciones específicas de la vista    

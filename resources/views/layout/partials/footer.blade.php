@@ -20,8 +20,23 @@
     <!-- Fullscreen -->
     <script src="{{ asset('js/fullscreen.js') }}"></script>
 
-    <!-- Bootstrap -->
+    {{-- jQuery --}}
+    {{-- <script src="{{ asset('dashboard/vendors/jquery/dist/jquery.min.js') }}"></script> --}}
+
+    {{-- Bootstrap --}}
     <script src="{{ asset('dashboard/vendors/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+
+    <!-- Bootstrap -->
+    {{-- <script src="{{ asset('dashboard/vendors/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script> --}}
+
+
+    {{-- WYSIWYG --}}
+    <script src="{{ asset('dashboard/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js') }}"></script>
+    <script src="{{ asset('dashboard/vendors/jquery.hotkeys/jquery.hotkeys.js') }}"></script>
+    <script src="{{ asset('dashboard/vendors/google-code-prettify/src/prettify.js') }}"></script>
+
+    <!-- Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <!-- FastClick -->
     <script src="{{ asset('dashboard/vendors/fastclick/lib/fastclick.js') }}"></script>
@@ -89,7 +104,7 @@
     <script src="{{ asset('js/es.js') }}"></script>
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.3/i18n/es.js"></script> --}}
 
-    <!-- Activar idioma español -->
+     <!-- Activar idioma español -->
     <script>
       window.Parsley.addMessages('es', {
         defaultMessage: "Este valor parece ser inválido.",
@@ -119,6 +134,7 @@
     </script>
 
 
+
     <script>
       document.addEventListener('DOMContentLoaded', function () {
         window.Parsley.setLocale('es');
@@ -126,6 +142,19 @@
         // console.log("Parsley inicializado y listo.");
       });
     </script>
+    
+    {{-- Inicializadores (no dependen de validaciones) --}}
+    <script src="{{ asset('js/init-select2.js') }}"></script>
+    <script src="{{ asset('js/init-wysiwyg.js') }}"></script>
+
+    {{-- Validaciones reutilizables --}}
+    <script src="{{ asset('js/validate-select2.js') }}"></script>
+    <script src="{{ asset('js/validate-editor.js') }}"></script>
+
+    {{-- Validación específica del formulario Post --}}
+    <script src="{{ asset('js/validate-post.js') }}"></script>
+
+
 
      <!-- Custom Theme Scripts -->
     <script src="{{ asset('dashboard/build/js/custom.js') }}"></script>
