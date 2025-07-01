@@ -35,7 +35,7 @@
     <div class="item form-group">
         <label class="col-form-label col-md-3 col-sm-3 label-align">Contenido</label>
         <div class="col-md-6 col-sm-6">
-        <textarea name="body" class="form-control" rows="5"></textarea>
+        <textarea name="body" class="form-control" rows="5" required></textarea>
         </div>
     </div>
 
@@ -43,7 +43,7 @@
     <div class="item form-group">
         <label class="col-form-label col-md-3 col-sm-3 label-align">Fecha de Publicación</label>
         <div class="col-md-6 col-sm-6">
-        <input name="published_at" type="date" class="form-control">
+        <input name="published_at" type="date" class="form-control" required>
         </div>
     </div>
 
