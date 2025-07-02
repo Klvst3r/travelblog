@@ -48,5 +48,15 @@
     <!-- Seleccion multiple -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+    {{-- Ocultar logo al colapsar el sidemenu --}}
+    <style>
+      body.nav-sm .left_col .profile,
+      body.nav-sm .left_col .profile_pic,
+      body.nav-sm .left_col .profile_info,
+      body.nav-sm .left_col .tsj-text {
+        display: none !important;
+      }
+    </style>
+
 
   </head>
