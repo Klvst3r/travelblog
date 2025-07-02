@@ -36,6 +36,6 @@ class LockscreenController extends Controller
         session()->forget('locked');
         //return redirect('/home'); //Dashboard después del desbloqueo
         //Redirigimos la ruta con nombre home 
-        return redirect()->route('home');
+        return redirect()->route('home.index');
     }
 }

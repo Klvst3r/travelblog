@@ -34,14 +34,13 @@ class PostsController extends Controller
     public function store(Request $request)
     {
         // Validación - incluye etiquetas
-        $request->validate([
+       $request->validate([
             'title' => 'required|string|max:255',
             'excerpt' => 'required|string',
             'body' => 'required|string',
-            'published_at' => 'required|date',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'required|integer|exists:categories,id',
             'tags' => 'required|array',
-            'tags.*' => 'exists:tags,id',
+            'published_at' => 'required|date',
         ]);
 
         // Crear el post - i insertar los valores en la tabla
