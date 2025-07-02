@@ -39,7 +39,7 @@
                       <li><a><i class="fa fa-edit"></i> Blog <span class="fa fa-chevron-down"></span></a>
                           <ul class="nav child_menu">
                               <li {{ request()->is('home') ? 'class=active' : '' }}
-                              ><a href="{{ route('home') }}">Ver todos los Post</a></li>
+                              ><a href="{{ route('home.index') }}">Ver todos los Post</a></li>
 
                               <li {{ request()->is('home') ? 'class=active' : '' }}
                               ><a href="{{ route('home.create') }}">Crear Post</a></li>

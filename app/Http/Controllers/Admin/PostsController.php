@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; //Para validacion y almaceamiento
 
 use App\Models\Post; // Si usas el modelo Post
 use App\Models\Tag; // Si usas el modelo Tag
@@ -11,6 +12,9 @@ use App\Models\Tag; // Si usas el modelo Tag
 
 //Modelo de categorias para enviarlas al form
 use App\Models\Category;
+
+//Vamos a utilizar fehcas para humanos
+use Illuminate\Support\Carbon;
 
 
 class PostsController extends Controller
@@ -27,7 +31,41 @@ class PostsController extends Controller
         return view('home.create', compact('categories', 'tags'));
     }
 
-    public function store(){
+    public function store(Request $request)
+    {
+        // Validación - incluye etiquetas
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'excerpt' => 'required|string',
+            'body' => 'required|string',
+            'published_at' => 'required|date',
+            'category_id' => 'required|exists:categories,id',
+            'tags' => 'required|array',
+            'tags.*' => 'exists:tags,id',
+        ]);
+
+        // Crear el post - i insertar los valores en la tabla
+        $post = Post::create([
+            'title' => $request->title,
+            'excerpt' => $request->excerpt,
+            'body' => $request->body,
+            'published_at' => Carbon::parse($request->published_at),
+            'category_id' => $request->category_id,
+        ]);
+
+        //Asignar las etieuetas con la relacion de tags
+
+        // Podemos utilizar: 
+        // $post->tags()->attach($request->tags);
+
         
+        // Asociar etiquetas (si hay relación many-to-many)
+        $post->tags()->sync($request->tags);
+
+        // Redirigir con mensaje
+        return redirect()->route('home.index')->with('success', 'Post creado exitosamente.');
+
+
     }
+
 }

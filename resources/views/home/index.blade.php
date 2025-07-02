@@ -23,6 +23,17 @@
 @section('content')
 
 <div class="d-flex justify-content-between flex-wrap mb-3">
+
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>¡Éxito!</strong> {{ session('success') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
+
     <x-tabla-indice id="tabla-posts">
     <x-slot name="thead">
       <tr>
@@ -48,4 +59,14 @@
         @endforeach
   </x-tabla-indice>
 
+
 @endsection
+
+
+@push('scripts')
+    <script>
+    setTimeout(() => {
+        $('.alert').alert('close');
+    }, 4000); // 4 segundos
+    </script>
+@endpush

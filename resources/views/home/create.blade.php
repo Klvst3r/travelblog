@@ -1,6 +1,6 @@
 @extends('layout.index')
 
-@section('ruta_titulo', route('home')) 
+@section('ruta_titulo', route('home.index')) 
 
 @section('titulo', 'Posts')
 @section('subtitulo', 'Crear un Post')
@@ -58,7 +58,11 @@
             <div id="editor" class="editor-wrapper placeholderText" contenteditable="true" style="border:1px solid #ccc; padding:10px; min-height:150px;"></div>
 
             {{-- Textarea oculto que se enviará al servidor --}}
-            <textarea name="body" id="descr" style="display:none;" required data-parsley-required></textarea>
+            {{-- <textarea name="body" id="descr" style="display:none;" required data-parsley-required></textarea> --}}
+            {{-- <textarea name="body" id="descr" class="form-control" required></textarea> --}}
+            <textarea name="body" id="descr" style="display:none;" ></textarea>
+            
+
         </div>
     </div>
 

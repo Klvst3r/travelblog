@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('post_tag', function (Blueprint $table) {
+       Schema::create('post_tag', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('post_id');  //Para acetpar solo numeros positivos
-            $table->unsignedInteger('tag_id');
+            $table->foreignId('post_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tag_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
+
     }
 
     /**

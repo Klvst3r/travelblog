@@ -17,6 +17,724 @@ Esta ruta ya se la enviaremos al controlador mediante las variables del componen
 Route::post('store/', [PostsController::class, 'store'])->name('home.store');
 
 
-Vamos al controlador para crear el metodo store....
+Vamos al controlador para crear el metodo store cuya finalidad es:
+
+- Validar todos los campos del formulario.
+- Guardar un nuevo Post en tu base de datos.
+-Redirigir con un mensaje de éxito.
+
+Tenemos entonces
+
+use Illuminate\Http\Request;
+
+   public function store(Request $request)
+    {
+        // Validación - incluye etiquetas
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'excerpt' => 'required|string',
+            'body' => 'required|string',
+            'published_at' => 'required|date',
+            'category_id' => 'required|exists:categories,id',
+            'tags' => 'required|array',
+            'tags.*' => 'exists:tags,id',
+        ]);
+
+        // Crear el post - i insertar los valores en la tabla
+        $post = Post::create([
+            'title' => $request->title,
+            'excerpt' => $request->excerpt,
+            'body' => $request->body,
+            'published_at' => $request->published_at,
+            'category_id' => $request->category_id,
+        ]);
+
+        // Asociar etiquetas (si hay relación many-to-many)
+        $post->tags()->sync($request->tags);
+
+        // Redirigir con mensaje
+        return redirect()->route('home.index')->with('success', 'Post creado exitosamente.');
+    }
+
+
+
+Ahora debemos establecer en el modelo.
+
+public function tags()
+{
+    return $this->belongsToMany(Tag::class);
+}
+
+queya esta establecido en el modelo
+
+2. En la tabla pivote post_tag con las columnas post_id y tag_id
+
+Podemos crearla con:
+
+    $ php artisan make:migration create_post_tag_table --create=post_tag
+
+
+
+como ya tenemos la tabla y la migracion se sugiere algun cambio 
+
+tenemos:
+
+ Schema::create('post_tag', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedInteger('post_id');  //Para acetpar solo numeros positivos
+            $table->unsignedInteger('tag_id');
+            $table->timestamps();
+        });
+
+
+se sugiere:
+- Limpia todas las etiquetas previas del post (si existían).
+- Inserta las nuevas relaciones en la tabla pivote post_tag.
+
+
+Schema::create('post_tag', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('post_id')->constrained()->onDelete('cascade');
+    $table->foreignId('tag_id')->constrained()->onDelete('cascade');
+    $table->timestamps();
+});
+
+
+Reemplazamos unsignedInteger por foreignId
+
+Laravel tiene una forma más expresiva de definir claves foráneas desde Laravel 7 en adelante:
+
+$table->foreignId('post_id')->constrained()->onDelete('cascade');
+$table->foreignId('tag_id')->constrained()->onDelete('cascade');
+
+Esto hace lo siguiente:
+
+    Declara el campo como unsignedBigInteger (lo que corresponde con bigint(20) en tu tabla posts si usas $table->id()).
+
+    Crea automáticamente una clave foránea con REFERENCES id ON posts/tags.
+
+    Asegura integridad referencial y elimina automáticamente los registros relacionados cuando se borra el Post o Tag (cascade).
+
+
+Schema::create('post_tag', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('post_id')->constrained()->onDelete('cascade');
+    $table->foreignId('tag_id')->constrained()->onDelete('cascade');
+    $table->timestamps();
+});
+
+
+entonces debemos recrear la mirgación:
+
+Solo si aún no tienes datos importantes en la tabla post_tag, puedes hacer:
+
+php artisan migrate:fresh
+
+O si solo quieres ajustar esa tabla:
+
+php artisan migrate:rollback --step=1
+php artisan migrate
+
+Esto elimina datos. 
+
+
+Para ello vamos a recrear la tabla post_tag 
+
+1. CRrar el seeder
+
+
+php artisan make:seeder PostTagSeeder
+
+2. Definimos el seeder con el contenido inicial
+
+en database/seeders/PostTagSeeder.php
+
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
+class PostTagSeeder extends Seeder
+{
+    public function run(): void
+    {
+        DB::table('post_tag')->insert([
+            [
+                'post_id' => 1,
+                'tag_id' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'post_id' => 1,
+                'tag_id' => 2,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'post_id' => 2,
+                'tag_id' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'post_id' => 3,
+                'tag_id' => 2,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'post_id' => 4,
+                'tag_id' => 2,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'post_id' => 1,
+                'tag_id' => 3,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+        ]);
+    }
+}
+
+
+3. Registrar el seeder en DatabaseSeeder
+
+Abre database/seeders/DatabaseSeeder.php y agrégalo al método run():
+
+public function run(): void
+{
+    // Otros seeders
+    $this->call([
+        PostTagSeeder::class,
+    ]);
+}
+
+4. Regenerar las migraciones
+
+    $ php artisan migrate:fresh
+
+    Ejecutar los seeder
+
+    php artisan db:seed
+
+    o solo correr el de post_tag
+    $ php 
+
+    php artisan db:seed --class=PostTagSeeder
+
+Si queremos reseterar todo el desarrollo
+
+    $ php artisan migrate:fresh --seed
+
+Recrea toda la base de datos y ejecuta todos los seeders automáticamente.    
+
+Vamos a recrear la siguyentes migraciones y con seeders
+
+
+Categories:
+-----------
+    $ php artisan make:seeder CategorySeeder
+
+
+
+    Tengo
+
+
+    DB::table('categories')->insert([
+            [
+                'id' => 1,
+                'name' => 'Laravel',
+                'created_at' => Carbon::parse('2025-05-19 14:36:57'),
+                'updated_at' => Carbon::parse('2025-05-19 14:36:57'),
+            ],
+            [
+                'id' => 2,
+                'name' => 'Segunda Categoria',
+                'created_at' => Carbon::parse('2025-05-19 14:36:57'),
+                'updated_at' => Carbon::parse('2025-05-19 14:36:57'),
+            ],
+
+Pero no quiero conservar las fechas anteriores puedo utilizar las actuels por lo que cambio a:
+
+DB::table('categories')->insert([
+            [
+                'name' => 'Laravel',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Segunda Categoria',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+        ]);
+
+
+Tabla tags
+-----------
+
+Tenemos tamboen la migracion de la tabla tags
+
+asi que crearemos el seeder para esa migracion
+
+php artisan make:seeder TagSeeder
+
+
+Registraos el seeder
+
+public function run(): void
+{
+    $this->call([
+        CategorySeeder::class,
+        TagSeeder::class,
+        PostTagSeeder::class, // (si ya lo hiciste)
+    ]);
+}
+
+
+En mi registro de los seeder Tengo
+ public function run(): void
+    {
+        // \App\Models\User::factory(10)->create();
+
+        // \App\Models\User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
+
+        //Recuperación de la Tabla Posts
+        $this->call(PostsTableSeeder::class);
+
+        //Registro de Seeder PostTagSeeder
+         $this->call([
+            PostTagSeeder::class,
+        ]);
+    }
+
+    Voya sustituir el reistro de la siguiente manera:
+
+
+    Revision general
+
+
+    Revisión general
+Seeder	                ¿Incluido?	Propósito
+CategorySeeder	        Ahora sí	Llena la tabla categories
+TagSeeder	            Ahora sí	Llena la tabla tags
+PostsTableSeeder	    Ya estaba	Llena la tabla posts
+PostTagSeeder	        Ya estaba	Relaciona posts con tags
+
+
+Vamos a inlcuir la tabla fatante para el usuario
+
+Creamos nuestro seeder
+    $ php artisan make:seeder UserSeeder
+
+Lo registranos
+
+
+Ejecucion
+
+Para ejecutar los seeders
+php artisan db:seed
+
+Si solo es para usuarios
+php artisan db:seed --class=UserSeeder
+
+
+
+public function run(): void
+{
+    $this->call([
+        UserSeeder::class,
+        CategorySeeder::class,
+        TagSeeder::class,
+        PostsTableSeeder::class,
+        PostTagSeeder::class,
+    ]);
+}
+
+
+Parece que tenemos todo completo vamos a recrear el proyecto ejecutando migraciones y seeders despues de un migrate
+
+En nuestro caso vamos a recrear todo el poryecto desde cero asi que ajecutamos:
+
+    $ php artisan migrate:fresh --seed
+
+¿Qué hace?
+
+    -Elimina todas las tablas de la base de datos.
+    - Ejecuta todas las migraciones desde cero.
+    - Ejecuta todos los seeders registrados en DatabaseSeeder.    
+
+
+Y los otros comandos?
+Comando	                    ¿Elimina tablas?	¿Recrea estructura?	                    ¿Corre seeders automáticamente?	¿Cuándo usarlo?
+migrate:rollback	        ❌ No	            🔄 Revierta la última migración o lote	❌ No	Cuando solo quieres deshacer el último cambio
+migrate:reset	            ✅ Sí	            ✅ Reejecuta migraciones desde cero	    ❌ No	Si quieres reiniciar pero controlar manualmente el seeding
+✅ migrate:fresh --seed	    ✅ Sí	            ✅ Sí	                                ✅ Sí (ideal para reiniciar todo)	🔥 Mejor opción para reiniciar completamente en desarrollo
+
+
+La recomendacion es 
+
+    $ php artisan migrate:fresh --seed
+
+
+No necesitamos ejecutar migrate:rollback ni migrate:reset antes.
+
+- Elimina todas las tablas de la base de datos (incluidas las de relaciones, usuarios, etc.).
+- Ejecuta todas las migraciones desde cero (las que están en database/migrations).
+- Ejecuta automáticamente los seeders registrados en DatabaseSeeder.php.
+
+
+Pero hubo un error:
+ Illuminate\Database\QueryException 
+
+  SQLSTATE[42000]: Syntax error or access violation: 1701 Cannot truncate a table referenced in a foreign key constraint (`travelblog`.`post_tag`, CONSTRAINT `post_tag_post_id_foreign` FOREIGN KEY (`post_id`) REFERENCES `travelblog`.`posts` (`id`)) (Connection: mysql, SQL: truncate table `posts`)
+
+
+Qué ocurrió?
+
+Nuestro PostsTableSeeder está intentando hacer esto:
+
+    DB::table('posts')->truncate(); // o Post::truncate();
+
+Y MySQL lanza el error:
+
+    Cannot truncate a table referenced in a foreign key constraint (post_tag -> posts)
+
+Porque post_tag depende de posts mediante una clave foránea (post_id), y no podemos truncar posts sin primero eliminar (o truncar) post_tag.
+
+
+Corregimos
+
+Opción 1: Desactivamos temporalmente las restricciones de claves foráneas en tu seeder
+
+En tu PostsTableSeeder.php, rodea el seeding con este bloque:
+
+
+Corregimos el seeder
+
+public function run(): void
+{
+    // 🔐 Desactivar restricciones
+    DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+    // Limpiar tablas
+    DB::table('post_tag')->truncate();
+    Post::truncate();
+    Category::truncate();
+    Tag::truncate();
+
+    // 🔐 Reactivar restricciones
+    DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+    // Crear Tags
+    $tag1 = Tag::create(['name' => 'Etiqueta 1']);
+    $tag2 = Tag::create(['name' => 'Etiqueta 2']);
+    $tag3 = Tag::create(['name' => 'Etiqueta 3']);
+
+    // Crear Categorías
+    $category1 = Category::create(['name' => 'Laravel']);
+    $category2 = Category::create(['name' => 'Segunda Categoria']);
+
+    // Crear Posts
+    $post1 = Post::create([
+        'title' => 'Mi Primer Post',
+        'excerpt' => 'Extracto de mi primer post',
+        'body' => '<p>Cuerpo del Primer Post</p>',
+        'published_at' => Carbon::now()->subDay(4),
+        'category_id' => $category1->id,
+    ]);
+
+    $post2 = Post::create([
+        'title' => 'Mi Segundo Post',
+        'excerpt' => 'Extracto del segundo post',
+        'body' => '<p>Cuerpo del Segundo Post</p>',
+        'published_at' => Carbon::now()->subDay(3),
+        'category_id' => $category1->id,
+    ]);
+
+    $post3 = Post::create([
+        'title' => 'Mi Tercer Post',
+        'excerpt' => 'Extracto de mi Tercer post',
+        'body' => '<p>Cuerpo del Tercer Post</p>',
+        'published_at' => Carbon::now()->subDay(2),
+        'category_id' => $category2->id,
+    ]);
+
+    $post4 = Post::create([
+        'title' => 'Mi Cuarto Post',
+        'excerpt' => 'Extracto de mi Cuarto post',
+        'body' => '<p>Cuerpo del Cuarto Post</p>',
+        'published_at' => Carbon::now()->subDay(1),
+        'category_id' => $category2->id,
+    ]);
+
+    // Asignar Tags
+    $post1->tags()->attach([$tag1->id, $tag2->id, $tag3->id]);
+    $post2->tags()->attach([$tag1->id]);
+    $post3->tags()->attach([$tag2->id]);
+    $post4->tags()->attach([$tag2->id]);
+}
+
+
+Recreando todo el proyecto
+------------------------------
+
+Desde el quinto ost
+
+
+
+
+Ahora colvemos a jecuatr la recreacion de nuestro proyeto:
+    $  php artisan migrate:fresh --seed
+
+
+y tenemos nuevamente nuestro proyecto, vamos aprobar el almacenamiento nuevamente
+
+Finalemnte en el controlador podemriamos utuilizar:
+
+
+$post = new Post([
+    'title' => $request->title,
+    'excerpt' => $request->excerpt,
+    'body' => $request->body,
+    'published_at' => Carbon::parse($request->published_at),
+    'category_id' => $request->category_id,
+]);
+
+$post->save();
+
+Pero lo haremos de la siguiente manera
+
+ // Crear el post - i insertar los valores en la tabla
+        $post = Post::create([
+            'title' => $request->title,
+            'excerpt' => $request->excerpt,
+            'body' => $request->body,
+            'published_at' => Carbon::parse($request->published_at),
+            'category_id' => $request->category_id,
+        ]);
+
+        // Asociar etiquetas (si hay relación many-to-many)
+        $post->tags()->sync($request->tags);
+
+        // Redirigir con mensaje
+        return redirect()->route('home.index')->with('success', 'Post creado exitosamente.');
+
+
+
+
+en la relación de las etiquetas utilizamos 
+    $post->tags()->sync($request->tags);
+en ligar de:
+    $post->tags()->attach($request->tags);
+
+
+Ambas funciones (sync() y attach()) se usan para relacionar modelos en relaciones de muchos a muchos (belongsToMany), como Post y Tag. Pero hacen cosas muy diferentes.
+
+
+Diferencia principal
+🔹 $post->tags()->attach($request->tags);
+
+    - Agrega las relaciones dadas sin eliminar las existentes.
+    - No verifica si ya estaban agregadas → puede provocar duplicados (a menos que uses una tabla pivote con claves únicas).
+    -   Útil cuando quieres agregar nuevas etiquetas sin afectar las anteriores.
+
+Ejemplo:
+
+$post->tags()->attach([1, 2, 3]);
+$post->tags()->attach([2, 4]);
+// Resultado: tendrá relacionadas 1, 2, 3, 4 (pero se intenta insertar dos veces 2)
+
+🔹 $post->tags()->sync($request->tags);
+
+    - Sincroniza completamente la relación:
+    - Agrega las nuevas,
+    - Elimina las que ya no están,
+    - Mantiene las que sí están.
+
+    Es la opción adecuada cuando estás actualizando un conjunto de relaciones que deben coincidir exactamente con lo enviado.
+
+Ejemplo:
+
+$post->tags()->sync([1, 2, 3]); // Solo quedarán esas 3, todo lo demás se elimina
+
+¿Cuál debemos usar en store?
+
+Depende:
+
+    Si estás creando un nuevo post, puedes usar ambas (ambas partirán de cero).
+
+        - attach() basta porque no hay relaciones previas.
+        - sync() también funcionará y es más seguro si quieres mantener consistencia.
+
+En nuestro caso (store()), lo mejor es:
+
+    $post->tags()->sync($request->tags);
+
+Porque si el usuario no selecciona ninguna etiqueta, sync([]) quitará todas las etiquetas (es decir, ninguna se asigna), lo cual es coherente con el comportamiento esperado.
+
+¿Y en update()?
+
+Usa sync() siempre, porque:
+
+    - Si el usuario cambia las etiquetas, debes reflejar esos cambios exactos.
+    - Si usas attach() en update(), puedes terminar con etiquetas duplicadas o relaciones antiguas no eliminadas.
+
+Resumen
+Método	        Qué hace	                                                    Cuándo usarlo
+attach()	    Agrega nuevas relaciones sin borrar las existentes	            Crear relaciones adicionales
+sync()	        Sincroniza (agrega nuevas, mantiene actuales, elimina viejas)	Crear o actualizar relaciones completas
+
+
+Para la redireccion en la rutas debemos considerar dos utas
+// Esta es la ruta pública en la raíz
+Route::get('/', [PagesController::class, 'index'])->name('index');
+
+El grupo de rutas para home
+//Grupo para la adminisración
+Route::group([
+    'prefix' => 'home',
+    'namespace' => 'Home',
+    'middleware' => 'auth',
+    ], function(){
+        //Route::get('posts/', [PostsController::class, 'index'])->name('posts.index');
+        Route::get('/', [HomeController::class, 'index'])->name('home.index');
+        Route::get('admin/', [AdminController::class, 'index'])->name('admin');
+
+        //Crear, guardar y editar post
+        Route::get('create/', [PostsController::class, 'create'])->name('home.create');
+        Route::post('store/', [PostsController::class, 'store'])->name('home.store');
+    } );
+
+Ya no debemos tener otra ruta diferente con este mismo nombre (index). 
+
+Laravel sobrescribirá las rutas con nombres duplicados, y puede llevar a confusión en redirecciones o enlaces.
+
+En resumen
+Ruta	                URL resultante	        Nombre de ruta (name(...))
+Ruta pública	        /	                    index 
+Ruta del dashboard	     /home (por prefix)	    home.index 
+
+
+18. Validando el formulario
+
+La validación de los campos del formulario, mostramos los mensajes de error de validación y hacemos que los campos que pasan la validación permanezcan con la información que ingresó el usuario, y de esa forma evitar que se tenga que volver a ingresar la información.
+
+Para ello en el metodo store validamos y guardamos con:
+
+$request->validate([
+            'title' => 'required|string|max:255',
+            'excerpt' => 'required|string',
+            'body' => 'required|string',
+            'published_at' => 'required|date',
+            'category_id' => 'required|exists:categories,id',
+            'tags' => 'required|array',
+            'tags.*' => 'exists:tags,id',
+        ]);
+
+        // Crear el post - i insertar los valores en la tabla
+        $post = Post::create([
+            'title' => $request->title,
+            'excerpt' => $request->excerpt,
+            'body' => $request->body,
+            'published_at' => Carbon::parse($request->published_at),
+            'category_id' => $request->category_id,
+        ]);
+Aca utilizamos el reques y en un arreglo los atributos que deben vaidarse.
+
+Manejo de errores en la validación desde el formulario
+
+Esto En mi caso la validación lo hice con javascript, se sugiere que pueda ser dentro del formulario con
+<div class="item form-group">
+        <label class="col-form-label col-md-3 col-sm-3 label-align">Título <span class="required">*</span></label>
+        <div class="col-md-6 col-sm-6">
+            <input type="text" name="title" class="form-control " required>
+
+        </div>
+    </div>
+
+pudiendo ser:
+<div class="item form-group {{ $errors->has('title') ? 'has-error' : '' }}">
+        <label class="col-form-label col-md-3 col-sm-3 label-align">Título <span class="required">*</span></label>
+        <div class="col-md-6 col-sm-6">
+            <input type="text" name="title" class="form-control" value="{{ old('title') }}" required>
+
+             {!! $errors->first('title', '<span class="help-blockc">:message</span> !!}
+        </div>
+    </div>
+parece que tambien es de boostrap la validación y sigue estando del lado del front
+
+ la diferencia entre validación en el frontend (JavaScript/HTML5) y validación en el backend (Laravel/PHP). Lo ideal es que combinemos ambas para garantizar usabilidad y seguridad.
+
+ La validación en el back la hacemos al momento de guardar:
+
+ . Validación con Laravel (backend)
+
+Laravel maneja la validación en el servidor. Esto asegura que si alguien desactiva JavaScript o intenta enviar datos manualmente, los errores serán detectados.
+Ejemplo típico en el controlador:
+
+$request->validate([
+    'title' => 'required|string|max:255',
+]);
+
+si no pasa la validación nos redirije nuevamente el formulario
+en blade y en la vista, tabien podemos utilizar bootstrap
+<div class="item form-group {{ $errors->has('title') ? 'has-error' : '' }}">
+    <label class="col-form-label col-md-3 col-sm-3 label-align">
+        Título <span class="required">*</span>
+    </label>
+    <div class="col-md-6 col-sm-6">
+        <input 
+            type="text" 
+            name="title" 
+            class="form-control" 
+            value="{{ old('title') }}"
+            required
+        >
+        @if($errors->has('title'))
+            <span class="help-block text-danger">{{ $errors->first('title') }}</span>
+        @endif
+    </div>
+</div>
+ la clase has-error es de Bootstrap 3. Si estás usando Bootstrap 4 o superior, considera usar is-invalid en el input, y invalid-feedback en el mensaje.
+
+
+ Pero tenemos tambien validación HTML5 (frontend)
+ Ya lo estás haciendo con required, y es útil para evitar que el usuario envíe el formulario sin llenar campos. Ejemplo:
+
+<input type="text" name="title" required>
+
+Pero no muestra mensajes personalizados, ni valida campos condicionales complejos.
+✅ 3. Validación con JavaScript (opcional y enriquecida)
+
+Si estás usando Parsley.js (que veo en tu código), puedes integrarlo con Laravel también. Ejemplo:
+
+<input type="text" name="title" required data-parsley-trigger="change">
+
+entonces podremos decir que tenemos validación enriquecida
+Integración recomendada (backend + frontend)
+
+    Laravel valida en el servidor.
+
+    Parsley o required valida antes de enviar.
+
+    Laravel retorna errores si el JS se salta o hay reglas más complejas.
+
+    Los errores se muestran en el formulario con Blade.
+
+Lo que significa que dejaremos a un lado y de momento la validación en el formulario con boostrap
+
+es imporatnte que al retornar nuestro formulario carguemos los valores anteriores al momento de enviarse por lo que utilizaremos
+
+<input type="text" name="title" class="form-control" value="{{ old('title') }}" required>
 
 

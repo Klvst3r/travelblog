@@ -162,5 +162,35 @@
         
     @stack('scripts')
 
+   <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          const form = document.getElementById('form-post');
+          const editor = document.getElementById('editor');
+          const textarea = document.getElementById('descr');
+
+          if (form && editor && textarea) {
+              form.addEventListener('submit', function (e) {
+                  // Copiar contenido del editor al textarea
+                  textarea.value = editor.innerHTML.trim();
+
+                  // Forzar validación manual antes de permitir el envío
+                  const parsleyForm = $(form).parsley();
+                  parsleyForm.validate();
+
+                  // Detener envío si el formulario aún tiene errores
+                  if (!parsleyForm.isValid()) {
+                      e.preventDefault(); // Detiene el envío
+                      console.warn("Formulario inválido: falta contenido.");
+                      return false;
+                  }
+
+                  // (Dejar que el formulario se envíe si todo es válido)
+              });
+          }
+      });
+      </script>
+
+
+
   </body>
 </html>

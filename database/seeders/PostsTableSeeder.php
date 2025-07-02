@@ -21,11 +21,21 @@ class PostsTableSeeder extends Seeder
      */
      public function run(): void
     {
+        
+        // Desactivar restricciones
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+
         // Limpiar tablas
         DB::table('post_tag')->truncate();
-        Post::truncate();
+        DB::table('posts')->truncate();
+
+        // Post::truncate();  //Esta linea hace lo mismo que la linea anterior por lo que vamos a omitirla es mas directo con QueryBuilder
         Category::truncate();
         Tag::truncate();
+
+        // Reactivar restricciones
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         // Crear Tags
         $tag1 = Tag::create(['name' => 'Etiqueta 1']);
