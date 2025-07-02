@@ -82,12 +82,15 @@
 <div class="item form-group">
     <label class="col-form-label col-md-3 col-sm-3 label-align">Etiquetas</label>
     <div class="col-md-6 col-sm-6">
-        <select id="tags" name="tags[]" class="form-control select2" multiple style="width: 100%;" required>
-            <option value="1">Etiqueta 1</option>
-                <option value="2">Etiqueta 2</option>
-                <option value="3">Etiqueta 3</option>
-                <option value="4">Etiqueta 4</option>
-                <option value="5">Etiqueta 5</option>
+        <select id="tags" name="tags[]" class="form-control select2" multiple style="width: 100%;" 
+        data-placeholder="Selecciona una o mas etiquetas" 
+        required>
+        
+            @foreach($tags as $tag)
+                <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+            @endforeach
+
+
             </select>
         <div id="tags-error" style="color: red; font-size: 0.875em; display: none;">Este campo es obligatorio.</div>
     </div>

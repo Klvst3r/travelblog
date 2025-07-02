@@ -1,0 +1,22 @@
+17. Guardando las publicaciones
+
+En esta sección vamos finalmente a guardar la publicación en la base de datos, incluida la relación cn las etiquetas que se guarda en una tabla aparte.
+
+En la vista create, en el formulario tenemos la accion POST y la ruta sera home.store
+
+Esta ruta ya se la enviaremos al controlador mediante las variables del componente
+
+ action="{{ route('home.store') }}" 
+
+ En el archivo de rutas web
+
+
+ Para que cundo vaya a post ejecute el store controller
+
+
+Route::post('store/', [PostsController::class, 'store'])->name('home.store');
+
+
+Vamos al controlador para crear el metodo store....
+
+

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Post; // Si usas el modelo Post
+use App\Models\Tag; // Si usas el modelo Tag
+
 
 //Modelo de categorias para enviarlas al form
 use App\Models\Category;
@@ -21,7 +23,8 @@ class PostsController extends Controller
 
     public function create(){
          $categories = Category::all(); // O podemos usar Category::pluck('name', 'id')
-        return view('home.create', compact('categories'));
+         $tags = Tag::all();
+        return view('home.create', compact('categories', 'tags'));
     }
 
     public function store(){

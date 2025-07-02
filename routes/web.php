@@ -82,7 +82,7 @@ Route::group([
 
         //Crear, guardar y editar post
         Route::get('create/', [PostsController::class, 'create'])->name('home.create');
-        Route::get('store/', [PostsController::class, 'store'])->name('home.store');
+        Route::post('store/', [PostsController::class, 'store'])->name('home.store');
     } );
 
 //Posts
