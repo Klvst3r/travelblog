@@ -1,0 +1,92 @@
+Para poder trabajar con la Base de Datos en Mysql Tenemos un servicio independiente que corre como un servicio al arrancar una aplicación de base de datos
+Ese servicio es:
+    DBngin
+El cual nos permite abrir un cliente grafico como TablePlus,
+
+O podremos utilizar DBeaver
+
+Con el usuario root
+
+Pero en nuestro caso,
+
+Queremos utilizar la terminal para trabajar con nucestra base de datos.
+
+Asi que primero desde DBngin exportamos las variables de entorno hacia la taerminal
+
+Luego podremos conectarnos a la Base de datos.
+
+Podremos exportar las variables si sabemos la ruta especifica conde se encuentra nuestro servicio de base de datos por ejemplo:
+
+Podriamos haber creado un usurio de base de datos de la siguiente manera:
+
+    brew services stop mysql; brew uninstall mysql; pkill mysqld; rm -rf /usr/local/var/mysql; rm /usr/local/etc/my.cnf; brew postinstall mysql; brew install mysql; brew services restart mysql; mysql -uroot
+     $(brew --prefix mysql)/bin/mysqladmin -u root password NEWPASS
+
+  Con esto ya podremos instalar mysql
+    brew install mysql
+Cargamos las variables de zshell
+
+echo 'export PATH="/usr/local/sbin:$PATH"' >> ~/.zshrc
+    source ~/.zshrc
+
+
+Como estamos corriendo el servicio en nuestro servidor creado por la aplicación, en Mac OS debemos indicar el servidor local
+
+mysql -h 127.0.0.1 -u root
+
+Si exportamos las variables des nuestro servicio lo hacemos con:
+
+  $  export PATH=/Users/Shared/DBngin/mysql/8.0.33/bin:$PATH
+
+Ya podremos acceder al usuario root
+
+mysql -h 127.0.0.1 -u root
+
+Crear un usuario con provilegios de administración y poder ingrasar con las credenciales de ese usuario
+
+por ejemplo
+    usuario Klvst3r
+
+
+mysql -h 127.0.0.1 -u klvst3r -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 15
+Server version: 8.0.33 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql>
+
+
+Ahora ya podremos trabajar con nuestro usuario klvst3r que tiene privilegios elevados de la base de dartos y poder trabajar desde el cleinte de la base de datos o bien desde la terminal
+
+
+Ahora podremos crear nuestra base de datos
+ CREATE DATABASE travelblog CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+Esto de acuerdo al archivo de variables de entorno del proyecto.
+
+Para poder proceder a ejecutar las migracione y lo seeders.
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=travelblog
+DB_USERNAME=klvst3r
+DB_PASSWORD=desarrollo
+
+
+Para correr las migraciones
+    $php artisan migrate
+
+Alimentar con los valores iniciales
+
+    $ php artisan migrate --seeders
+

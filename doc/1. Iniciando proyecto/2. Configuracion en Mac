@@ -1,0 +1,32 @@
+Para visualizar las versiones de PHP instaladas tenemos el comando:
+
+$ brew list | grep php
+    brew-php-switcher
+    php
+    php@8.1
+    php@8.2
+    php@8.3
+
+Si por ejemplo estaoy en la version de php
+$ php -v
+    8.3
+Voya  desvincularla y a vinular la version 8.2
+
+    $ brew unlink php@8.3
+
+Vincular a la version 8.2
+    $ brew link php@8.2
+
+Podremos verificar:
+
+php -v
+PHP 8.2.27 (cli) (built: Dec 19 2024 15:37:33) (NTS)
+Copyright (c) The PHP Group
+Zend Engine v4.2.27, Copyright (c) Zend Technologies
+    with Zend OPcache v8.2.27, Copyright (c), by Zend Technologies
+
+Si neceesito instalar la version y no la tengo:
+
+Si no aparece la versión php@8.2, puedes instalarla con:
+
+    $ brew install php@8.2

@@ -1,0 +1,25 @@
+En la terminal tenemos un comando para interactura con la aplicación
+    $ php artisan  tinker
+
+Para poder ingresar al dashboard y el login de autenticacin, es necesario crear un usuario para interactuar con los modelos de la aplicacion
+app\Model\User.php
+
+Creamos una instancia:
+
+    >>> $user = new App\Models\user;
+
+Agregamos un nombre de usuario
+    >>> $user->name = "Klvst3r"
+
+Agregamos un emial
+    >>> $user->email = "klvst3r@email.com"
+
+Contraseña, para ello hay que tener en cuenta que no debemos almacenar contraseñas en texto plano, por lo que podemos almacenar la contraseña encriptada, para ello Laravel nos provee de una funcion que es bcrypt, y le agregamos como parametro la contraseña deseada.
+
+    >>> $user->password = bcrypt('desarrollo')
+
+Alamacenamos los datos dentro de la base de datos
+    >>> $user->save()
+
+Ahora podremos intenractura con la aplicación y autenticarnos desde la misma con nuestro usuario de pruebas
+

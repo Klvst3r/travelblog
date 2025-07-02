@@ -1,0 +1,47 @@
+Para instanciar nuestro proyecto en Mac
+
+1. clonamos el proyecro.
+    https://github.com/Klvst3r/<proyecto>
+
+2. Ingresamos a la carpeta de proyecto
+    $ cd <proyecto>
+
+3. Instalar composer
+    $ composer install
+
+4. Creando nuestro archivo de variables de entorno
+    $ cp .env.example .env
+
+5. Verificando las variables de entorno
+
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=<nombre_bd>>
+    DB_USERNAME=<user>
+    DB_PASSWORD=<pass>
+
+6. Instalando npm y corriendo los estilos
+    $ npm install && npm run dev
+
+7. Creando la llave de la aplicación
+    $ php artisan key:generate
+
+8. Iniciando el servidor de la bae de dartos
+    Iniciando la aplicacion DBngin
+        Arrancando la Base de datos de mysql
+
+    Podremos abrir
+        DBeaver
+
+9. Si no tenemos la Bd podremos ver la seccion de inicializar la Bd
+
+20. Corriendo las migraciones y los seeders
+    php artisan migrate --seeders
+
+21. Arrancar la instancia en un  puerto especifico
+    php artisan serve --port=8000
+
+
+
+
