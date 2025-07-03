@@ -14,11 +14,17 @@ use App\Http\Controllers\Admin\HomeController;
 
 //Posts de admin
 use App\Http\Controllers\Admin\PostsController;
+//Vamos a a usar un alias para la administarción
+//use App\Http\Controllers\Admin\PostsController as AdminPostsController;
+
 use App\Http\Controllers\Admin\AdminController;
 
 //Login
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+
+//Post Publicos
+use App\Http\Controllers\PublicPostsController;
 
 
 
@@ -46,6 +52,8 @@ use App\Http\Controllers\Auth\RegisterController;
 // Esta es la ruta pública en la raíz
 
 Route::get('/', [PagesController::class, 'index'])->name('index');
+Route::get('blog/{id}', [PublicPostsController::class, 'show']);
+
 
 // Grupo protegido para usuarios autenticados con prefijo /home
 Route::group([

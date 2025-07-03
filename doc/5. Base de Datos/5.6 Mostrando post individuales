@@ -1,0 +1,195 @@
+
+$posts = Post::published()->get(); 
+
+
+Vamos a ver el link para ver el detalle del post de manera individual
+
+Existeun boton en la parte inferior que puede ayudar a llevar al post individual
+
+READ MORE
+
+
+
+
+En la vista welcome
+
+<a href="#" class="text-uppercase c-green">read more</a>
+
+Vamos a decidir como queremos que sea la url.
+
+
+vamos a tener los post denro de la url, blog/ y uego un identificador
+
+
+por ahora pasamos el id
+
+
+La ruta sera
+
+Route::get('blog/{id}', 'PostsController@show');
+
+
+Falta el controlador
+
+    $ php artisan make:controller PublicPostsController
+
+
+esto generarar en el controlador el namescpace
+
+namespace App\Http\Controllers;
+
+Si probamo
+
+class PublicPostsController extends Controller
+{
+    public function show($id){
+        return $id;
+    }
+}
+
+veremos el identificador del post
+
+ahora la idea no es reitrnar una numero sino retornar una vista
+
+resources/views/public/show.blade.php
+
+
+
+extendemos el layout
+
+
+con la seccion contendio mostrando un h1
+
+en la ruta de publicpostcontroller devolveremos la vista hacia el metodo show
+
+
+se piernes los estilos
+
+
+
+
+Se corrige y se cambia tambien en las imagenes, ahora en los archivos hay un template que es el que se ocupara para los post individuales
+
+dentro de assets
+
+
+en la plantilla queremos utilizar este escript
+
+<script id="dsq-count-scr" src="//zendero.disqus.com/count.js" async></script>
+
+en la pantilla usamos
+@stack('scripts')
+
+y en la vista lo agregams
+@extends('posts.layout')
+
+@section('content')
+    <h1>Post</h1>
+@endsection
+@push('scripts')
+<script id="dsq-count-scr" src="//zendero.disqus.com/count.js" async></script>
+@endpush
+
+
+
+el script
+<script id="dsq-count-scr" src="//zendero.disqus.com/count.js" async></script>
+
+tenemos el plugin 
+
+
+Asegúrate de tener instalado un formateador adecuado, como:
+
+    Prettier - Code formatter
+
+    Beautify
+
+Puedes instalar desde la pestaña de Extensiones (Ctrl + Shift + X).
+
+Paso 2: Establecer Prettier como el formateador por defecto
+
+    Abre la paleta de comandos:
+    Ctrl + Shift + P (Windows/Linux)
+    Cmd + Shift + P (macOS)
+
+    Escribe:
+    Preferences: Open Settings (JSON)
+    y selecciónalo.
+
+    Agrega estas líneas (si no existen):
+
+"[javascript]": {
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+},
+"[html]": {
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+},
+"editor.formatOnSave": true
+
+Esto configurará Prettier como el formateador por defecto y lo ejecutará automáticamente al guardar.
+
+
+
+tengo 
+ Preferences: Open User Settings (JSON)
+ Preferences: Open default Settings (JSON)
+ Preferences: Open workspace Settings (JSON), en cual lo modifico
+ChatGPT said:
+
+Buena pregunta.
+ ¿Cuál elegir? Depende del alcance de la configuración:
+Opción	Afecta a...	¿Cuándo usarla?
+User Settings (Open User Settings)	Todos los proyectos en tu VS Code	🔹 Si quieres que Prettier funcione igual en todos tus proyectos.
+Workspace Settings (Open Workspace Settings)	Solo el proyecto abierto actualmente	 Recomendado para proyectos con su propio estilo.
+Default Settings	No debes modificarlos directamente	 Solo consulta, no se editan.
+
+Recomendación:
+
+Usa Preferences: Open Workspace Settings (JSON) si estás configurando Prettier para un proyecto específico, como en equipos de trabajo o proyectos con su propio .prettierrc.
+
+
+En nuestro caso lo aplicamo sen User
+quedando:
+
+{
+    "tabnine.experimentalAutoImports": true,
+    "workbench.iconTheme": "material-icon-theme",
+    "files.autoSave": "afterDelay",
+
+    "[javascript]": {
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "editor.formatOnSave": true
+
+
+}
+
+
+Al guardar se formatea automaticamente
+
+y en la plnatilla aguremamos el partislas
+@include('posts.partials.disqus-script')
+
+vamos a reemplazar la informacion con el post actual
+
+en el controlador modificamos
+
+
+use App\Models\Post;
+
+public function show($id)
+    {
+        //return $id;
+
+        $post = Post::find($id);
+        return view('posts.show', compact('post'));
+    }
+
+y modificamos la plantilla para los post individuales
+
+En el contenido para visyalizar el contenido con la sintaxis html utilizamos la sintaxis siguiente:
+
+{{!! $post->body !!}}
