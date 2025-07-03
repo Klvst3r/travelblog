@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 
+//Manejos de Fechas
+//use Carbon\Carbon; //Ya se utulizo en el modelo
 
 class PagesController extends Controller
 {
@@ -16,7 +18,19 @@ class PagesController extends Controller
     //Si lo definimos directamente aca tendriamos que usar esta linea sin importar el modelo
     //$posts = \App\Post::with(['category', 'tags'])->latest()->get();
 
-    $posts = Post::with(['category', 'tags'])->latest()->get(); // Asegúrate que has importado el modelo Post
+    //$posts = Post::with(['category', 'tags'])->latest()->get(); // Asegúrate que has importado el modelo Post
+
+    // $posts = Post::whereNotNull('published_at')
+    //          ->latest('published_at')
+    //          ->get();
+    //consulta final
+    // $posts = Post::whereNotNull('published_at')
+    //              ->where('published_at', '<=', Carbon::now())
+    //              ->latest('published_at')
+    //              ->get();
+
+    $posts = Post::published()->get(); //sintaxis deseada y vamos a uilizar query scopes
+
     return view('posts.index', compact('posts'));
 }
 

@@ -1023,3 +1023,69 @@ $request->validate([
     'tags' => 'required|array',
     'published_at' => 'required|date',
 ]);
+
+
+
+Fecha de publicación
+--------------------
+
+Para permitir que el campo published_at sea opcional y se almacene como NULL cuando el usuario no lo selecciona, debemos hacer tres ajustes importantes:
+
+
+1. En el formulario Blade create.blade.php
+
+Eliminamos el atributo required del campo de fecha:
+
+{{-- Campo: Fecha publicación --}}
+<div class="item form-group">
+    <label class="col-form-label col-md-3 col-sm-3 label-align">Fecha de Publicación</label>
+    <div class="col-md-6 col-sm-6">
+        <input name="published_at" type="date" class="form-control" value="{{ old('published_at') }}">
+    </div>
+</div>
+
+2. En la validación del método store() del PostsController
+
+Cambiamos la validación para que sea opcional (nullable) y válida como fecha:
+
+// 1. Validación
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'excerpt' => 'required|string',
+        'body' => 'required|string',
+        'category_id' => 'required|exists:categories,id',
+        'published_at' => 'nullable|date',
+        'tags' => 'nullable|array',
+        'tags.*' => 'exists:tags,id',
+    ]);
+
+
+3. En el guardado del modelo
+
+Laravel automáticamente interpreta el valor vacío como null si está configurado correctamente. Pero si deseas asegurarlo explícitamente, puedes hacer esto antes de guardar, esto es en el metodo store
+
+ // 2. Creación del Post
+    $post = Post::create([
+        'title' => $request->title,
+        'excerpt' => $request->excerpt,
+        'body' => $request->body,
+        'category_id' => $request->category_id,
+        'published_at' => $request->filled('published_at') 
+                            ? Carbon::parse($request->published_at)
+                            : null,
+    ]);
+
+    // 3. Relación con etiquetas (si existen)
+    if ($request->has('tags')) {
+        $post->tags()->sync($request->tags);
+    }
+
+    // 4. Redirección con mensaje flash
+    return redirect()->route('home.index')->with('success', 'Post creado exitosamente.');
+
+
+Notas:
+
+    - filled('published_at') se asegura de que no sea null o vacío antes de parsear.
+    - sync() asegura que se actualicen correctamente las etiquetas relacionadas.
+    - Se valida que tags.* existan en la base de datos.    

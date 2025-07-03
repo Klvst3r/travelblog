@@ -41,6 +41,7 @@
                 <th>Título</th>
                 <th>Extracto</th>
                 <th>Categoría</th>
+                <th>Publicado</th>
                 <th>Acciones</th>
             </tr>
     </x-slot>
@@ -51,6 +52,7 @@
                 <td>{{ $post->title }}</td>
                 <td>{{ Str::limit($post->excerpt, 50) }}</td>
                 <td>{{ $post->category->name ?? 'Sin categoría' }}</td>
+                <td>{{ $post->published_at }}</td>
                 <td class="text-center">
                     <i class="fa fa-pencil text-info" title="Editar" style="cursor:pointer; font-size:20px; margin: 0 5px;"></i>
                     <i class="fa fa-trash text-danger" title="Eliminar" style="cursor:pointer; font-size:20px; margin: 0 5px;"></i>

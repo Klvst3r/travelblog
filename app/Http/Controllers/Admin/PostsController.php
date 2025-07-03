@@ -38,9 +38,10 @@ class PostsController extends Controller
             'title' => 'required|string|max:255',
             'excerpt' => 'required|string',
             'body' => 'required|string',
-            'category_id' => 'required|integer|exists:categories,id',
-            'tags' => 'required|array',
-            'published_at' => 'required|date',
+            'category_id' => 'required|exists:categories,id',
+            'published_at' => 'nullable|date',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
         ]);
 
         // Crear el post - i insertar los valores en la tabla
@@ -48,9 +49,12 @@ class PostsController extends Controller
             'title' => $request->title,
             'excerpt' => $request->excerpt,
             'body' => $request->body,
-            'published_at' => Carbon::parse($request->published_at),
             'category_id' => $request->category_id,
+            'published_at' => $request->filled('published_at') 
+                                ? Carbon::parse($request->published_at)
+                                : null,
         ]);
+
 
         //Asignar las etieuetas con la relacion de tags
 
@@ -59,11 +63,15 @@ class PostsController extends Controller
 
         
         // Asociar etiquetas (si hay relación many-to-many)
-        $post->tags()->sync($request->tags);
+        //$post->tags()->sync($request->tags);
+        
+        // Relación con etiquetas (si existen)
+        if ($request->has('tags')) {
+            $post->tags()->sync($request->tags);
+        }        
 
-        // Redirigir con mensaje
+        // Finalmente Redirigir con mensaje
         return redirect()->route('home.index')->with('success', 'Post creado exitosamente.');
-
 
     }
 

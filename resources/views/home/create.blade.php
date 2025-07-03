@@ -60,7 +60,7 @@
 
                 {{-- Área editable --}}
                 <div id="editor" class="editor-wrapper placeholderText" contenteditable="true" 
-                     style="border:1px solid #ccc; padding:10px; min-height:150px;">{!! old('body') !!}</div>
+                     style="border:1px solid #ccc; padding:10px; min-height:150px;">{{ old('body') }}</div>
 
                 {{-- Textarea oculta para enviar el contenido --}}
                 <textarea name="body" id="descr" style="display:none;"></textarea>
@@ -96,7 +96,7 @@
                         data-placeholder="Selecciona una o más etiquetas" style="width: 100%;">
                     @foreach($tags as $tag)
                         <option value="{{ $tag->id }}" 
-                            {{ (collect(old('tags'))->contains($tag->id)) ? 'selected' : '' }}>
+                            {{ (collect(old('tags'))->contains($tag->id)) ? 'selected' : '' }}> {{-- pasamos el array en una colección --}}
                             {{ $tag->name }}
                         </option>
                     @endforeach
@@ -112,10 +112,8 @@
             <label class="col-form-label col-md-3 col-sm-3 label-align">Fecha de Publicación</label>
             <div class="col-md-6 col-sm-6">
                 <input name="published_at" type="date" class="form-control" 
-                       value="{{ old('published_at') }}" required>
-                @if ($errors->has('published_at'))
-                    <span class="text-danger">{{ $errors->first('published_at') }}</span>
-                @endif
+                       value="{{ old('published_at') }}" >
+                
             </div>
         </div>
 

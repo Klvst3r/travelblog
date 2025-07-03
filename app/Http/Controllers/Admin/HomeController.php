@@ -45,6 +45,14 @@ class HomeController extends Controller
 
         //Este es el bueno
         $posts = Post::all(); // O puedes usar paginación si prefieres
+        
+        //podemos verificar el resualtado devuelto con:
+        //return $post = Post::latest('publised_td')->get();
+
+        
+
+
+
         return view('home.index', compact('posts'));
     }
 }

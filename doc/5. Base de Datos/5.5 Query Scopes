@@ -1,0 +1,149 @@
+19. Query scopes
+
+En esta sección agregamos restricciones para que únicamente se muestren los posts públicos, y utilizamos query scopes locales para que nuestro código sea más limpio y reutilizable.
+
+
+Asi en nuestra vista index, y colocamos la fecha de publicación, y la visualiza validacion
+
+en la vista publica indice
+
+Hay un pequeño probema en la pagina / de la url publica de nuestro vsta de publicaciones de post enviando el mensaje siguiente:
+
+Call to a member function diffForHumans() on null
+
+resources / views / posts / index.blade.php : 15
+
+						<span class="c-gris">{{ $post->published_at->diffForHumans() }}</span>
+
+Para que la vista pública de posts no muestre publicaciones sin una fecha de publicación (published_at), debemos filtrarlas desde la consulta.
+
+Modificación en el HomeController:
+
+Reemplazamos:
+
+$posts = Post::all();
+
+Por:
+
+$posts = Post::whereNotNull('published_at')
+             ->latest('published_at')
+             ->get();
+
+Explicación:
+    whereNotNull('published_at'): Solo incluye los posts que ya tienen una fecha de publicación (publicados).
+    latest('published_at'): Los ordena del más reciente al más antiguo.
+    get(): Obtiene todos los registros filtrados.
+
+Alternativa con paginación (opcional):
+
+Si tu vista pública requiere paginación (recomendado para muchos posts):
+
+$posts = Post::whereNotNull('published_at')
+             ->latest('published_at')
+             ->paginate(10); // 10 por página
+
+Y en la vista:
+
+{{ $posts->links() }}
+
+ Resultado esperado:
+
+   Se evita el error Call to a member function diffForHumans() on null.
+   Solo se muestran posts publicados.
+   Tu vista pública es más robusta y coherente.                        
+
+
+aunque la forma deseada de realizar la consultas actua es:
+
+$posts = Post::whereNotNull('published_at')
+                 ->where('published_at', '<=', Carbon::now())
+                 ->latest('published_at')
+                 ->get();
+
+
+La deseada seria cn query Scopes:
+
+Los Query Scopes permiten definir conjuntos comunes de restricciones como las anteriores, para poder reutilizarlas a traves de la aplicación.
+
+
+    $post = Post::published()->get(); //sintaxis deseada y vamos a uilizar query scopes
+
+
+Entones en el modelo Post y para crear un Query Scope tenemoque crear:
+
+
+La sitnaxis es colocar la palabra Scope y acontinuacion el identificador
+
+Ej.
+
+public function scopePublished($value='')
+{
+
+}
+
+Esto recibe un ainstancia del query buikder que es el constructor de consultas de Laravel, entonces, copiamos asi.
+
+public function scopePublished($value='')
+{
+      $posts = Post::whereNotNull('published_at')
+                 ->where('published_at', '<=', Carbon::now())
+                 ->latest('published_at')
+                 ->get();
+}
+
+En el modelo Post.php
+
+agregamos el scopePublished
+
+
+
+    public function scopePublished($value='')
+    {
+        $posts = Post::whereNotNull('published_at')
+                    ->where('published_at', '<=', Carbon::now())
+                    ->latest('published_at')
+                    ->get();
+    }
+
+
+
+Pero en lugar de llamar al modelo utilizamos el query builder quelaravel automaticamente psa por aca y quitamos la ejecuacion de la consulta
+
+
+public function scopePublished($quey)
+    {
+        $posts = Post::whereNotNull('published_at')
+                    ->where('published_at', '<=', Carbon::now())
+                    ->latest('published_at');
+    }
+
+La ejecuacion se realizara en el controlador    donde se importa Carbon en el modelo por lo que en el controlador se eleimina
+
+
+quedando la ejecución
+
+$posts = Post::published()->get(); //sintaxis deseada y vamos a uilizar query scopes
+
+Verificando que vuelve a funcionará
+
+Aunque fuye necesario modificiar el Query scope asi:
+
+ public function scopePublished($query)
+    {
+        return $query->whereNotNull('published_at')
+                 ->where('published_at', '<=', Carbon::now())
+                 ->latest('published_at');
+    }
+
+
+Ahora vuelve a funcionar pereo ahora tenemos la ventaja de que cada vez que necesitemos los post publicos o activos simpleente llamamos a nuestro     
+
+
+$posts = Post::published()->get(); 
+
+Para incluir a lospost publicos a traves del modelo, y automaticamente se estaran aplicando las restricciones.
+
+Que la fecha no sea null, que la fecha sea igual o superior a la actual, y que esten orenadas por fecha de publicacion.
+
+Vams a implkemebbtar los links que nos lleven a ver el post completo.
+

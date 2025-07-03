@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use Carbon\Carbon;
+
 class Post extends Model
 {
     use HasFactory;
@@ -32,6 +34,13 @@ class Post extends Model
 
         return $this->belongsToMany(Tag::class);       //Retorna this belonstomany pertenece a muchos, la relacion es con la clase Tag
 
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->whereNotNull('published_at')
+                 ->where('published_at', '<=', Carbon::now())
+                 ->latest('published_at');
     }
 
 }
