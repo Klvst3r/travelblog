@@ -1,0 +1,18 @@
+23. Social Links
+
+En esta sección generamos los links para compartir las publicaciones en redes sociales.
+
+Vamos a modificar ls url de los botones de las redes sociales para que se puedan compartir las publicaciones
+
+Entonces en la vista shost.show
+ en los links
+
+
+ referencia
+ https://github.com/bradvin/social-share-urls
+
+
+ Para facebook vamos a utilizar 
+
+
+ https://www.facebook.com/sharer.php?u={url}
