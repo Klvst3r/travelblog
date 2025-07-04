@@ -1,5 +1,10 @@
 @extends('posts.layout')
 
+@section('meta-title', config('app.name') . ' | Traveling Post |' . $post->title)
+@section('meta-description', $post->excerpt)
+
+
+
 @section('content')
     <article class="post image-w-text container">
         <div class="content-post">

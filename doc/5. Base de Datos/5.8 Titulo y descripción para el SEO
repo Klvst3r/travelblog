@@ -1,0 +1,44 @@
+22. Título y descripción para SEO
+
+En esta sección definimos el título y el descripción de nuestro sitio web dependiendo de la página en la que estemos, con el fin de controlar el contenido que se muestra en los buscadores.
+
+
+Asilos buscadores google principalmente entinendan de que se trata nuestra sitio y puedan indexar correctamente
+
+Vamos a definir los indices correctamentes
+
+Para ello en nuestro layout principalmente el que ocupa welcome o los post publicaos en el titulo definimos
+
+
+
+Actualmente tenemos que cada post titne la misma referencia
+
+
+<title>{{ config('app.name') }} | Traveling Post</title>
+
+y queremos que cada post tenga su propio titulo
+
+Para ello usamos la directica de yield
+
+Qudando
+
+<title>@yield('meta-title', config('app.name') . ' | Traveling Post')</title>
+
+
+Vamos ahora con la descripcion
+    <meta name="description" content="@yield('meta-content', 'Este es el blog de Zendero')">
+
+
+Ahora cuando tengamos los post individuales necesitamos tambien que en el titulo este el nombre del post
+para ello en la vista post show
+
+@section('meta-title', config('app.name') . ' | Traveling Post |' . $post->title)
+
+hacemos lo mismo con la descripción
+
+
+@section('meta-description', $post->excerpt)
+
+Sonlas etiquetas minimas para SEO
+
+

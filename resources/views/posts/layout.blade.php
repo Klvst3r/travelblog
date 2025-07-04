@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Zendero</title>
+    {{-- <title>{{ config('app.name') }} | Traveling Post</title> --}}
+    <title>@yield('meta-title', config('app.name') . ' | Traveling Post')</title>
+
+    <meta name="description" content="@yield('meta-description', 'Este es el blog de Zendero')">
 
     <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
     <link rel="stylesheet" href="{{ asset('css/framework.css') }}">
