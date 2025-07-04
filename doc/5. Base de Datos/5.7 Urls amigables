@@ -1,0 +1,339 @@
+21. Urls amigables
+
+En esta sección vemos cómo implementar urls amigables utilizando model bindings
+
+
+Arreglamos las imagenes de las redes sociales.
+
+Corrgiendo los estilos
+
+
+Por ahora se cargan los post a traves del id
+
+La consulta se hace desde el controlador PostsController
+
+public function show($id)
+    {
+        //return $id;
+
+        $post = Post::find($id);
+        return view('posts.show', compact('post'));
+    }
+
+Pero ahora se utuilzara Model bindings, para que Laravel se encargue de traer el post ccorrecto, Se agraga el Modelo Post, Laravel automaticamente traera el Post con el id que se le este pasando, 
+
+
+Se renombra la variable a $post
+
+
+
+
+ public function show(Post $post)
+    {
+     
+        return view('posts.show', compact('post'));
+    }
+
+Ahora en el archivo de rutas web, actualizamos el nombre de la variable
+
+
+Route::get('blog/{post}', [PublicPostsController::class, 'show']);
+
+Sigue funiconando, pero ahora queremos trar el post por su nombre y no por su id
+
+
+Para cambiarlo, abrimos el modelo Post y vamosa sobreescribir el metodo
+
+
+getRouteKeyName
+
+y solo indicamos el campo por el cual hacemos referencia a los post y por ese campo va a encontrar los post
+
+
+
+
+
+public function getRouteKeyname()
+    {
+        return 'title';
+    }
+
+En la vista vamos a pasar el identificador a traves del titulo    
+
+Como vamos a modificar la tabla cambiamos la migración,  create_post_table
+
+
+agregamos el campo url
+$table->string('url');                            //Titulo Post
+
+y ejecutamos la migracion
+
+    $ php artisan migrate:refresh
+
+    
+Para que puedamos cambiar a url amigables en la vista vamos a cambiar
+de 
+<a href="blog/{{ $post->id }}" class="text-uppercase c-green">Leer más</a>
+
+
+a esta otra:
+
+
+<a href="{{ route('posts.show', $post->url) }}" class="text-uppercase c-green">Leer más</a>
+
+
+En tu archivo routes/web.php, debes tener esto:
+
+Route::get('blog/{url}', [PublicPostsController::class, 'show'])->name('posts.show');
+
+Y en tu controlador:
+
+public function show($url)
+{
+    $post = Post::where('url', $url)->firstOrFail();
+    return view('posts.show', compact('post'));
+}
+
+
+
+Tenemos un detalle con las url amigables
+Nuestro codigo hace el route model binding. Aunque definimos la ruta así:
+
+Route::get('blog/{url}', [PublicPostsController::class, 'show'])->name('posts.show');
+
+Estamos usando en tu modelo este método:
+
+    public function getRouteKeyName()
+    {
+        return 'url';
+    }
+
+Pero Laravel no sabe que {url} es un modelo Post, porque estás usando el nombre del parámetro directamente como url. Para que funcione el route model binding con el campo url, debes cambiar la ruta para que espere un modelo.
+ 
+ 
+ Solución
+ Cambiamos esto en routes/web.php:
+
+//  Esto NO activa el model binding
+Route::get('blog/{url}', [PublicPostsController::class, 'show'])->name('posts.show');
+
+ Por esto:
+
+//  Esto activa el model binding usando getRouteKeyName()
+Route::get('blog/{post}', [PublicPostsController::class, 'show'])->name('posts.show');
+
+ Y en el controlador, cambia esto:
+
+//  Ya no necesitas buscarlo manualmente
+public function show($url)
+{
+    $post = Post::where('url', $url)->firstOrFail();
+    return view('posts.show', compact('post'));
+}
+
+ Por esto:
+
+public function show(Post $post)
+{
+    return view('posts.show', compact('post'));
+}
+
+ En la vista index.blade.php: Mas bien esto es en la vista Welcome por que es la raiz de la vista public
+
+nuestro código ya está bien con esto:
+
+<a href="{{ route('posts.show', $post) }}" class="text-uppercase c-green">Leer más</a>
+
+
+Aunque ya procesa el metodo show correctamente desde la vista index nos esta generando un problema y es que:
+
+ la ruta y el método show() funcionan correctamente con URLs amigables (blog/mi-cuarto-post), y que el método getRouteKeyName() en tu modelo está correctamente definido, entonces el problema está 100% en cómo estás obteniendo la colección de posts en el método index().
+🛠 Diagnóstico: ¿Por qué sigue generando /blog/4?
+
+Si {{ route('posts.show', $post) }} sigue generando /blog/4, eso significa que Laravel no está usando el binding con la clave personalizada (url), lo cual ocurre solo si:
+
+    El objeto $post no es una instancia completa de Post
+
+    Estás cargando los posts como arrays o sin el modelo completo
+
+    Estás usando DB::table('posts')->get() en lugar de Post::all() o Eloquent con relaciones
+
+
+
+verificamos con@php dump(get_class($post)); @endphp    
+
+ Verificación final paso a paso
+
+A continuaciónponemos una lista de verificación definitiva para resolverlo 100%. Uno de estos puntos sigue sin cumplirse, por eso Laravel sigue generando /blog/4.
+
+1. Modelo Post.php correctamente configurado
+
+Nos aseguramos de que esté así:
+
+        namespace App\Models;
+
+        use Illuminate\Database\Eloquent\Model;
+        use Illuminate\Database\Eloquent\Factories\HasFactory;
+        use Illuminate\Support\Str;
+        use Carbon\Carbon;
+
+        class Post extends Model
+        {
+            use HasFactory;
+
+            protected $casts = [
+                'published_at' => 'datetime',
+            ];
+
+            protected $fillable = [
+                'title',
+                'url', //  este campo debe estar incluido
+                'excerpt',
+                'body',
+                'published_at',
+                'category_id',
+            ];
+
+            public function getRouteKeyName()
+            {
+                return 'url'; //  esto es crucial
+            }
+
+            public function category()
+            {
+                return $this->belongsTo(Category::class);
+            }
+
+            public function tags()
+            {
+                return $this->belongsToMany(Tag::class);
+            }
+
+            public function scopePublished($query)
+            {
+                return $query->whereNotNull('published_at')
+                            ->where('published_at', '<=', Carbon::now())
+                            ->latest('published_at');
+            }
+        }
+
+2. Ruta con model binding
+
+En routes/web.php debe estar así:
+
+    use App\Http\Controllers\PublicPostsController;
+
+    Route::get('blog/{post}', [PublicPostsController::class, 'show'])->name('posts.show');
+
+        Nota: {post} activa el model binding y usará getRouteKeyName() automáticamente.
+
+
+3. Método index() del controlador usa Eloquent
+
+public function index()
+{
+    $posts = Post::published()->with(['category', 'tags'])->get();
+    return view('welcome', compact('posts'));
+}
+
+    Usamos with(...) para asegurarnos que las relaciones como category y tags estén disponibles en la vista.
+
+
+
+4. La vista pasa el objeto completo
+
+Esto está bien:
+
+<a href="{{ route('posts.show', $post) }}" class="text-uppercase c-green">Leer más</a>
+
+
+
+5. verificamos que $post sea una instancia de App\Models\Post
+
+Agregamos esto temporalmente en tu vista (antes del foreach):
+
+    @foreach ($posts as $post)
+        @php dump(get_class($post)); @endphp
+        ...
+    @endforeach
+
+Si muestra App\Models\Post  todo bien.
+
+    Si muestra stdClass  entonces estás usando DB::table() en algún lado.
+
+
+
+6. Revisamos que los registros sí tengan valores en la columna url
+
+En Tinker o desde el seeder:
+
+php artisan tinker
+>>> App\Models\Post::pluck('url', 'id');
+
+Debe devolverte algo como:
+
+=> Illuminate\Support\Collection {#...}
+   1 => "mi-primer-post",
+   2 => "mi-segundo-post",
+   ...
+
+Si vemos:
+
+1 => null,
+2 => null,
+
+entonces el campo url no se está poblando, y Laravel no tiene opción más que usar el id.
+
+Para arreglar los url vacíos automáticamente, podemos usar Tinker:
+
+php artisan tinker
+>>> \App\Models\Post::all()->each(function ($post) {
+...     $post->url = \Illuminate\Support\Str::slug($post->title);
+...     $post->save();
+... });
+
+ Resultado esperado
+
+Una vez todo esto esté bien, deberiamos ver:
+
+    <a href="http://localhost:7000/blog/mi-cuarto-post">Leer más</a>
+
+
+Ahora vamos a la administración y aque al crear el post nos indicara que el campo url no tiene un valor por defecto
+
+Entonces en el controlador de la administrración, debajo del titulo
+y encerramos el titulo dentro de la funcion strl_slug()
+
+
+
+
+Al crear nuestro post
+
+
+la función str_slug() fue eliminada de Laravel desde la versión 6. Para generar el slug correctamente debes usar la clase Str de Laravel.
+
+Te recomiendo hacer así en tu método store:
+
+use Illuminate\Support\Str;
+use Carbon\Carbon;
+
+$post = Post::create([
+    'title' => $request->title,
+    'url' => Str::slug($request->title), // <-- aquí usamos Str::slug()
+    'excerpt' => $request->excerpt,
+    'body' => $request->body,
+    'category_id' => $request->category_id,
+    'published_at' => $request->filled('published_at')
+        ? Carbon::parse($request->published_at)
+        : null,
+]);
+
+Recuerda:
+
+    Importar Str arriba con use Illuminate\Support\Str;.
+
+    Esto generará un slug amigable para la URL a partir del título (por ejemplo, "Mi Primer Post" → "mi-primer-post").
+
+
+Comprobamos su fincionamiento al crear un nuevo post
+

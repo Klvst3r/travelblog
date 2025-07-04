@@ -32,7 +32,10 @@ class PagesController extends Controller
         //$posts = Post::published()->get(); //sintaxis deseada y vamos a uilizar query scopes
 
         //return view('posts.index', compact('posts'));
-        $posts = Post::latest('published_at')->get();
+        //$posts = Post::latest('published_at')->get();
+        //return view('welcome', compact('posts'));
+
+        $posts = Post::published()->with(['category', 'tags'])->get();
         return view('welcome', compact('posts'));
     }
 

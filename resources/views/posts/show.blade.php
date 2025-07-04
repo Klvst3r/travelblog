@@ -11,6 +11,7 @@
                     <span class="category">{{ $post->category->name }}</span>
                 </div>
             </header>
+            {{-- <h1>{{ str_slug($post->title) }}</h1> --}}
             <h1>{{ $post->title }}</h1>
             <div class="divider"></div>
             <div class="image-w-text">
@@ -19,17 +20,20 @@
 
             <footer class="container-flex space-between">
                 <div class="buttons-social-media-share">
-                    <ul class="share-buttons">
-                        <li><a href="https://www.facebook.com/sharer/sharer.php?u=&t=" title="Share on Facebook"
-                                target="_blank"><img alt="Share on Facebook"
-                                    src="img/flat_web_icon_set/color/Facebook.png"></a></li>
-                        <li><a href="https://twitter.com/intent/tweet?source=&text=:%20" target="_blank" title="Tweet"><img
-                                    alt="Tweet" src="img/flat_web_icon_set/color/Twitter.png"></a></li>
-                        <li><a href="https://plus.google.com/share?url=" target="_blank" title="Share on Google+"><img
-                                    alt="Share on Google+" src="img/flat_web_icon_set/color/Google+.png"></a></li>
-                        <li><a href="http://pinterest.com/pin/create/button/?url=&description=" target="_blank"
-                                title="Pin it"><img alt="Pin it" src="img/flat_web_icon_set/color/Pinterest.png"></a></li>
-                    </ul>
+                    <div class="share-buttons">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=&t=" title="Share on Facebook"
+                            target="_blank"><img alt="Share on Facebook" src="{{ asset('img/icons/facebook.png') }}"
+                                class="icon-social"></a>
+
+                        <a href="https://X.com/intent/tweet?source=&text=:%20" target="_blank" title="Post in X"><img
+                                alt="Post in X" src="{{ asset('img/icons/X_icon.png') }}" class="icon-social"></a>
+                        <a href="https://www.instagram.com/share?url=" target="_blank" title="Share on Instagram"><img
+                                alt="Share on Instagram" src="{{ asset('img/icons/Instagram.png') }}"
+                                class="icon-social"></a>
+                        <a href="http://pinterest.com/pin/create/button/?url=&description=" target="_blank"
+                            title="Pin it"><img alt="Pin it" src="{{ asset('img/icons/Pinterest.png') }}"
+                                class="icon-social"></a>
+                    </div>
                 </div>
                 <div class="tags container-flex">
                     @foreach ($post->tags as $tag)

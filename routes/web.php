@@ -52,7 +52,11 @@ use App\Http\Controllers\PublicPostsController;
 // Esta es la ruta pública en la raíz
 
 Route::get('/', [PagesController::class, 'index'])->name('index');
-Route::get('blog/{id}', [PublicPostsController::class, 'show']);
+//Route::get('blog/{id}', [PublicPostsController::class, 'show']);
+//Actualizamos el archivo de las url amigables, anteriormente se utilizaba consulta por id
+//Route::get('blog/{post}', [PublicPostsController::class, 'show']);
+Route::get('blog/{post}', [PublicPostsController::class, 'show'])->name('posts.show');
+//Nota: {post} activa el model binding y usará getRouteKeyName() automáticamente.
 
 
 // Grupo protegido para usuarios autenticados con prefijo /home

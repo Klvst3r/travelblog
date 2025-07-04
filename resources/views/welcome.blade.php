@@ -6,6 +6,7 @@
 
 
         @foreach ($posts as $post)
+            {{-- @php dump(get_class($post)); @endphp // para verificacion --}}
             {{-- Recorre todos los post como un post --}}
 
             <article class="post no-image">
@@ -31,7 +32,8 @@
                     <p>{{ $post->excerpt }}</p>
                     <footer class="container-flex space-between">
                         <div class="read-more">
-                            <a href="blog/{{ $post->id }}" class="text-uppercase c-green">Leer más</a>
+                            {{-- <a href="blog/{{ $post->id }}" class="text-uppercase c-green">Leer más</a> --}}
+                            <a href="{{ route('posts.show', $post) }}" class="text-uppercase c-green">Leer más</a>
                         </div>
                         <div class="tags container-flex">
                             @foreach ($post->tags as $tag)

@@ -10,11 +10,12 @@ use Illuminate\Http\Request;
 
 class PublicPostsController extends Controller
 {
-    public function show($id)
+    public function show(Post $post)
     {
         //return $id;
 
-        $post = Post::find($id);
+        //$post = Post::find($id); se quita esta linea por el uso de Model Bindings
+        //return view('posts.show', compact('post'));
         return view('posts.show', compact('post'));
     }
 }

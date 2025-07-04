@@ -19,9 +19,9 @@ class PostsTableSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-     public function run(): void
+    public function run(): void
     {
-        
+
         // Desactivar restricciones
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
@@ -49,6 +49,7 @@ class PostsTableSeeder extends Seeder
         // Crear Posts
         $post1 = Post::create([
             'title' => 'Mi Primer Post',
+            'url' => 'mi-primer-post',
             'excerpt' => 'Extracto de mi primer post',
             'body' => '<p>Cuerpo del Primer Post</p>',
             'published_at' => Carbon::now()->subDay(4),
@@ -57,6 +58,7 @@ class PostsTableSeeder extends Seeder
 
         $post2 = Post::create([
             'title' => 'Mi Segundo Post',
+            'url' => 'mi-segundo-post',
             'excerpt' => 'Extracto del segundo post',
             'body' => '<p>Cuerpo del Segundo Post</p>',
             'published_at' => Carbon::now()->subDay(3),
@@ -65,6 +67,7 @@ class PostsTableSeeder extends Seeder
 
         $post3 = Post::create([
             'title' => 'Mi Tercer Post',
+            'url' => 'mi-tercer-post',
             'excerpt' => 'Extracto de mi Tercer post',
             'body' => '<p>Cuerpo del Tercer Post</p>',
             'published_at' => Carbon::now()->subDay(2),
@@ -73,6 +76,7 @@ class PostsTableSeeder extends Seeder
 
         $post4 = Post::create([
             'title' => 'Mi Cuarto Post',
+            'url' => 'mi-cuarto-post',
             'excerpt' => 'Extracto de mi Cuarto post',
             'body' => '<p>Cuerpo del Cuarto Post</p>',
             'published_at' => Carbon::now()->subDay(1),

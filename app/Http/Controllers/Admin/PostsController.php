@@ -16,25 +16,29 @@ use App\Models\Category;
 //Vamos a utilizar fehcas para humanos
 use Illuminate\Support\Carbon;
 
+//Para la generacion de las url
+use Illuminate\Support\Str;
+
 
 class PostsController extends Controller
 {
-     public function index()
+    public function index()
     {
         $posts = Post::all(); // o como lo manejes
         return view('home.index', compact('posts')); // vista correcta según lo que dijiste
     }
 
-    public function create(){
-         $categories = Category::all(); // O podemos usar Category::pluck('name', 'id')
-         $tags = Tag::all();
+    public function create()
+    {
+        $categories = Category::all(); // O podemos usar Category::pluck('name', 'id')
+        $tags = Tag::all();
         return view('home.create', compact('categories', 'tags'));
     }
 
     public function store(Request $request)
     {
         // Validación - incluye etiquetas
-       $request->validate([
+        $request->validate([
             'title' => 'required|string|max:255',
             'excerpt' => 'required|string',
             'body' => 'required|string',
@@ -44,15 +48,18 @@ class PostsController extends Controller
             'tags.*' => 'exists:tags,id',
         ]);
 
+
+
         // Crear el post - i insertar los valores en la tabla
         $post = Post::create([
             'title' => $request->title,
+            'url' => Str::slug($request->title),
             'excerpt' => $request->excerpt,
             'body' => $request->body,
             'category_id' => $request->category_id,
-            'published_at' => $request->filled('published_at') 
-                                ? Carbon::parse($request->published_at)
-                                : null,
+            'published_at' => $request->filled('published_at')
+                ? Carbon::parse($request->published_at)
+                : null,
         ]);
 
 
@@ -61,18 +68,16 @@ class PostsController extends Controller
         // Podemos utilizar: 
         // $post->tags()->attach($request->tags);
 
-        
+
         // Asociar etiquetas (si hay relación many-to-many)
         //$post->tags()->sync($request->tags);
-        
+
         // Relación con etiquetas (si existen)
         if ($request->has('tags')) {
             $post->tags()->sync($request->tags);
-        }        
+        }
 
         // Finalmente Redirigir con mensaje
         return redirect()->route('home.index')->with('success', 'Post creado exitosamente.');
-
     }
-
 }

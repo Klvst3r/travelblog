@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {   //Tabla post
             $table->id();
             $table->string('title');                            //Titulo Post
+            $table->string('url');                            //Url amigabla del Post
             $table->mediumText('excerpt');                      //Contenido
             $table->text('body');                               //Cuerpo del Post
             $table->timestamp('published_at')->nullable();      //Fecha publicació
