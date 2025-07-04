@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Post;
+use App\Models\Post; //Entro otrs cosas par autilizar el query Scope
 
 //Manejos de Fechas
 //use Carbon\Carbon; //Ya se utulizo en el modelo
@@ -13,26 +13,28 @@ class PagesController extends Controller
     /**
      * Display a listing of the resource.
      */
-   public function index()
-{
-    //Si lo definimos directamente aca tendriamos que usar esta linea sin importar el modelo
-    //$posts = \App\Post::with(['category', 'tags'])->latest()->get();
+    public function index()
+    {
+        //Si lo definimos directamente aca tendriamos que usar esta linea sin importar el modelo
+        //$posts = \App\Post::with(['category', 'tags'])->latest()->get();
 
-    //$posts = Post::with(['category', 'tags'])->latest()->get(); // Asegúrate que has importado el modelo Post
+        //$posts = Post::with(['category', 'tags'])->latest()->get(); // Asegúrate que has importado el modelo Post
 
-    // $posts = Post::whereNotNull('published_at')
-    //          ->latest('published_at')
-    //          ->get();
-    //consulta final
-    // $posts = Post::whereNotNull('published_at')
-    //              ->where('published_at', '<=', Carbon::now())
-    //              ->latest('published_at')
-    //              ->get();
+        // $posts = Post::whereNotNull('published_at')
+        //          ->latest('published_at')
+        //          ->get();
+        //consulta final
+        // $posts = Post::whereNotNull('published_at')
+        //              ->where('published_at', '<=', Carbon::now())
+        //              ->latest('published_at')
+        //              ->get();
 
-    $posts = Post::published()->get(); //sintaxis deseada y vamos a uilizar query scopes
+        //$posts = Post::published()->get(); //sintaxis deseada y vamos a uilizar query scopes
 
-    return view('posts.index', compact('posts'));
-}
+        //return view('posts.index', compact('posts'));
+        $posts = Post::latest('published_at')->get();
+        return view('welcome', compact('posts'));
+    }
 
     /**
      * Show the form for creating a new resource.
