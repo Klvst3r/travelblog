@@ -3,9 +3,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   tables.forEach(function (table) {
     const $table = $(table);
+
     if ($table.length) {
+      const createUrl = $table.data('create-url'); // <- Obtiene el valor dinámico desde Blade
+
+
+
       $table.DataTable({
-        dom: 'Bflrtip',
+        dom: 'Bflrtip', // B: botones, f: filtro, l: length, r: processing, t: tabla, i: info, p: paginación
         buttons: [
           {
             extend: 'copy',
@@ -36,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
         language: {
           url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
           search: "Filtrar:",
-          lengthMenu: "Mostrar _MENU_ registros",
+          lengthMenu: "Mostrar _MENU_ registros por página",
           info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
           paginate: {
             first: "Primero",
@@ -55,24 +60,31 @@ document.addEventListener("DOMContentLoaded", function () {
           infoEmpty: "Mostrando 0 a 0 de 0 registros",
           infoFiltered: "(filtrado de _MAX_ registros)"
         },
-         initComplete: function () {
-          // Agrega botón "Agregar" a la derecha
-          let $botonAgregar = $(`
+        initComplete: function () {
+          // Si no hay URL, no se agrega el botón
+          if (!createUrl) return;
+
+          // Botón Agregar dinámico
+          const $botonAgregar = $(`
             <div class="ms-auto">
-              <a href="/catalogos/test/create" class="btn btn-success">
+              <a href="${createUrl}" class="btn btn-success">
                 <i class="fa fa-plus"></i> Agregar
               </a>
             </div>
           `);
 
-          let $wrapper = $table.closest('.dataTables_wrapper');
-          let $btns = $wrapper.find('.dt-buttons');
+          // Envoltura y agregación del botón
+          const $wrapper = $table.closest('.dataTables_wrapper');
+          const $btns = $wrapper.find('.dt-buttons');
 
-          // Envolver los botones y el agregar en un contenedor flex
-          $btns.wrap(`<div class="d-flex justify-content-between flex-wrap w-100 align-items-center mb-3"></div>`);
+          if (!$btns.parent().hasClass('d-flex')) {
+            $btns.wrap(`
+              <div class="d-flex justify-content-between flex-wrap w-100 align-items-center mb-3"></div>
+            `);
+          }
+
           $btns.parent().append($botonAgregar);
         }
-
       });
     }
   });

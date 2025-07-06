@@ -33,33 +33,43 @@
         </div>
     @endif
 
+     {{-- 🔍 Depuración: Verifica si Laravel genera bien la ruta --}}
+    {{-- @dd(route('home.create')) --}}
 
-    <x-tabla-indice id="tabla-posts">
+
+    {{-- 1. Modificamos el componente para enviar la url del boton agregar --}}
+    {{-- <x-tabla-indice id="tabla-posts">  --}}
+    {{-- <x-tabla-indice id="tabla-posts" create-url="https://google.com"> --}}
+         <x-tabla-indice id="tabla-posts" :createurl="route('home.create')">
+
+    {{-- <x-tabla-indice id="tabla-posts" create-url="{{ route('home.create') }}"> --}}
     <x-slot name="thead">
-      <tr>
-                <th>#</th>
-                <th>Título</th>
-                <th>Extracto</th>
-                <th>Categoría</th>
-                <th>Publicado</th>
-                <th>Acciones</th>
-            </tr>
+        <tr>
+            <th>#</th>
+            <th>Título</th>
+            <th>Extracto</th>
+            <th>Categoría</th>
+            <th>Publicado</th>
+            <th>Acciones</th>
+        </tr>
     </x-slot>
 
-   @foreach($posts as $post)
-            <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>{{ $post->title }}</td>
-                <td>{{ Str::limit($post->excerpt, 50) }}</td>
-                <td>{{ $post->category->name ?? 'Sin categoría' }}</td>
-                <td>{{ $post->published_at }}</td>
-                <td class="text-center">
-                    <i class="fa fa-pencil text-info" title="Editar" style="cursor:pointer; font-size:20px; margin: 0 5px;"></i>
-                    <i class="fa fa-trash text-danger" title="Eliminar" style="cursor:pointer; font-size:20px; margin: 0 5px;"></i>
-                </td>
-            </tr>
-        @endforeach
-  </x-tabla-indice>
+    @foreach($posts as $post)
+        <tr>
+            <td>{{ $loop->iteration }}</td>
+            <td>{{ $post->title }}</td>
+            <td>{{ Str::limit($post->excerpt, 50) }}</td>
+            <td>{{ $post->category->name ?? 'Sin categoría' }}</td>
+            <td>{{ $post->published_at }}</td>
+            <td class="text-center">
+                <i class="fa fa-pencil text-info" title="Editar"></i>
+                <i class="fa fa-trash text-danger" title="Eliminar"></i>
+            </td>
+        </tr>
+    @endforeach
+</x-tabla-indice>
+
+
 
 
 @endsection
