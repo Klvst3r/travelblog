@@ -20,7 +20,7 @@
             <h1>{{ $post->title }}</h1>
             <div class="divider"></div>
             <div class="image-w-text">
-                {!! $post->body !!}
+                 {!! $post->body !!} {{--Utilizamos !! para poder colocar el contenido HTML --}}
             </div>
 
             <footer class="container-flex space-between">

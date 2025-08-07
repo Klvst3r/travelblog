@@ -17,7 +17,7 @@ class Post extends Model
     ];
 
 
-    //Sobreescribimos el metodo getRouteKeyName
+    //Sobreescribimos el metodo getRouteKeyName, para trabajar urls amigables
     public function getRouteKeyName()
     {
         return 'url'; //  esto es crucial
@@ -49,8 +49,8 @@ class Post extends Model
 
     public function scopePublished($query)
     {
-        return $query->whereNotNull('published_at')
-            ->where('published_at', '<=', Carbon::now())
-            ->latest('published_at');
+        return $query->whereNotNull('published_at') //visualizamos los posst que no sean null, solo post activos
+            ->where('published_at', '<=', Carbon::now()) //que la fecha no sea anterior a la actual
+            ->latest('published_at'); //ordenado por publicación
     }
 }
