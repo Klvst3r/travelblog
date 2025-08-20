@@ -1,0 +1,5 @@
+Ahora lo que continua es actualizar la información a ytraves de el metodo update que persiste la información en la Bd al hacer cambios en el formulario de edición
+
+Para ello vamos a crear el metodo update en el controlador, ralizando las validaciones respectivas, nos basamos en el metodo stores.
+
+

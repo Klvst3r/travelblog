@@ -66,14 +66,24 @@ Route::group([
 ], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home.index');
     Route::get('admin/', [AdminController::class, 'index'])->name('admin');
-    Route::get('create/', [PostsController::class, 'create'])->name('home.create');
-    Route::post('store/', [PostsController::class, 'store'])->name('home.store');
+
+    //Para create y edit de posts corresponden a un usuario autenticado su inserción por ello los meetodos
+    // create y eadit asi como store y update deberan estar en el controlador de Home y no en Post ya que estos seran publicos para
+    //Usuarios no autenticados
+
+    Route::get('create/', [HomeController::class, 'create'])->name('home.create');
+    Route::post('store/', [HomeController::class, 'store'])->name('home.store');
+    Route::get('edit/{id}', [HomeController::class, 'edit'])->name('home.edit');
+    Route::put('update/{id}', [HomeController::class, 'update'])->name('home.update');
 });
 
 // Rutas de autenticación (login/logout)
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+
+//Creaciónde post anonimos con usuarions no autenticados
+Route::get('create/', [PostsController::class, 'create'])->name('post.create');
 
 // Rutas de lockscreen
 Route::get('/lockscreen', [LockscreenController::class, 'show'])->name('lockscreen');

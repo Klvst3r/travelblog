@@ -61,10 +61,22 @@
             <td>{{ Str::limit($post->excerpt, 50) }}</td>
             <td>{{ $post->category->name ?? 'Sin categoría' }}</td>
             <td>{{ $post->published_at }}</td>
-            <td class="text-center">
+            {{-- <td class="text-center">
                 <i class="fa fa-pencil text-info" title="Editar"></i>
                 <i class="fa fa-trash text-danger" title="Eliminar"></i>
-            </td>
+            </td> --}}
+            <td class="text-center">
+            <a href="{{ route('home.edit', $post->id) }}">
+                <i class="fa fa-pencil text-info" title="Editar"></i>
+            </a>
+            {{-- <form action="{{ route('home.destroy', $post->id) }}" method="POST" style="display:inline">
+                @csrf
+                @method('DELETE')
+                <button style="border:none;background:none;cursor:pointer;" onclick="return confirm('¿Seguro de eliminar?')">
+                    <i class="fa fa-trash text-danger" title="Eliminar"></i>
+                </button>
+            </form> --}}
+        </td>
         </tr>
     @endforeach
 </x-tabla-indice>

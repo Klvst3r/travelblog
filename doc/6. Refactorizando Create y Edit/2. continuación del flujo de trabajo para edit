@@ -1,0 +1,72 @@
+Des del la vista index, tenemos un boton que hace el llamado al formulario de creación de post, desde el link
+
+<x-tabla-indice id="tabla-posts" :createurl="route('home.create')">
+
+Com opodemos ver hago la inlcusión del componente de contenedor de la tabla pasandole la ruta hacia la vista create.
+
+Ahora para completar el lfujo de editar necesitamos:
+
+
+    1. Agregar la ruta edit en web.php
+    2. En el controlador, definir el método edit($id)
+    3. En la vista index, agregar el link al botón de editar (pasando el ID del registro)
+
+
+1. Ruta para Editar
+
+Agregamos en nuestro archivo routes/web.php:
+La siguiente ruta
+    Route::get('edit/{id}', [PostsController::class, 'edit'])->name('home.edit');
+
+O, si usas resource routes:
+    Route::resource('home', PostsController::class);
+
+    Esto ya nos crea la ruta edit con el nombre home.edit, en nuestro caso usamos la primera format
+
+2. Método edit en nuestro controlador
+
+En nuestro controlador PostsController, definimos el método edit:
+---
+public function edit($id)
+    {
+        $post = Post::findOrFail($id);
+        $categories = Category::all();
+        $tags = Tag::all();
+
+        return view('home.edit', compact('post', 'categories', 'tags'));
+    }
+---
+3. Botón de Editar en tu vista index.blade.php
+
+Supongamos que iteramos nuestros posts de la siguiente manera:
+
+---
+@foreach($posts as $post)
+    <tr>
+        <!-- Otros campos -->
+        <td class="text-center">
+            <a href="{{ route('home.edit', $post->id) }}">
+                <i class="fa fa-pencil text-info" title="Editar"></i>
+            </a>
+            <form action="{{ route('home.destroy', $post->id) }}" method="POST" style="display:inline">
+                @csrf
+                @method('DELETE')
+                <button style="border:none;background:none;cursor:pointer;" onclick="return confirm('¿Seguro de eliminar?')">
+                    <i class="fa fa-trash text-danger" title="Eliminar"></i>
+                </button>
+            </form>
+        </td>
+    </tr>
+@endforeach
+
+---
+
+    El botón EDITAR ahora es un <a href="..."> que nos lleva a la vista edit.
+    El botón ELIMINAR usa un formulario porque el método es DELETE.
+
+
+Resumiendo:
+
+- Agregamos la ruta edit en nuestro archivo de rutas.
+- Creamos el método edit en el controlador
+- Enlazamos el bótoin de editar al route('home.edit', $post->id) en nuestra tabla.

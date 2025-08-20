@@ -2,21 +2,24 @@
 
 @section('ruta_titulo', route('home.index'))
 @section('titulo', 'Posts')
-@section('subtitulo', 'Crear un Post')
+@section('subtitulo', 'Editar Post')
 
 @section('content')
 
     <x-form-panel
-        titulo="Formulario de Post"
-        subtitulo="Ingresa los datos del post"
+        titulo="Editar Post"
+        subtitulo="Modifica los datos necesarios"
         formId="form-post"
-        action="{{ route('home.store') }}"
+        action="{{ route('home.update', $post->id) }}"
         method="POST">
 
+        @csrf
+        @method('PUT')
+
         @include('home.partials._post-form', [
+            'post' => $post,
             'categories' => $categories,
-            'tags' => $tags,
-            // Para create, no hay $post, así que no lo pases
+            'tags' => $tags
         ])
 
     </x-form-panel>
