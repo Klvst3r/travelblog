@@ -7,6 +7,7 @@
 @section('content')
 
     <x-form-panel
+        :mode="'create'" 
         titulo="Formulario de Post"
         subtitulo="Ingresa los datos del post"
         formId="form-post"

@@ -7,6 +7,7 @@
 @section('content')
 
     <x-form-panel
+        :mode="'edit'"
         titulo="Editar Post"
         subtitulo="Modifica los datos necesarios"
         formId="form-post"

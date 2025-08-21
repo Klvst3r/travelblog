@@ -1,0 +1,34 @@
+Cuando estamos creando o editando, nos referimos a un componente de blade que tiene el contenedor del formulario, al cual internamente reutiliza el formlario y ya en el contenedor utiliza los demas elementos del formulario.
+
+Ahora cuando realicemos un registro el boton de submit tendra la leyenda "Guardar" y cuando utilicemos la edición de la infmración cambiara la leyenda del boton submit a "Actualizar"
+
+Para lograr esto donde el texto del botón cambie dinámicamente según si el formulario, tanto para crear o editar, usando una variable llamada $modo o $accion. 
+
+Por ejemplo, podemos pasar una variable desde el controlador o la vista que incluya el componente, indicando si es "crear" o "editar".
+
+Vamos a cambiar nuestro codigo actual del componente Blade:
+
+de estoi:
+
+
+              <button type="submit" class="btn btn-success">Guardar</button>
+
+A este codigo:
+
+
+<button type="submit" class="btn btn-success">
+    {{ (isset($modo) && $modo === 'editar') ? 'Actualizar' : 'Guardar' }}
+</button>
+
+
+
+Luego, cuando incluyamos el componente, pasaremos la variable $modo:
+
+<x-form-panel :modo="'editar'" ...otros-props>
+    {{-- campos del formulario --}}
+</x-form-panel>
+
+no hace falta pasar ninguna variable dsde el componente ya que lo controlamos desde los porps del componente de laravel tanto para el registro (create) como las modificaciones (edit)
+
+
+Así, el botón mostrará "Actualizar" cuando $modo sea 'editar' y "Guardar" en cualquier otro caso.
