@@ -47,8 +47,8 @@
 
         {{-- Área editable --}}
         <div id="editor" class="editor-wrapper placeholderText" contenteditable="true"
-             style="border:1px solid #ccc; padding:10px; min-height:150px;">
-            {{ old('body', isset($post) ? $post->body : '') }}
+            style="border:1px solid #ccc; padding:10px; min-height:150px;">
+            {!! old('body', isset($post) ? $post->body : '') !!}
         </div>
 
         {{-- Textarea oculta para enviar el contenido --}}

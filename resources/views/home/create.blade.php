@@ -30,12 +30,16 @@
         const form = document.getElementById('form-post');
         const editor = document.getElementById('editor');
         const textarea = document.getElementById('descr');
+
         form.addEventListener('submit', function () {
             textarea.value = editor.innerHTML;
         });
     });
+
+    // Cerrar alertas automáticamente
     setTimeout(() => {
         $('.alert').alert('close');
     }, 4000);
 </script>
+
 @endpush
