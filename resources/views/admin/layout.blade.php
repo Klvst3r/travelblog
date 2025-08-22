@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" href="/dashboard/images/logo-TSJ.png" type="image/ico" />
 
-    <title>Travel Blog!</title>
+    <title>{{ config('app.name') }} | {{ config('app.subtitle') }}</title>
 
     <!-- Bootstrap -->
     <link href="../dashboard/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
@@ -18,7 +18,7 @@
     <link href="../dashboard/vendors/nprogress/nprogress.css" rel="stylesheet">
     <!-- iCheck -->
     <link href="../dashboard/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
-	
+
     <!-- bootstrap-progressbar -->
     <link href="../dashboard/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
     <!-- JQVMap -->
@@ -33,10 +33,10 @@
   <body class="nav-md">
     <div class="container body">
       <div class="main_container">
-        
-        
-        
-        
+
+
+
+
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
@@ -155,7 +155,7 @@
                         <li><a href="#level1_2">Level One</a>
                         </li>
                     </ul>
-                  </li>                  
+                  </li>
                   <li><a href="javascript:void(0)"><i class="fa fa-laptop"></i> Landing Page <span class="label label-success pull-right">Coming Soon</span></a></li>
                 </ul>
               </div>
@@ -165,8 +165,8 @@
 
             <!-- /menu footer buttons -->
             <div class="sidebar-footer hidden-small">
-              
-              
+
+
               <a href="#" id="btnDarkMode" data-toggle="tooltip" data-placement="top" title="Dark Mode">
                 <span class="glyphicon glyphicon-adjust" aria-hidden="true"></span>
               </a>
@@ -175,9 +175,9 @@
               <a href="#" id="btnFullscreen" data-toggle="tooltip" data-placement="top" title="FullScreen">
                 <span id="fullscreenIcon" class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
               </a>
-            
 
-              <a href="{{ url('/lockscreen') }}" data-toggle="tooltip" data-placement="top" 
+
+              <a href="{{ url('/lockscreen') }}" data-toggle="tooltip" data-placement="top"
                 title="Bloquear pantalla">  <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
               </a>
 
@@ -185,7 +185,7 @@
               <form id="logout-form-bottom" action="{{ route('logout') }}" method="POST" style="display: none;">
                 @csrf
             </form>
-            
+
             <a data-toggle="tooltip" data-placement="top" title="Logout" href="#" onclick="event.preventDefault(); document.getElementById('logout-form-bottom').submit();">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
             </a>
@@ -215,13 +215,13 @@
                         <span>Settings</span>
                       </a>
                   <a class="dropdown-item"  href="javascript:;">Help</a>
-                    
+
                     <form action="/logout " method="POST">
                       @csrf
                       <a class="dropdown-item"  href="#" onclick="this.closest('form').submit()">
                         <i class="fa fa-sign-out pull-right"></i> Log Out
                       </a>
-                      
+
                     </form>
                   </div>
                 </li>
@@ -300,11 +300,11 @@
             <div class="right_col" role="main">
 
                   <!-- top tiles -->
-               
+
                 <div class="row">
                 </div>
-              
-                
+
+
                 {{-- ----------------- --}}
                 <div class="x_panel">
                   <div class="x_title">
@@ -316,8 +316,8 @@
                       <div class="col-sm-12">
                         {{-- <div class="temperature"><b>Contenido Marcado: </b>Texto Contenido --}}
 
-                         
-                          
+
+
                         {{-- </div> --}}
 
 
@@ -332,13 +332,13 @@
                   </div>
                 </div>
                 {{-- ----------------- --}}
-            
+
             </div>
               <!-- /top tiles -->
 
 
-        
-          
+
+
         </div>
         <!-- /page content -->
 
@@ -439,6 +439,6 @@
 
     <!-- Custom Theme Scripts -->
     <script src="../dashboard/build/js/custom.js"></script>
-	
+
   </body>
 </html>
