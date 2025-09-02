@@ -13,13 +13,27 @@
 </div>
 
 {{-- Campo: Extracto --}}
-<div class="item form-group {{ $errors->has('excerpt') ? 'has-error' : '' }}">
+{{-- <div class="item form-group {{ $errors->has('excerpt') ? 'has-error' : '' }}">
     <label class="col-form-label col-md-3 col-sm-3 label-align">Extracto</label>
     <div class="col-md-6 col-sm-6">
         <textarea name="excerpt" class="form-control" rows="3" required>{{ old('excerpt', isset($post) ? $post->excerpt : '') }}</textarea>
         @if ($errors->has('excerpt'))
             <span class="text-danger">{{ $errors->first('excerpt') }}</span>
         @endif
+    </div>
+</div> --}}
+
+
+{{-- DropzoneJS para subir imágenes --}}
+<div class="item form-group">
+    <label class="col-form-label col-md-3 col-sm-3 label-align">Imágenes <span class="required">*</span></label>
+    <div class="col-md-6 col-sm-6">
+        <div id="my-dropzone" class="dropzone">
+            <div class="dz-message" data-dz-message>
+                <span class="dz-text">Arrastra y suelta imágenes aquí o haz clic para subir</span>
+                <span class="dz-subtitle">(Solo archivos de imagen)</span>
+            </div>
+        </div>
     </div>
 </div>
 

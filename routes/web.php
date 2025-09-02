@@ -75,6 +75,8 @@ Route::group([
     Route::post('store/', [HomeController::class, 'store'])->name('home.store');
     Route::get('edit/{id}', [HomeController::class, 'edit'])->name('home.edit');
     Route::put('update/{id}', [HomeController::class, 'update'])->name('home.update');
+
+    Route::put('update/{id}', [HomeController::class, 'update'])->name('home.update');
 });
 
 // Rutas de autenticación (login/logout)

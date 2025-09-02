@@ -1,0 +1,358 @@
+https://www.dropzone.dev/
+
+Dropzone js es una libreria que nos permite subir archivos facilmente.
+
+Podemos simplemente arrastrar la simagenes o seleccionarlas y subirlas, 
+
+Vamos a incorporar un CDN
+
+    https://cdnjs.com/
+
+Buscamos dropzone
+
+https://cdnjs.com/libraries/dropzone
+
+Aunque podemos utilizar la version minificada, vamos a utilizar la version para trabajar en desarrollo
+
+    https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js
+
+Vamos a trabajar con la version de desarrollador.
+
+    https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.js
+
+En la vista edit de los post dentro del push de los scripts 
+
+@push('scripts')
+
+
+
+Lo pegamos
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.js"></script>
+
+Vamos a utilizar los estilos tambien:
+
+    https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.css
+
+
+
+@push('styles')
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.css" />
+@endpush
+
+
+Vamos a colocar las imagenes debajo del 
+
+
+<div class="item form- group">
+    <label class="col-form-label col-md-3 col-sm-3 label-align">Imagenes <span class="required">*</span></label>
+    <div class="col-md-6 col-sm-6">
+        <div class="dropzone"></div>
+        <div class="dz-message" data-dz-message><span>Arrastra y suelta imágenes aquí o haz clic para subir</span></div>
+    </div>
+</div>
+
+
+Pero tenemos un error, ya que nos indica que la url no ha sido proporcionada en la consola de JS
+
+---
+Uncaught Error: No URL provided.
+    Dropzone https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.js:7938
+    discover https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.js:9829
+    discover https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.js:9841
+    _autoDiscoverFunction https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.js:10412
+    init https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.js:10377
+dropzone.js:7938:13
+    Dropzone https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.js:7938
+    discover https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.js:9829
+    discover https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.js:9841
+    _autoDiscoverFunction https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.js:10412
+    init
+--
+
+Por lo general dropzone se adjkunta a un formulario y utiiza la accion como url, pero en este caso lo hemos adjuntado a un div.
+Y debemos ser especificos con la url 
+
+Para ello vamos a crear un anueva instancia de dropzone y le pasamos el selector, que es la clase que se le dio en la parte de arriba.
+
+<script>
+    new Dropzone('.dropzone', {
+        url: '/'
+     });
+</script>
+
+
+Se crea una nueva instancia de drpzone y se le pasa el selector .dropzone, que es la clase que se le dio arriba, como segundo parametro recibe un objeto de configuración, y aca es donde se define la url, de moento solo se añade la raiz para que no nos muestre el error, si actualizamos vemos que ahora el error cambia,  
+
+Indica que dropzone ya ha sido adjuntado o inizializado.
+
+Dropzone va a buscar un elemento con la clase dropzone y lo va a inicializar automaticamente en unestra instancia lo estamos inizializando nuevamente, entonces indicaremos a dropzone que no lo haga. 
+
+Es decir que no lo inicialice automaticamente, para ello le decimmos
+
+    Dropzone.autoDiscover = false;
+
+Actualizamos y ya no debemos tener errores.
+
+
+Para ello vamos a personlizar mas nuestro dropzone, de la siguiente manera:
+
+
+<div class="item form-group">
+    <label class="col-form-label col-md-3 col-sm-3 label-align">Imágenes <span class="required">*</span></label>
+    <div class="col-md-6 col-sm-6">
+        <div id="my-dropzone" class="dropzone">
+            <div class="dz-message" data-dz-message>
+                <span class="dz-text">Arrastra y suelta imágenes aquí o haz clic para subir</span>
+                <span class="dz-subtitle">(Solo archivos de imagen)</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+de manera opcional podremos manejar los estilos y acciones de js, pero creo que no seran necesarias:
+
+
+
+---
+@push('styles')
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.css" />
+<style>
+    /* Personalizar el Dropzone */
+    .dropzone {
+        border: 2px dashed #0087F7;
+        border-radius: 10px;
+        background: #f8f9fa;
+        min-height: 150px;
+        padding: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .dropzone:hover {
+        background: #e3f2fd;
+        border-color: #0056b3;
+    }
+    
+    .dropzone.dz-drag-hover {
+        border-color: #28a745;
+        background: #d4edda;
+    }
+    
+    /* Personalizar el mensaje */
+    .dropzone .dz-message {
+        text-align: center;
+        margin: 2em 0;
+        color: #666;
+    }
+    
+    .dropzone .dz-message .dz-text {
+        font-size: 16px;
+        font-weight: 600;
+        color: #0087F7;
+        display: block;
+        margin-bottom: 8px;
+    }
+    
+    .dropzone .dz-message .dz-subtitle {
+        font-size: 14px;
+        color: #999;
+    }
+    
+    /* Ocultar el mensaje cuando hay archivos */
+    .dropzone.dz-started .dz-message {
+        display: none;
+    }
+    
+    /* Estilos para las preview de archivos */
+    .dropzone .dz-preview {
+        margin: 10px;
+    }
+    
+    .dropzone .dz-preview .dz-image {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .dropzone .dz-preview .dz-remove {
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 4px 8px;
+        font-size: 12px;
+        margin-top: 5px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    
+    .dropzone .dz-preview .dz-remove:hover {
+        background: #c82333;
+    }
+    
+    /* OPCIÓN ALTERNATIVA: Ocultar completamente el mensaje */
+    /*
+    .dropzone .dz-message {
+        display: none;
+    }
+    */
+</style>
+@endpush
+
+@push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('form-post');
+        const editor = document.getElementById('editor');
+        const textarea = document.getElementById('descr');
+        
+        form.addEventListener('submit', function () {
+            textarea.value = editor.innerHTML;
+        });
+    });
+
+    setTimeout(() => {
+        $('.alert').alert('close');
+    }, 4000);
+</script>
+
+<script>
+    // Deshabilitar auto-descubrimiento
+    Dropzone.autoDiscover = false;
+    
+    // Configurar Dropzone personalizado
+    const myDropzone = new Dropzone('#my-dropzone', {
+        url: '/upload-images', // Cambia por tu ruta real
+        paramName: "file",
+        maxFilesize: 5, // MB
+        acceptedFiles: 'image/*',
+        maxFiles: 10,
+        addRemoveLinks: true,
+        dictDefaultMessage: 'Arrastra y suelta imágenes aquí o haz clic para subir',
+        dictRemoveFile: 'Eliminar',
+        dictCancelUpload: 'Cancelar',
+        dictUploadCanceled: 'Subida cancelada',
+        dictInvalidFileType: 'No puedes subir archivos de este tipo',
+        dictFileTooBig: 'El archivo es muy grande ({{filesize}}MiB). Tamaño máximo: {{maxFilesize}}MiB',
+        dictMaxFilesExceeded: 'Has alcanzado el número máximo de archivos',
+        
+        // Eventos
+        init: function() {
+            console.log('Dropzone inicializado');
+            
+            // Cuando se agrega un archivo
+            this.on("addedfile", function(file) {
+                console.log('Archivo agregado:', file.name);
+            });
+            
+            // Cuando se completa la subida
+            this.on("success", function(file, response) {
+                console.log('Archivo subido exitosamente:', response);
+            });
+            
+            // Si hay error
+            this.on("error", function(file, errorMessage) {
+                console.log('Error al subir:', errorMessage);
+            });
+        },
+        
+        // Personalizar el template de preview
+        previewTemplate: `
+            <div class="dz-preview dz-file-preview">
+                <div class="dz-image">
+                    <img data-dz-thumbnail />
+                </div>
+                <div class="dz-details">
+                    <div class="dz-size"><span data-dz-size></span></div>
+                    <div class="dz-filename"><span data-dz-name></span></div>
+                </div>
+                <div class="dz-progress">
+                    <span class="dz-upload" data-dz-uploadprogress></span>
+                </div>
+                <div class="dz-error-message"><span data-dz-errormessage></span></div>
+                <div class="dz-success-mark">
+                    <svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                        <title>Check</title>
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <path d="M23.5,31.8431458 L17.5852419,25.9283877 C16.0248253,24.3679711 13.4910294,24.366835 11.9289322,25.9289322 C10.3700136,27.4878508 10.3665912,30.0234455 11.9283877,31.5852419 L20.4147581,40.0716123 C20.5133999,40.1702541 20.6159315,40.2626649 20.7218615,40.3488435 C22.2835669,41.8725651 24.794234,41.8626202 26.3461564,40.3106978 L43.3106978,23.3461564 C44.8771021,21.7797521 44.8758057,19.2483887 43.3137085,17.6862915 C41.7547899,16.1273729 39.2176035,16.1255422 37.6538436,17.6893022 L23.5,31.8431458 Z M27,53 C41.3594035,53 53,41.3594035 53,27 C53,12.6405965 41.3594035,1 27,1 C12.6405965,1 1,12.6405965 1,27 C1,41.3594035 12.6405965,53 27,53 Z" stroke-opacity="0.198794158" stroke="#747474" fill-opacity="0.816519475" fill="#FFFFFF"></path>
+                        </g>
+                    </svg>
+                </div>
+                <div class="dz-error-mark">
+                    <svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                        <title>Error</title>
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <g stroke="#747474" stroke-opacity="0.198794158" fill="#FFFFFF" fill-opacity="0.816519475">
+                                <path d="M32.6568542,29 L38.3106978,23.3461564 C39.8771021,21.7797521 39.8758057,19.2483887 38.3137085,17.6862915 C36.7547899,16.1273729 34.2176035,16.1255422 32.6538436,17.6893022 L27,23.3431458 L21.3461564,17.6893022 C19.7823965,16.1255422 17.2452101,16.1273729 15.6862915,17.6862915 C14.1241943,19.2483887 14.1228979,21.7797521 15.6893022,23.3461564 L21.3431458,29 L15.6893022,34.6538436 C14.1228979,36.2202479 14.1241943,38.7516113 15.6862915,40.3137085 C17.2452101,41.8726271 19.7823965,41.8744578 21.3461564,40.3106978 L27,34.6568542 L32.6538436,40.3106978 C34.2176035,41.8744578 36.7547899,41.8726271 38.3137085,40.3137085 C39.8758057,38.7516113 39.8771021,36.2202479 38.3106978,34.6538436 L32.6568542,29 Z M27,53 C41.3594035,53 53,41.3594035 53,27 C53,12.6405965 41.3594035,1 27,1 C12.6405965,1 1,12.6405965 1,27 C1,41.3594035 12.6405965,53 27,53 Z"></path>
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+                <a class="dz-remove" href="javascript:undefined;" data-dz-remove>Eliminar</a>
+            </div>
+        `
+    });
+</script>
+@endpush
+---
+
+el texto lo podremos modificar de la siguente manera:
+
+<script>
+    new Dropzone('.dropzone', {
+        url: '/',
+        dectDefaultMessage: 'Arratra las fotos aqui para subirlas'
+
+     });
+</script>
+
+
+Todos los mensajes se pueden se pueden configurar, podremos revisar la documentación:
+
+www.dropzonejs.com/#configuration-options
+
+
+Ahora vamos a decidir como queremos manejar las imagenes, ya que como la mayoria de las problemas hay varias formas de solucionarlos.
+
+Una de ellas es agregar un campo imagen en la tabla posts
+
+para guardar la url de la imagen pero en este caso, vamos a permitir subir multiples imagenes, asi que vamos a crear una tabla aprte para almacenarlas 
+
+Vamos a crear un modelo Photo en conjunto con una migracin y un controlador
+
+    $ php artisan make:model Photo -mc
+
+Ahora debemos decidir que url debemos utilizar, podemos crear una ruta photos, pero solo desde la adminisración se podrian subir photos asi que debemos anteponer la ruta
+/home => //admin    
+
+
+<script>
+    new Dropzone('.dropzone', {
+        url: '/home/posts/{{ $post->id }}/photos'
+     });
+
+     Dropzone.autoDiscover = false;
+</script>
+
+Si inspeccionamos tenemos ahora en la url 
+
+
+en la visualizacion de los elementos de la aplicaicon tenemos
+
+
+    new Dropzone('.dropzone', {
+        url: '/home/posts/5/photos'
+     });
+
+     Dropzone.autoDiscover = false;
+
+Es decir tenemos el id del post, ahora vamos a definir la ruta 
+
+En el archivo de rutas web 
+duplicamos la ultima ruta:
+
+Route::put('update/{id}', [HomeController::class, 'update'])->name('home.update');
