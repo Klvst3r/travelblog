@@ -50,7 +50,10 @@
 
 <script>
     new Dropzone('.dropzone', {
-        url: '/home/posts/{{ $post->id }}/photos'
+            url: '{{ route("home.photos.store", $post->id) }}',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
      });
 
      Dropzone.autoDiscover = false;
