@@ -1,0 +1,6 @@
+Almacenamiento de Imagenes en el servior
+
+En esta lección vemos cómo guardar las imágenes en el servidor de una forma muy sencilla. También vemos cómo configurar el sistema de archivos que viene con Laravel.
+
+Primero en la vista de administración vamos a agregarla accionde sd detalles y de borrado.
+
