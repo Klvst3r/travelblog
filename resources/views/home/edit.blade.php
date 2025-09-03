@@ -48,15 +48,80 @@
     }, 4000);
 </script>
 
-<script>
-    new Dropzone('.dropzone', {
-            url: '{{ route("home.photos.store", $post->id) }}',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-     });
+<!-- HTML del formulario -->
+<div class="item form-group">
+    <label class="col-form-label col-md-3 col-sm-3 label-align">Imágenes <span class="required">*</span></label>
+    <div class="col-md-6 col-sm-6">
+        <div id="my-dropzone" class="dropzone">
+            <div class="dz-message" data-dz-message>
+                <span class="dz-text">Arrastra y suelta imágenes aquí o haz clic para subir</span>
+                <span class="dz-subtitle">(Solo archivos de imagen)</span>
+            </div>
+        </div>
+    </div>
+</div>
 
-     Dropzone.autoDiscover = false;
+<script>
+    // IMPORTANTE: Desactivar auto-discovery ANTES de inicializar
+    Dropzone.autoDiscover = false;
+
+    // Inicializar cuando el documento esté listo
+    document.addEventListener('DOMContentLoaded', function() {
+        var myDropzone = new Dropzone('#my-dropzone', {
+            url: '{{ route("home.photos.store", $post->id) }}',
+            acceptedFiles: 'image/*',
+            paramName: 'photo',
+            maxFilesize: 2, // 2MB
+            maxFiles: 10, // Límite de archivos
+            addRemoveLinks: true,
+            dictDefaultMessage: "Arrastra archivos aquí o haz clic para subir",
+            dictRemoveFile: "Eliminar",
+            dictCancelUpload: "Cancelar",
+            dictCancelUploadConfirmation: "¿Estás seguro de cancelar la subida?",
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            init: function() {
+                console.log('Dropzone inicializado correctamente');
+            }
+        });
+
+        // Evento de éxito
+        myDropzone.on('success', function(file, response) {
+            console.log('Archivo subido exitosamente:', response);
+        });
+
+        // Evento de error - CORREGIDO
+        myDropzone.on('error', function(file, response) {
+            console.log('Error en subida:', response);
+            
+            let message = 'Ha ocurrido un error al subir la imagen';
+            
+            // Verificar si es un string (error de Dropzone)
+            if (typeof response === 'string') {
+                message = response;
+            } 
+            // Verificar si es un objeto con errores de validación de Laravel
+            else if (response && response.errors && response.errors.photo) {
+                message = response.errors.photo[0];
+            }
+            // Verificar formato alternativo de error
+            else if (response && response.photo) {
+                message = response.photo[0];
+            }
+            
+            // Mostrar error en el elemento de Dropzone
+            file.previewElement.querySelector('.dz-error-message span').textContent = message;
+            
+            // Opcional: mostrar alerta
+            // alert(message);
+        });
+
+        // Evento cuando se elimina un archivo
+        myDropzone.on('removedfile', function(file) {
+            console.log('Archivo eliminado');
+        });
+    });
 </script>
 
 @endpush

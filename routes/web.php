@@ -79,8 +79,8 @@ Route::group([
     Route::get('edit/{id}', [HomeController::class, 'edit'])->name('home.edit');
     Route::put('update/{id}', [HomeController::class, 'update'])->name('home.update');
 
-    //Route::post('update/{id}/photos', [PhotoController::class, 'store'])->name('home.photos.store');
-    Route::post('posts/{id}/photos', [PhotoController::class, 'store'])->name('home.photos.store');
+
+    Route::post('posts/{id}/photos', [PhotoController::class, 'store'])->name('home.photos.store'); // Ruta para subir imagenes
 });
 
 // Rutas de autenticación (login/logout)
