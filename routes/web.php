@@ -77,6 +77,8 @@ Route::group([
     Route::get('create/', [HomeController::class, 'create'])->name('home.create');
     Route::post('store/', [HomeController::class, 'store'])->name('home.store');
     Route::get('edit/{id}', [HomeController::class, 'edit'])->name('home.edit');
+    Route::get('show/{id}', [HomeController::class, 'show'])->name('home.show');
+
     Route::put('update/{id}', [HomeController::class, 'update'])->name('home.update');
 
 

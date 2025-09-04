@@ -48,18 +48,7 @@
     }, 4000);
 </script>
 
-<!-- HTML del formulario -->
-<div class="item form-group">
-    <label class="col-form-label col-md-3 col-sm-3 label-align">Imágenes <span class="required">*</span></label>
-    <div class="col-md-6 col-sm-6">
-        <div id="my-dropzone" class="dropzone">
-            <div class="dz-message" data-dz-message>
-                <span class="dz-text">Arrastra y suelta imágenes aquí o haz clic para subir</span>
-                <span class="dz-subtitle">(Solo archivos de imagen)</span>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <script>
     // IMPORTANTE: Desactivar auto-discovery ANTES de inicializar

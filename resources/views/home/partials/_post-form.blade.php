@@ -5,7 +5,9 @@
     <label class="col-form-label col-md-3 col-sm-3 label-align">Título <span class="required">*</span></label>
     <div class="col-md-6 col-sm-6">
         <input type="text" name="title" class="form-control"
-               value="{{ old('title', isset($post) ? $post->title : '') }}" required>
+       value="{{ old('title', isset($post) ? $post->title : '') }}"
+       required {{ isset($readonly) && $readonly ? 'readonly' : '' }}>
+
         @if ($errors->has('title'))
             <span class="text-danger">{{ $errors->first('title') }}</span>
         @endif
@@ -28,12 +30,17 @@
 <div class="item form-group">
     <label class="col-form-label col-md-3 col-sm-3 label-align">Imágenes <span class="required">*</span></label>
     <div class="col-md-6 col-sm-6">
-        <div id="my-dropzone" class="dropzone">
-            <div class="dz-message" data-dz-message>
-                <span class="dz-text">Arrastra y suelta imágenes aquí o haz clic para subir</span>
-                <span class="dz-subtitle">(Solo archivos de imagen)</span>
+        @if (!isset($readonly) || !$readonly)
+            <div id="my-dropzone" class="dropzone">
+                <div class="dz-message" data-dz-message>
+                    <span class="dz-text">Arrastra y suelta imágenes aquí o haz clic para subir</span>
+                    <span class="dz-subtitle">(Solo archivos de imagen)</span>
+                </div>
             </div>
-        </div>
+        @else
+            <div class="alert alert-info">Imágenes asociadas (solo lectura)</div>
+            {{-- Aquí podrías mostrar un listado de imágenes ya cargadas --}}
+        @endif
     </div>
 </div>
 
@@ -42,6 +49,8 @@
     <label class="col-form-label col-md-3 col-sm-3 label-align">Contenido</label>
     <div class="col-md-6 col-sm-6">
         {{-- Toolbar --}}
+        
+        @if (!isset($readonly) || !$readonly)
         <div class="btn-toolbar editor mb-2" data-role="editor-toolbar" data-target="#editor-one">
             <div class="btn-group">
                 <a class="btn" data-edit="bold"><i class="fa fa-bold"></i></a>
@@ -58,12 +67,15 @@
                 <a class="btn" data-edit="justifyright"><i class="fa fa-align-right"></i></a>
             </div>
         </div>
+        @endif
 
         {{-- Área editable --}}
-        <div id="editor" class="editor-wrapper placeholderText" contenteditable="true"
+        <div id="editor" class="editor-wrapper placeholderText"
+            contenteditable="{{ isset($readonly) && $readonly ? 'false' : 'true' }}"
             style="border:1px solid #ccc; padding:10px; min-height:150px;">
             {!! old('body', isset($post) ? $post->body : '') !!}
         </div>
+
 
         {{-- Textarea oculta para enviar el contenido --}}
         <textarea name="body" id="descr" style="display:none;"></textarea>
@@ -77,7 +89,9 @@
 <div class="item form-group {{ $errors->has('category_id') ? 'has-error' : '' }}">
     <label class="col-form-label col-md-3 col-sm-3 label-align">Categoría <span class="required">*</span></label>
     <div class="col-md-6 col-sm-6">
-        <select name="category_id" class="form-control" required>
+        <select name="category_id" class="form-control"
+        {{ isset($readonly) && $readonly ? 'disabled' : '' }} required>
+
             <option value="">-- Selecciona una categoría --</option>
             @foreach ($categories as $category)
                 <option value="{{ $category->id }}"
@@ -116,6 +130,8 @@
     <label class="col-form-label col-md-3 col-sm-3 label-align">Fecha de Publicación</label>
     <div class="col-md-6 col-sm-6">
         <input name="published_at" type="date" class="form-control"
-               value="{{ old('published_at', isset($post) ? optional($post->published_at)->format('Y-m-d') : '') }}" >
+       value="{{ old('published_at', isset($post) ? optional($post->published_at)->format('Y-m-d') : '') }}"
+       {{ isset($readonly) && $readonly ? 'disabled' : '' }}>
+
     </div>
 </div>

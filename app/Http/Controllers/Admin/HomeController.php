@@ -144,4 +144,12 @@ class HomeController extends Controller
         // Finalmente Redirigir con mensaje
         return redirect()->route('home.index')->with('success', 'Post actualizado exitosamente.');
     }
+
+    public function show(string $id)
+    {
+        $post = Post::find($id);
+        $categories = Category::all();
+        $tags = Tag::all();
+        return view('home.show', compact('post', 'categories', 'tags'));
+    }
 }
