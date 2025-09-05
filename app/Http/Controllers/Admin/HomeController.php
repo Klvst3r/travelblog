@@ -150,6 +150,8 @@ class HomeController extends Controller
         $post = Post::find($id);
         $categories = Category::all();
         $tags = Tag::all();
-        return view('home.show', compact('post', 'categories', 'tags'));
+        $readonly = true;
+
+        return view('home.show', compact('post', 'categories', 'tags', 'readonly'));
     }
 }
