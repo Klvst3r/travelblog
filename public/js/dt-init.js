@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
             targets: -1, // Última columna (generalmente Acciones)
             orderable: false,
             searchable: false,
-            width: "120px"
+            width: "180px"
           }
         ],
         processing: true,
