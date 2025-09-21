@@ -950,49 +950,37 @@ function init_autosize() {
 /* PARSLEY */
 
 function init_parsley() {
-
-    if (typeof (parsley) === 'undefined') { return; }
-    console.log('init_parsley');
-
-    $/*.listen*/('parsley:field:validate', function () {
-        validateFront();
-    });
-    $('#demo-form .btn').on('click', function () {
-        $('#demo-form').parsley().validate();
-        validateFront();
-    });
-    var validateFront = function () {
-        if (true === $('#demo-form').parsley().isValid()) {
-            $('.bs-callout-info').removeClass('hidden');
-            $('.bs-callout-warning').addClass('hidden');
-        } else {
-            $('.bs-callout-info').addClass('hidden');
-            $('.bs-callout-warning').removeClass('hidden');
+    $(document).ready(function() {
+        // Verificar que Parsley esté disponible
+        if (typeof window.Parsley === 'undefined' || typeof $.fn.parsley === 'undefined') {
+            console.error('Parsley no está disponible en init_parsley');
+            return;
         }
-    };
 
-    $/*.listen*/('parsley:field:validate', function () {
-        validateFront();
-    });
-    $('#demo-form2 .btn').on('click', function () {
-        $('#demo-form2').parsley().validate();
-        validateFront();
-    });
-    var validateFront = function () {
-        if (true === $('#demo-form2').parsley().isValid()) {
-            $('.bs-callout-info').removeClass('hidden');
-            $('.bs-callout-warning').addClass('hidden');
-        } else {
-            $('.bs-callout-info').addClass('hidden');
-            $('.bs-callout-warning').removeClass('hidden');
+        // Buscar formularios con validación
+        var $forms = $('.parsley-validation, form[data-parsley-validate]');
+        
+        if ($forms.length === 0) {
+            console.log('No se encontraron formularios para validar');
+            return;
         }
-    };
 
-    try {
-        hljs.initHighlightingOnLoad();
-    } catch (err) { }
-
-};
+        console.log('Inicializando Parsley en', $forms.length, 'formularios');
+        
+        // Inicializar cada formulario
+        $forms.each(function() {
+            if (!$(this).data('parsley')) {
+                var parsleyInstance = $(this).parsley({
+                    errorClass: 'is-invalid',
+                    successClass: 'is-valid',
+                    errorsWrapper: '<div class="invalid-feedback"></div>',
+                    errorTemplate: '<div></div>'
+                });
+                console.log('Parsley inicializado en formulario:', this.id || this.className);
+            }
+        });
+    });
+}
 
 
 /* INPUTS */
